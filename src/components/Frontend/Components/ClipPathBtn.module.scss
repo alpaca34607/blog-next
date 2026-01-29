@@ -1,0 +1,68 @@
+@import "../../../styles/variables";
+
+.clipPathBtn {
+  position: relative;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  transition: 0.3s;
+  color: $text-main;
+  font-weight: 500;
+  border: 1px solid $text-main;
+  background: none;
+  padding: 0 20px;
+  clip-path: polygon(18px 0px,
+      100% 0px,
+      100% calc(100% - 18px),
+      calc(100% - 18px) 100%,
+      0px 100%,
+      0px 18px);
+
+  &:before {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    right: -9px;
+    bottom: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+  }
+
+  &:after {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    left: -9px;
+    top: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+  }
+
+  &:hover {
+    background-color: $text-main;
+    color: $bg-color;
+    transform: scale(1.05);
+
+    .btnArrow {
+      transform: translateX(10px);
+      color: $bg-color;
+    }
+  }
+}
+
+.btnArrow {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  transition: transform 0.3s, color 0.3s;
+  color: $text-main;
+}
+

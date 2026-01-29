@@ -1,0 +1,168 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+
+.downloadsSection {
+  padding: 100px 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 48px 0;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.container {
+  @include section-container(1280px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.header {
+  @include section-header;
+}
+
+.title {
+  @include section-title;
+}
+
+.subtitle {
+  @include section-subtitle;
+}
+
+.downloadsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+}
+
+.downloadItem {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 16px;
+  }
+}
+
+.downloadInfo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+.iconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background-color: rgba(255, 170, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon {
+  color: $accent-orange;
+}
+
+.downloadDetails {
+  flex: 1;
+  min-width: 0;
+}
+
+.downloadTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: $text-main;
+  margin-bottom: 8px;
+  line-height: 1.4;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.downloadMeta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 14px;
+  color: $text-muted;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.downloadButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: $accent-orange;
+  color: $text-main;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s;
+  white-space: nowrap;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: $text-main;
+    color: white;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: $text-muted;
+
+  p {
+    font-size: 16px;
+  }
+}

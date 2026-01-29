@@ -1,0 +1,231 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.contactSectionWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 100px 0;
+  background: $bg-lightgray;
+  z-index: 5;
+}
+
+.contactSection {
+  display: flex;
+  flex-direction: row;
+  width: 70%;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+
+  @include rwd-lg {
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+.title {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 40px;
+  padding: 0 40px;
+  text-align: left;
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.animateIn {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  span {
+    color: $accent-orange;
+  }
+
+  h2 {
+    font-size: 32px;
+    font-weight: 500;
+    color: $text-main;
+    line-height: 1.2;
+    font-family: "Orbitron", sans-serif;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      display: block;
+      width: 35px;
+      height: 3px;
+      left: 0;
+      bottom: -15px;
+      background-color: $orange-brown;
+    }
+  }
+
+  p {
+    font-size: 16px;
+    color: $text-main;
+    line-height: 1.5;
+    font-family: "Orbitron", sans-serif;
+  }
+
+  @include rwd-lg {
+    width: 100%;
+    padding: 0 20px;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    // 在響應式時重置 transform，讓 GSAP 控制動畫
+    transform: translateY(50px);
+    text-align: center;
+
+    h2 {
+      &::before {
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    p {
+      font-size: 14px;
+    }
+  }
+}
+
+.contactbtnWrapper {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  border-left: 4px solid $accent-orange;
+  padding-left: 20px;
+  align-self: stretch;
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
+  overflow-x: hidden;
+
+  &.animateIn {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @include rwd-lg {
+    border-left: none;
+    border-top: 4px solid $accent-orange;
+    padding-left: 0;
+    padding-top: 20px;
+    width: 100%;
+    overflow-x: hidden;
+    justify-content: center;
+    // 在響應式時重置 transform，讓 GSAP 控制動畫
+    transform: translateY(50px);
+  }
+}
+
+.contactbtn {
+  display: flex;
+  font-size: 60px;
+  font-weight: 500;
+  width: 100%;
+  line-height: 1.2;
+  font-family: "Orbitron", sans-serif;
+  padding: 20px 0;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: 0.3s;
+  cursor: pointer;
+
+
+  span {
+    background-position-x: 0%;
+    background-position-y: 0px;
+    background-image: linear-gradient(to right,
+        $text-muted 25%,
+        $text-muted 25%,
+        $accent-orange 50%,
+        $orange-dark 75%,
+        $text-muted 100%);
+    background-size: 400% 100%;
+    -webkit-text-fill-color: rgba(0, 0, 0, 0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-color: rgba(0, 0, 0, 0);
+    transition: background-position 0.3s ease, background-image 0.3s ease;
+  }
+
+  svg {
+    color: $bg-color;
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+    transition: transform 0.3s, color 0.3s;
+    color: $text-muted;
+  }
+
+  &:hover {
+    color: $accent-orange;
+
+    span {
+      background-image: linear-gradient(to right,
+          #ffffff 25%,
+          #ffffff 25%,
+          $accent-orange 50%,
+          $orange-dark 75%,
+          #ffffff 100%);
+      animation: textGradient 1s cubic-bezier(0.23, 1, 0.32, 1) 0s forwards;
+    }
+
+    svg {
+      color: $accent-orange;
+      transform: translateX(10px);
+    }
+  }
+
+  @include rwd-lg {
+    font-size: 32px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    svg {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+@keyframes textGradient {
+  0% {
+    background-position: 100% 0;
+    background-image: linear-gradient(to right,
+        #ffffff 25%,
+        #ffffff 25%,
+        $accent-orange 50%,
+        $orange-dark 75%,
+        #ffffff 100%);
+  }
+
+  100% {
+    background-position: 45% 0;
+    background-image: linear-gradient(to right,
+        #ffffff 25%,
+        #ffffff 25%,
+        $accent-orange 50%,
+        $orange-dark 75%,
+        #ffffff 100%);
+  }
+}

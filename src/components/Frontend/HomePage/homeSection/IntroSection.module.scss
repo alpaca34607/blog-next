@@ -1,0 +1,584 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+@keyframes ellipsesRotate {
+  0% {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) rotate(-405deg);
+  }
+}
+
+@keyframes ellipsesOrbit {
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.introSectionWrapper {
+  position: relative;
+  width: 100%;
+  // 調整此高度可以改變 Sticky 區塊「停留在畫面頂部」時所需要的滾動距離
+  // 數值越大，代表使用者需要滾動越多，Intro 區塊才會完全離開畫面
+  min-height: 260vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  z-index: 2;
+}
+
+.introSection {
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Montserrat", sans-serif;
+  color: $text-muted;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  margin: 0;
+  padding-top: 100px;
+  transition: opacity 0.8s ease-in;
+
+  @include rwd-xl {
+    justify-content: flex-end;
+    padding-top: 0;
+  }
+}
+
+.contentWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 70%;
+  height: 100vh;
+  position: relative;
+  z-index: 10;
+  overflow: hidden;
+  padding: 100px 0;
+  
+
+  @include rwd-xl {
+    width: 100%;
+    padding: 100px 0;
+    height: 100%;
+    min-height: 600px;
+  }
+  @include rwd-lg {
+    width: 100%;
+    padding: 100px 0;
+    height: 100vh;
+    min-height: 1000px;
+  }
+}
+
+.productContainer {
+  position: absolute;
+  left: 0;
+  top: 20%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  list-style: none;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  transform: translateX(-100px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateX(-100px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    display: none;
+  }
+}
+
+.socialIcon {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
+
+  i {
+    color: $text-muted;
+    opacity: 0.8;
+  }
+}
+
+.btnArrow {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  transition: transform 0.3s, color 0.3s;
+  color: $text-main;
+}
+
+.moreAboutBtn {
+  position: absolute !important;
+  bottom: 10%;
+  right: 5%;
+  height: 40px;
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  gap: 10px;
+  transition: 0.3s;
+  color: $text-main;
+  font-weight: 500;
+  border: 1px solid $text-main;
+  background: none;
+  padding: 0 20px;
+  clip-path: polygon(18px 0px,
+      100% 0px,
+      100% calc(100% - 18px),
+      calc(100% - 18px) 100%,
+      0px 100%,
+      0px 18px);
+  opacity: 0;
+
+  &.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+
+    @include rwd-xl {
+      transform: translateX(50%);
+    }
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateX(100px);
+    pointer-events: none;
+
+    @include rwd-xl {
+      opacity: 0;
+      transform: translateX(50%);
+      pointer-events: none;
+    }
+  }
+
+  &:before {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    right: -9px;
+    bottom: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+  }
+
+  &:after {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    left: -9px;
+    top: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+  }
+
+  &:hover {
+    background-color: $text-main;
+    color: $bg-color;
+    transform: scale(1.05);
+
+    @include rwd-xl {
+      transform: translateX(50%) scale(1.05);
+    }
+
+    .btnArrow {
+      transform: translateX(10px);
+      color: $bg-color;
+    }
+  }
+
+  @include rwd-lg {
+    right: 50%;
+    font-size: 14px;
+    height: 36px;
+    padding: 0 16px;
+  }
+
+  @include rwd-md {
+    font-size: 13px;
+    height: 34px;
+    padding: 0 14px;
+  }
+
+  @include rwd-sm {
+    font-size: 12px;
+    height: 32px;
+    padding: 0 12px;
+  }
+}
+
+.coords {
+  font-size: 1rem;
+  display: inline-block;
+  position: absolute;
+  bottom: 10%;
+  left: 2%;
+  transform-origin: left center;
+  letter-spacing: 0.2rem;
+  margin: 0;
+  color: $text-main;
+  opacity: 0;
+  transform: rotate(-90deg) translateY(-50%) translateX(-100px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: rotate(-90deg) translateY(-50%) translateX(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: rotate(-90deg) translateY(-50%) translateX(-100px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    display: none;
+  }
+}
+
+.ellipsesContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 600px;
+  max-width: 600px;
+  height: 600px;
+  max-height: 600px;
+  border-radius: 50%;
+  margin: 0 auto;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: scale(1.5);
+    pointer-events: none;
+  }
+
+  @include rwd-lg {
+    width: 90vw;
+    max-width: 90vw;
+    height: 90vw;
+    max-height: 90vw;
+  }
+
+}
+
+.greeting {
+  position: relative;
+  height: 90%;
+  width: 90%;
+  font-size: 16px;
+  font-weight: 400;
+  color: $bg-color;
+  text-align: center;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  background-color: $accent-orange;
+  padding: 5px;
+  border-radius: 50%;
+
+  @include rwd-xl {
+    font-size: 14px;
+    gap: 15px;
+    padding: 10px;
+  }
+
+  @include rwd-md {
+    font-size: 12px;
+    gap: 12px;
+  }
+
+  @include rwd-sm {
+    font-size: 11px;
+    gap: 10px;
+  }
+}
+
+.greetingH2 {
+  font-size: 24px;
+  font-weight: 500;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateY(50px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    font-size: 20px;
+  }
+
+  @include rwd-md {
+    font-size: 18px;
+  }
+
+  @include rwd-sm {
+    font-size: 16px;
+  }
+}
+
+.greetingH3 {
+  font-size: 32px;
+  font-weight: 700;
+  color: $text-main;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateY(50px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    font-size: 24px;
+  }
+
+  @include rwd-sm {
+    font-size: 18px;
+  }
+}
+
+.greetingP {
+  font-size: 16px;
+  font-weight: 400;
+  margin-top: 10px;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+
+  &.active {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateY(50px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    max-width: 80%;
+  }
+
+  @include rwd-sm {
+    font-size: 14px;
+  }
+}
+
+.ellipses {
+  border-radius: 50%;
+  position: absolute;
+  top: 0;
+  border-style: solid;
+}
+
+.ellipsesOuterThin {
+  width: 100%;
+  height: 100%;
+  border-width: 1px;
+  border-color: rgba(9, 56, 62, 0.1);
+  animation: ellipsesOrbit 15s ease-in-out infinite;
+
+  &:after {
+    content: "";
+    background-image: radial-gradient(circle,
+        rgba(9, 56, 62, 0.1) 1px,
+        transparent 1px);
+    background-size: 20px 20px;
+    background-repeat: repeat;
+    background-position: center;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+    opacity: 0.15;
+  }
+}
+
+.ellipsesOuterThick {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 105%;
+  height: 105%;
+  border-color: $text-main transparent;
+  border-width: 2px;
+  transform: translate(-50%, -50%) rotate(-45deg);
+  animation: ellipsesRotate 15s ease-in-out infinite;
+}
+
+.ellipsesOrbit {
+  position: absolute;
+  top: 12.9%;
+  left: 12.9%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+  border-color: $text-main;
+  background-color: $bg-color;
+
+  &:before {
+    content: "";
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    background-color: $text-main;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+}
+
+.scroller {
+  display: inline-block;
+  position: absolute;
+  bottom: 50%;
+  right: 5%;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateX(100px);
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  pointer-events: none;
+
+  &.active {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+    transform: translateX(100px);
+    pointer-events: none;
+  }
+
+  @include rwd-xl {
+    display: none;
+  }
+}
+
+.pageTitle {
+  font-family: "Playfair Display", serif;
+  letter-spacing: 0.5rem;
+  display: inline-block;
+  margin-top: 1rem;
+  color: $text-main;
+}
+
+.timeline {
+  width: 1.5rem;
+  height: 9rem;
+  float: right;
+}
+
+.timelineUnit {
+  width: 100%;
+  height: 0.1rem;
+  display: block;
+  background-color: $text-main;
+  margin: 0 0 2rem;
+  opacity: 0.2;
+  position: relative;
+
+  &.active {
+    opacity: 1;
+  }
+
+  &:after {
+    content: "";
+    width: 70%;
+    height: 0.1rem;
+    display: block;
+    position: relative;
+    float: right;
+    background-color: $text-lightgray;
+    top: 1rem;
+    opacity: 1;
+  }
+
+  &.active:after {
+    opacity: 0.2;
+  }
+}

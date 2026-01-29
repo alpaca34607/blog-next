@@ -1,0 +1,395 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.navContainer {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+
+  @include rwd-xl {
+    display: none;
+  }
+}
+
+// 移動端導航容器（用於 MobileMenu）
+.mobileNavContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+// 移動端導航項目容器（包含連結和展開按鈕）
+.mobileNavItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  color: $text-main;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  border-radius: 0;
+  min-height: 60px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+// 移動端導航連結
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s;
+  color: $text-main;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  border-radius: 0;
+  min-height: 60px;
+  flex: 1;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 0 16px;
+
+  &:hover {
+    color: $accent-orange;
+    padding-left: 20px;
+  }
+}
+
+// 移動端子選單連結
+.mobileSubmenuLink {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: $text-main;
+  text-decoration: none;
+  font-size: 16px;
+  flex: 1;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $accent-orange;
+    padding-left: 25px;
+  }
+}
+
+// 展開/收合按鈕
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+
+  &:hover {
+  }
+
+  &:active {
+  }
+}
+
+// 展開圖標
+.expandIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: $text-main;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+
+  &.expanded {
+    transform: rotate(180deg);
+    background: transparent;
+  }
+}
+
+.navBar {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 6px 20px;
+  border-radius: 0px;
+  transition: 0.3s;
+  position: relative;
+  list-style: none;
+  margin: 0;
+
+  // 移動端樣式
+  @include rwd-xl {
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    padding: 0;
+    align-items: stretch;
+  }
+
+  >li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    @include rwd-xl {
+      width: 100%;
+      border-bottom: 1px solid rgba($text-lightgray, 0.3);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+.navItemWrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: fit-content;
+  height: fit-content;
+
+  @include rwd-xl {
+    width: 100%;
+  }
+}
+
+@include rwd-xl {
+  .navItemWrapper :global(.flipButton) {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    border-radius: 0;
+
+    &::before,
+    &::after {
+      display: none;
+    }
+
+    &:hover,
+    &:active {
+      color: $accent-orange;
+    }
+  }
+}
+
+.navDropdown,
+.navSubmenu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  min-width: 200px;
+  background: $glass-bg;
+  border: 1px solid $text-lightgray;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+
+  // 移動端樣式
+  @include rwd-xl {
+    position: static;
+    width: 100%;
+    min-width: 100%;
+    border: none;
+    background: transparent;
+    padding-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+    backdrop-filter: none;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+
+    &.expanded {
+      background: transparent;
+      backdrop-filter: none;
+      max-height: 2000px;
+      opacity: 1;
+      visibility: visible;
+      margin-top: 8px;
+      border-top: 1px solid rgba($text-lightgray, 0.3);
+      border: none;
+      background: transparent;
+      backdrop-filter: none;
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    // 移動端：確保 ul 背景透明
+    @include rwd-xl {
+      background: transparent;
+    }
+  }
+
+  li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+
+    // 移動端：確保 li 背景透明
+    @include rwd-xl {
+      background: transparent;
+    }
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 20px;
+    color: $text-main;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid $text-lightgray;
+    position: relative;
+    z-index: 1;
+    white-space: nowrap;
+    box-sizing: border-box;
+
+    // 移動端樣式
+    @include rwd-xl {
+      padding: 16px 20px;
+      border-bottom: none;
+      white-space: normal;
+      color: $text-muted;
+    }
+  }
+
+  li:first-child>a {
+    padding-top: 12px;
+  }
+
+  li:last-child>a {
+    border-bottom: none;
+    padding-bottom: 12px;
+  }
+
+  a:hover {
+    background: $accent-orange;
+    color: $bg-color;
+    padding-left: 25px;
+  }
+}
+
+.navSubmenu {
+  top: -1px;
+  left: 100%;
+  z-index: 1001;
+
+  // 移動端樣式
+  @include rwd-xl {
+    position: static;
+    margin-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+
+    &.expanded {
+      max-height: 1000px;
+      opacity: 1;
+      visibility: visible;
+      border-left: 1px solid rgba($text-lightgray, 0.3);
+
+      a {
+        color: $text-darkgray;
+      }
+      &:last-child {
+        margin-bottom: 16px;
+      }
+    }
+  }
+}
+
+.navItemWrapper:hover>.navDropdown,
+.navItemWrapper:hover>.navSubmenu {
+  @media (hover: hover) and (pointer: fine) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.navItemWrapper:active>.navDropdown,
+.navItemWrapper:focus-within>.navDropdown,
+.navItemWrapper:active>.navSubmenu,
+.navItemWrapper:focus-within>.navSubmenu {
+  @media (hover: none) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+.navDropdown li:hover>.navSubmenu {
+  @media (hover: hover) and (pointer: fine) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+.navDropdown li:active>.navSubmenu,
+.navDropdown li:focus-within>.navSubmenu {
+  @media (hover: none) {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+// 移動端：始終顯示下拉選單
+@include rwd-xl {
+
+  .navItemWrapper:hover>.navDropdown,
+  .navItemWrapper:hover>.navSubmenu,
+  .navItemWrapper:active>.navDropdown,
+  .navItemWrapper:focus-within>.navDropdown,
+  .navItemWrapper:active>.navSubmenu,
+  .navItemWrapper:focus-within>.navSubmenu,
+  .navDropdown li:hover>.navSubmenu,
+  .navDropdown li:active>.navSubmenu,
+  .navDropdown li:focus-within>.navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}

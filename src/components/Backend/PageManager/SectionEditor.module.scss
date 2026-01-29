@@ -1,0 +1,251 @@
+@import "@/styles/variables";
+
+.sectionEditor {
+  width: 100%;
+}
+
+// Header
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}
+
+.backButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: $text-muted;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+
+  &:hover {
+    color: $accent-orange;
+  }
+}
+
+.previewButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: $text-main;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: $bg-lightgray;
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+}
+
+// Page Header
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+}
+
+// Sections Container
+.sectionsContainer {
+  width: 100%;
+}
+
+.sectionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionCard {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+.dragHandle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: $text-lightgray;
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.sectionIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background-color: rgba(255, 170, 0, 0.1);
+  color: $accent-orange;
+  flex-shrink: 0;
+}
+
+.sectionInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-main;
+}
+
+.sectionTypeBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: rgba(255, 170, 0, 0.1);
+  color: $accent-orange;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.variantBadge {
+  display: inline-block;
+  padding: 2px 8px;
+  background-color: $bg-lightgray;
+  color: $text-muted;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sectionSubtitle {
+  font-size: 14px;
+  color: $text-muted;
+  margin-top: 4px;
+}
+
+.sectionActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.eyeIcon {
+  color: #10b981;
+}
+
+.eyeOffIcon {
+  color: $text-lightgray;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 6px;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: $bg-lightgray;
+    border-color: rgba(0, 0, 0, 0.2);
+    color: $text-main;
+  }
+}
+
+.deleteButton {
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 16px;
+  color: $text-muted;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+// Error State
+.errorContainer {
+  text-align: center;
+  padding: 48px 24px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.errorText {
+  color: $text-muted;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background-color: $accent-orange;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: $orange-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
+  }
+}

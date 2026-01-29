@@ -1,0 +1,224 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+
+.cardGridSection {
+  padding: 100px 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 48px 0;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.container {
+  @include section-container(1280px);
+}
+
+.header {
+  @include section-header;
+}
+
+.filterSection {
+  display: flex;
+  justify-content: center;
+
+  @media (max-width: 768px) {
+    margin-bottom: 32px;
+  }
+}
+
+.title {
+  @include section-title;
+}
+
+.subtitle {
+  @include section-subtitle;
+}
+
+.grid {
+  display: grid;
+  gap: 24px;
+}
+
+.grid3 {
+  grid-template-columns: 1fr;
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.grid4 {
+  grid-template-columns: 1fr;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.list {
+  grid-template-columns: 1fr;
+}
+
+.card {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+
+    .cardLink {
+      background-color: $text-main;
+    }
+  }
+}
+
+.cardImage {
+  width: 100%;
+  height: 250px;
+  position: relative;
+  overflow: hidden;
+  background-color: $bg-lightgray;
+
+  @media (max-width: 768px) {
+    height: 200px;
+  }
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardContent {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 12px;
+  background-color: $bg-lightgray;
+  color: $text-muted;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.featured {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  background-color: $accent-orange;
+  color: white;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  color: $text-lightgray;
+}
+
+.cardTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: $text-main;
+  margin-bottom: 8px;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+}
+
+.cardExcerpt {
+  font-size: 14px;
+  color: $text-muted;
+  line-height: 1.6;
+  display: -webkit-box;
+  // -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: 16px;
+  flex: 1;
+}
+
+.cardLink {
+  display: inline-block;
+  width: 100%;
+  padding: 12px 24px;
+  background-color: $accent-orange;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 0 0 12px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.3s;
+  margin-top: auto;
+
+  &:hover {
+    background-color: $text-main;
+    color: white;
+  }
+}
+
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 48px 24px;
+  color: $text-muted;
+
+  p {
+    font-size: 16px;
+  }
+}

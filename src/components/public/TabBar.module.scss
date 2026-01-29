@@ -1,0 +1,64 @@
+@import "@/styles/variables";
+
+.tabBar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+
+  @media (max-width: 768px) {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0;
+    margin-bottom: 24px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.tab {
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 100px;
+  padding: 4px 10px;
+  background-color: transparent;
+  border: none;
+  border: 1px solid $text-lightgray;
+
+  font-size: 16px;
+  font-weight: 500;
+  color: $text-lightgray;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+
+  &:hover {
+    border-color: $accent-orange;
+    color: $accent-orange;
+  }
+
+  &.tabActive {
+    border: 1px solid $accent-orange;
+    background-color: $accent-orange;
+    color: $bg-color;
+    font-weight: 600;
+
+    &:hover {
+      cursor: default;
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+}

@@ -1,0 +1,455 @@
+// RWD 響應式斷點
+// XL: 1280px 以下
+@mixin rwd-xl {
+  @media screen and (max-width: 1280px) {
+    @content;
+  }
+}
+
+// LG: 1024px 以下
+@mixin rwd-lg {
+  @media screen and (max-width: 1024px) {
+    @content;
+  }
+}
+
+// MD: 768px 以下
+@mixin rwd-md {
+  @media screen and (max-width: 768px) {
+    @content;
+  }
+}
+
+// SM: 430px 以下
+@mixin rwd-sm {
+  @media screen and (max-width: 430px) {
+    @content;
+  }
+}
+
+// SS: 320px 以下
+@mixin rwd-ss {
+  @media screen and (max-width: 320px) {
+    @content;
+  }
+}
+
+// XS: 319px 以下
+@mixin rwd-xs {
+  @media screen and (max-width: 319px) {
+    @content;
+  }
+}
+
+
+// 玻璃擬態
+@mixin glass-effect {
+  background: $glass-bg;
+  backdrop-filter: blur(10px);
+  border: 1px solid $glass-border;
+}
+
+// 裁切角
+// 一般六角(無邊框，通常用於色塊背景)
+@mixin clip-path-m($clip-size: 18px) {
+  clip-path: polygon($clip-size 0px,
+      100% 0px,
+      100% calc(100% - $clip-size),
+      calc(100% - $clip-size) 100%,
+      0px 100%,
+      0px $clip-size);
+}
+
+// 大六角(有邊框，通常用於卡片)
+@mixin clip-path-L($color) {
+  clip-path: polygon(30px 0px,
+      100% 0px,
+      100% calc(100% - 30px),
+      calc(100% - 30px) 100%,
+      0px 100%,
+      0px 30px);
+
+  &:before {
+    background-color: $color;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    right: -8px;
+    bottom: 12px;
+    transform: rotate(-45deg);
+    width: 50px;
+  }
+
+  &:after {
+    background-color: $color;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    left: -8px;
+    top: 12px;
+    transform: rotate(-45deg);
+    width: 50px;
+  }
+}
+
+// 六角邊框(有邊框，通常用於按鈕) $color: 邊框顏色
+@mixin clip-border-m($color) {
+  clip-path: polygon(18px 0px,
+      100% 0px,
+      100% calc(100% - 18px),
+      calc(100% - 18px) 100%,
+      0px 100%,
+      0px 18px);
+
+  &:before {
+    content: "";
+    background-color: $color;
+    display: block;
+    height: 1px;
+    position: absolute;
+    right: -9px;
+    bottom: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+    z-index: 2;
+  }
+
+  &:after {
+    content: "";
+    background-color: $color;
+    display: block;
+    height: 1px;
+    position: absolute;
+    left: -9px;
+    top: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+    z-index: 2;
+  }
+}
+
+// 按钮裁切角（用于 Header 等组件）
+@mixin clip-path-button {
+  clip-path: polygon(18px 0px,
+      100% 0px,
+      100% calc(100% - 18px),
+      calc(100% - 18px) 100%,
+      0px 100%,
+      0px 18px);
+}
+
+// 上傳佔位區（虛線框）- 以 SiteSettingsManager 的 uploadPlaceholder 為基準
+@mixin upload-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 2px dashed rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  background-color: #fafafa;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+  width: 100%;
+  min-height: 120px;
+
+  &:hover {
+    border-color: $accent-orange;
+    background-color: rgba(255, 170, 0, 0.05);
+    color: $accent-orange;
+  }
+
+  span {
+    font-size: 16px;
+  }
+}
+
+/**
+ * Section 共用樣式（mixin）
+ * 目標：集中管理各 section 常見的 .container/.header/.title/.subtitle
+ */
+
+ @mixin section-container($max-width: 1280px) {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0 16px;
+
+  @media (min-width: 640px) {
+    padding: 0 24px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0 32px;
+  }
+}
+
+@mixin section-header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  @include rwd-md {
+    margin-bottom: 32px;
+  }
+}
+
+@mixin section-title {
+  font-size: 40px;
+  font-weight: 700;
+  color: $text-main;
+  margin-bottom: 20px;
+
+  @include rwd-md {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+}
+
+
+@mixin section-subtitle {
+  font-size: 20px;
+  color: $text-muted;
+  margin-bottom: 24px;
+  line-height: 1.6;
+
+  @include rwd-md {
+    font-size: 18px;
+    margin-bottom: 20px;
+  }
+}
+
+@mixin section-content {
+  font-size: 18px;
+  line-height: 1.8;
+  color: $text-main;
+  margin-bottom: 32px;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  // Rich text 內容樣式
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    color: $text-main;
+    font-weight: 600;
+    margin-top: 24px;
+    margin-bottom: 16px;
+    line-height: 1.3;
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h1 {
+    font-size: 32px;
+  }
+
+  h2 {
+    font-size: 28px;
+  }
+
+  h3 {
+    font-size: 24px;
+  }
+
+  h4 {
+    font-size: 20px;
+  }
+
+  p {
+    line-height: 2.2;
+  }
+
+  ul,
+  ol {
+    margin-bottom: 16px;
+    padding-left: 24px;
+  }
+
+  li {
+    line-height: 2.2;
+  }
+
+  a {
+    color: $accent-orange;
+    text-decoration: none;
+    transition: color 0.3s;
+
+    &:hover {
+      color: darken($accent-orange, 10%);
+      text-decoration: underline;
+    }
+  }
+
+  img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    margin: 24px 0;
+  }
+
+  svg {
+    max-width: 100%;
+    height: auto;
+    width: auto;
+    display: inline-block;
+  }
+
+  strong {
+    font-weight: 600;
+  }
+
+  em {
+    font-style: italic;
+  }
+
+  blockquote {
+    border-left: 4px solid $accent-orange;
+    padding-left: 16px;
+    margin: 16px 0;
+    color: $text-muted;
+    font-style: italic;
+  }
+
+  // 標記樣式
+  mark {
+    background-color: rgba(255, 170, 0, 0.2);
+    padding: 2px 4px;
+    border-radius: 2px;
+  }
+
+  // 程式碼樣式
+  code {
+    background-color: $bg-lightgray;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: "Courier New", monospace;
+    color: $text-main;
+  }
+
+  pre {
+    background-color: $bg-lightgray;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 24px 0;
+
+    code {
+      background-color: transparent;
+      padding: 0;
+    }
+  }
+
+  // 表格樣式
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    overflow-x: auto;
+    display: block;
+
+    @include rwd-md {
+      display: table;
+    }
+  }
+
+  thead {
+    background-color: $bg-lightgray;
+  }
+
+  th,
+  td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  th {
+    font-weight: 600;
+    color: $text-main;
+  }
+
+  td {
+    color: $text-main;
+  }
+
+  // 水平線樣式
+  hr {
+    border: none;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    margin: 32px 0;
+  }
+}
+
+@mixin section-buttonLink {
+  display: inline-block;
+  text-decoration: none;
+}
+
+@mixin section-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background-color: $accent-orange;
+  color: $bg-color;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(255, 170, 0, 0.2);
+  overflow: hidden;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    transition: 0.3s;
+    width: 0;
+    left: -10%;
+    bottom: 0;
+    background: $text-main;
+    height: 120%;
+    transform: skewX(15deg);
+    z-index: -1;
+  }
+
+  &:hover {
+    transform: translateY(-2px);
+
+    &:after {
+      width: 120%;
+    }
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @include rwd-md {
+    padding: 12px 24px;
+    font-size: 14px;
+  }
+}
+
+@mixin section-buttonIcon {
+  transition: transform 0.3s;
+}
+
+@mixin section-buttonIconHover {
+  transform: translateX(4px);
+}

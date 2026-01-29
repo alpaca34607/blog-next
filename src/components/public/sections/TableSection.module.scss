@@ -1,0 +1,206 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+.tableSection {
+  width: 100%;
+  padding: 60px 0;
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+
+  @media (max-width: 768px) {
+    padding: 0 16px;
+  }
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  color: $text-main;
+  margin-bottom: 12px;
+
+  @media (max-width: 768px) {
+    font-size: 28px;
+  }
+}
+
+.subtitle {
+  font-size: 16px;
+  color: $text-muted;
+  margin: 0;
+}
+
+// 搜尋區域
+.searchSection {
+  margin-bottom: 32px;
+  padding: 24px;
+  background-color: white;
+  border-radius: 12px;
+}
+
+.searchContainer {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+.searchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  flex: 1;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.searchInputWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 12px 40px 12px 40px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  color: $text-main;
+  transition: border-color 0.2s;
+  font-family: inherit;
+  background-color: white;
+
+  &:focus {
+    outline: none;
+    border-color: $accent-orange;
+    box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.1);
+  }
+
+  &::placeholder {
+    color: $text-lightgray;
+  }
+}
+
+.searchIcon {
+  position: absolute;
+  left: 12px;
+  color: $text-lightgray;
+  pointer-events: none;
+}
+
+.searchButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: $accent-orange;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+
+  &:hover {
+    background-color: $orange-dark;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+  }
+}
+
+// 表格區域
+.tableWrapper {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  overflow-x: auto;
+
+  @media (max-width: 768px) {
+    padding: 16px;
+  }
+}
+
+.dataTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 16px;
+  min-width: 600px;
+
+  thead {}
+
+
+  th {
+    padding: 8px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: $bg-color;
+    background-color: $accent-orange;
+    border-right: 2px solid #f9f9f9;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    color: $text-main;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    vertical-align: top;
+  }
+
+  tbody tr {
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 60px 20px;
+  color: $text-muted;
+  font-size: 16px;
+}

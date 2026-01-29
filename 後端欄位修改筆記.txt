@@ -1,0 +1,148 @@
+需要允許長內容（富文字 HTML）之後端欄位調整筆記
+
+背景
+- 目前新增/更新「最新消息」時會遇到 Prisma P2000：The provided value for the column is too long for the column's type. Column: content
+- 原因通常是資料庫欄位仍為 VARCHAR（長度有限），但富文字內容（HTML）很容易超長
+
+建議調整的欄位（Prisma / MySQL）
+
+1) News.content（新聞內容，富文字）
+- Prisma：`prisma/schema.prisma`
+  - `model News { content String @db.LongText }`
+- MySQL（建議 LONGTEXT；若內容不會非常大也可用 MEDIUMTEXT/TEXT）
+  - SQL：
+    ALTER TABLE `news` MODIFY COLUMN `content` LONGTEXT NOT NULL;
+
+2) Page.content（頁面內容，若用 RichTextEditor 儲存 HTML）
+- Prisma：`prisma/schema.prisma`
+  - `model Page { content String? @db.LongText }`
+- MySQL：
+  - SQL：
+    ALTER TABLE `pages` MODIFY COLUMN `content` LONGTEXT NULL;
+
+3) Section.content（區塊內容，若會存 RichTextEditor HTML）
+- Prisma：`prisma/schema.prisma`
+  - `model Section { content String? @db.LongText }`
+- MySQL：
+  - SQL：
+    ALTER TABLE `sections` MODIFY COLUMN `content` LONGTEXT NULL;
+
+4) 產品新增欄位（目前前端已送出，但後端尚未落地）
+背景
+- 後台「新增/編輯產品」會呼叫 `/api/pages`（type=product）
+- 前端 payload 已包含：`videoUrl` / `introImage` / `isFeatured`
+
+需要新增/調整的欄位（Prisma / MySQL）
+- Prisma：`prisma/schema.prisma`（model `Page`）
+  - `videoUrl String?`（產品影片 URL）
+  - `introImage String?`（產品說明圖片；目前前端透過 `/api/upload` 上傳並儲存回傳的圖片 URL，例如 `/uploads/...`，非 base64）
+  - `isFeatured Boolean @default(false)`（是否顯示於首頁服務區塊）
+- MySQL：
+  - SQL
+    - ALTER TABLE `pages` ADD COLUMN `videoUrl` VARCHAR(2048) NULL;
+    - ALTER TABLE `pages` ADD COLUMN `introImage` VARCHAR(2048) NULL;
+    - ALTER TABLE `pages` ADD COLUMN `isFeatured` BOOLEAN NOT NULL DEFAULT 0;
+
+需要同步調整的 API（Next Route / Zod）
+- `src/app/api/pages/route.ts`
+  - `createPageSchema` 需加入 `videoUrl` / `introImage` / `isFeatured`
+  - `select` 需回傳 `videoUrl` / `introImage` / `isFeatured`（否則前端拿不到）
+- `src/app/api/pages/[id]/route.ts`
+  - `updatePageSchema` 需加入 `videoUrl` / `introImage` / `isFeatured`
+  - `select` 需回傳 `videoUrl` / `introImage` / `isFeatured`
+
+5) 頁首區塊（Hero）相關欄位（目前前端已送出，但後端尚未落地）
+背景
+- 後台「新增/編輯頁面」以及「新增/編輯產品（/api/pages, type=product）」時，前端會在 payload 送出：
+  - `heroTitle`（頁首標題）
+  - `heroSubtitle`（頁首副標）
+  - `heroImages`（頁首輪播/主圖陣列，`string[]`）
+
+需要新增/調整的欄位（Prisma / MySQL）
+- Prisma：`prisma/schema.prisma`（model `Page`）
+  - `heroTitle String?`
+  - `heroSubtitle String?`
+  - `heroImages Json?`（建議用 JSON 儲存 `string[]`）
+- MySQL：
+  - SQL（若用 JSON）
+    - ALTER TABLE `pages` ADD COLUMN `heroTitle` VARCHAR(255) NULL;
+    - ALTER TABLE `pages` ADD COLUMN `heroSubtitle` VARCHAR(255) NULL;
+    - ALTER TABLE `pages` ADD COLUMN `heroImages` JSON NULL;
+  - 備註：若 DB 版本/環境不方便用 JSON，也可用 LONGTEXT 存 JSON 字串，但 Prisma 欄位型別需要配套調整。
+
+需要同步調整的 API（Next Route / Zod）
+- `src/app/api/pages/route.ts`
+  - `createPageSchema` 需加入 `heroTitle` / `heroSubtitle` / `heroImages`
+  - `select` 需回傳 `heroTitle` / `heroSubtitle` / `heroImages`
+- `src/app/api/pages/[id]/route.ts`
+  - `updatePageSchema` 需加入 `heroTitle` / `heroSubtitle` / `heroImages`
+  - `select` 需回傳 `heroTitle` / `heroSubtitle` / `heroImages`
+
+補充
+- Json 欄位（例如 `Section.settings`）通常不需要改，因為 MySQL JSON 能容納較多內容
+- 若使用 Prisma migrate dev 產生 migration，可能需要「建立 shadow database」的權限；若無權限，可改走「手動 SQL」或請 DBA/後端協助執行
+- 若暫時不改 DB 欄位，只能限制編輯器輸入長度（不建議，會影響內容編寫）
+
+6) 導覽「產品分類」對應欄位（讓導覽子項目可綁定 ProductsManager 設定的分類）
+背景
+- 後台「導航選單管理」在新增/編輯導覽子項目時，可選擇「產品分類（選填）」；前台導覽會用此分類，自動列出該分類底下的產品。
+- 產品分類來源：`/admin/ProductsManager`（實際為 `Page`，且 `type=product`）的 `category` 欄位。
+
+需要新增/調整的欄位（Prisma / MySQL）
+- Prisma：`prisma/schema.prisma`（model `Navigation`）
+  - `productCategory String?`（選填；若有值，前台用它匹配產品分類）
+- MySQL：
+  - SQL（建議 VARCHAR 255～512，視分類字串長度需求）
+    - ALTER TABLE `navigation` ADD COLUMN `productCategory` VARCHAR(255) NULL;
+
+需要同步調整的 API（Next Route / Zod）
+- `src/app/api/navigation/route.ts`
+  - `navigationSchema` 需加入 `productCategory`
+  - `create` 時需允許寫入 `productCategory`
+- `src/app/api/navigation/[id]/route.ts`
+  - `updateNavigationSchema` 需加入 `productCategory`（可選、可清空）
+  - `update` 時需允許更新 `productCategory`
+- `src/app/api/get-navigation-item/route.ts`
+  - 回傳導覽資料時需包含 `productCategory`（讓前台能依分類列出產品）
+
+備註（DB 已完成加欄位後，可移除 fallback）
+- 若資料庫已確實新增 `navigation.productCategory` 欄位並完成部署（不再發生 Prisma `P2025` 欄位不存在），可移除目前程式碼中為了「舊 DB 尚未加欄位」而加的備用 fallback（try/catch + 判斷 `P2025` / `productCategory`）邏輯，讓程式碼更乾淨。
+- 目前有 fallback 的位置（可回收/簡化）：
+  - `src/app/api/navigation/route.ts`（GET/POST）
+  - `src/app/api/navigation/[id]/route.ts`（GET/PUT）
+  - `src/app/api/get-navigation-item/route.ts`（GET）
+
+7) 全站 SEO（SiteSettings + 公開 API + 前台 metadata）
+背景
+- 目前 `Page` 已有 `metaTitle` / `metaDescription`（後台可編輯），但公開 API `get-products` 未回傳，導致前台列表/導覽無法使用。
+- 目前 `SiteSettings` 尚未有 SEO 欄位，公開 API `get-site-settings` 也無法提供全站預設 meta（前台只能用寫死的預設值）。
+- 前台已改用 Next.js `generateMetadata` 生成 SEO 標籤，需要後端提供可配置的全站預設值。
+- 補充：`metaTitle`、`metaDescription`、`contactImage`、`contactBanner` 目前沒有進到 payload 傳遞到後端（且後端/DB 也尚未新增這些欄位）
+
+待辦（後端欄位 / Prisma / MySQL）
+- Prisma：`prisma/schema.prisma`（model `SiteSettings`）
+  - `metaTitle String?`（全站預設 meta title）
+  - `metaDescription String?`（全站預設 meta description）
+  - `contactImage String?`（聯絡頁圖片 URL / path，例如 `/uploads/...`）
+  - `contactBanner String?`（聯絡頁 banner 圖片 URL / path，例如 `/uploads/...`）
+- MySQL（欄位型別可依需求調整）
+  - SQL：
+    - ALTER TABLE `site_settings` ADD COLUMN `metaTitle` VARCHAR(255) NULL;
+    - ALTER TABLE `site_settings` ADD COLUMN `metaDescription` TEXT NULL;
+    - ALTER TABLE `site_settings` ADD COLUMN `contactImage` VARCHAR(2048) NULL;
+    - ALTER TABLE `site_settings` ADD COLUMN `contactBanner` VARCHAR(2048) NULL;
+
+待辦（API / 後台）
+- 公開 API：
+  - `src/app/api/get-site-settings/route.ts`
+    - DB 欄位完成落地後：改為直接回傳 `metaTitle` / `metaDescription`（並移除目前「以 siteName fallback」的暫時邏輯）
+  - `src/app/api/get-products/route.ts`
+    - 回傳 `metaTitle` / `metaDescription`（供前台列表/導覽/卡片使用）
+- 管理 API：
+  - `src/app/api/site-settings/route.ts`
+    - `siteSettingsSchema` 需加入 `metaTitle` / `metaDescription` / `contactImage` / `contactBanner`
+    - upsert/select 需允許寫入與回傳上述欄位
+- 後台頁面：
+  - `src/app/admin/SiteSettingsManager/page.tsx`
+    - 表單新增 `metaTitle` / `metaDescription` / `contactImage` / `contactBanner` 欄位，並串接更新 API
+    - 確認送出 payload 時有包含上述欄位（否則後端即使加欄位也收不到）

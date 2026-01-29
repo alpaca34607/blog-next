@@ -1,0 +1,21 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+.uploadButton {
+  // 與後台各處「上傳佔位區」一致（虛線框樣式）
+  @include upload-placeholder;
+
+  // button reset
+  appearance: none;
+  font: inherit;
+  text-align: center;
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.12);
+  }
+}

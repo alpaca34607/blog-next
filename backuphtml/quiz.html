@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>華生 Watchsense| 資安問卷</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;500;600;700;800;900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Keania+One&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --white: #ffffff;
+        --bg-color: #02060c;
+        --primary-blue: #00f0ff;
+        --secondary-blue: #0077ff;
+        --accent-orange: #ffaa00;
+        --glass-bg: rgba(10, 20, 40, 0.7);
+        --glass-border: rgba(255, 255, 255, 0.2);
+        --text-main: #ffffff;
+        --text-muted: #8b9bb4;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        font-family: "Inter", "Noto Sans TC", sans-serif;
+        overflow: hidden;
+        height: 100vh;
+        width: 100vw;
+        position: relative;
+      }
+
+      /* --- Common Bgs --- */
+      .aura-background-component {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -10;
+        overflow: hidden;
+        pointer-events: none;
+      }
+
+      .aura-background-component > div {
+        position: absolute;
+        width: 100% !important;
+        height: 100% !important;
+        left: 0;
+        top: 0;
+        z-index: -10;
+      }
+
+      .aura-background-component canvas {
+        width: 100% !important;
+        height: 100% !important;
+        display: block;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 0;
+      }
+
+      .aura-background-component [data-us-text] {
+        z-index: 1;
+      }
+
+      .aura-bg {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 80vw;
+        height: 80vh;
+        background: radial-gradient(
+          circle,
+          rgba(0, 119, 255, 0.15) 0%,
+          rgba(0, 0, 0, 0) 70%
+        );
+        filter: blur(60px);
+        z-index: -1;
+        animation: pulseAura 8s infinite alternate;
+      }
+
+      .grid-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            rgba(0, 240, 255, 0.09) 1px,
+            transparent 1px
+          ),
+          linear-gradient(90deg, rgba(0, 240, 255, 0.09) 1px, transparent 1px);
+        background-size: 50px 50px;
+        z-index: -1;
+        mask-image: radial-gradient(
+          circle at center,
+          black 50%,
+          transparent 100%
+        );
+      }
+
+      @keyframes pulseAura {
+        0% {
+          transform: translate(-50%, -50%) scale(0.9);
+          opacity: 0.6;
+        }
+        100% {
+          transform: translate(-50%, -50%) scale(1.1);
+          opacity: 1;
+        }
+      }
+
+      /* --- Phase 2: Quiz Dashboard --- */
+      #quiz-container {
+        position: relative;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) translateY(50px);
+        width: 100%;
+        height: 100dvh;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+        z-index: 50;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #quiz-container.active {
+        opacity: 1;
+        transform: translate(-50%, -50%) translateY(0);
+        pointer-events: auto;
+      }
+
+      .dashboard-card {
+        max-width: 600px;
+        background: var(--glass-bg);
+        backdrop-filter: blur(20px);
+        border: 1px solid var(--glass-border);
+        border-radius: 16px;
+        padding: 40px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5),
+          inset 0 0 20px rgba(0, 240, 255, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .scan-line {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--primary-blue);
+        box-shadow: 0 0 10px var(--primary-blue);
+        opacity: 0.3;
+        animation: scan 3s linear infinite;
+      }
+
+      @keyframes scan {
+        0% {
+          top: 0%;
+        }
+        100% {
+          top: 100%;
+        }
+      }
+
+      .question-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 15px;
+      }
+
+      .system-status {
+        font-size: 0.8rem;
+        color: var(--primary-blue);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+      }
+
+      .timer-display {
+        font-family: "Keania One", sans-serif;
+        font-weight: 400;
+        color: var(--accent-orange);
+        font-size: 2rem;
+      }
+
+      .question-text {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+        line-height: 1.6;
+        font-weight: 500;
+      }
+
+      .options-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .option-btn {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        padding: 15px 20px;
+        color: var(--text-muted);
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+      }
+
+      .option-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: var(--primary-blue);
+        color: var(--white);
+      }
+
+      .option-btn.selected {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: var(--primary-blue);
+        box-shadow: 0 0 5px var(--primary-blue);
+        color: var(--white);
+        transform: scale(1.02);
+      }
+
+      .progress-bar {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        height: 4px;
+        background: var(--primary-blue);
+        box-shadow: 0 0 10px var(--primary-blue);
+        width: 100%;
+        transition: width 1s linear;
+      }
+
+      /* --- Phase 3: Transition Message --- */
+      #transition-msg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.95);
+        z-index: 60;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1s ease;
+        text-align: center;
+      }
+
+      #transition-msg.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .trap-text {
+        font-family: "Noto Sans TC", sans-serif;
+        font-size: 2rem;
+        color: #fff;
+        margin-bottom: 20px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease 0.5s;
+      }
+
+      .brand-solution {
+        font-size: 1.2rem;
+        color: var(--white);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease 1.5s;
+      }
+
+      #transition-msg.active .trap-text,
+      #transition-msg.active .brand-solution {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Exit Button */
+      .exit-button {
+        position: absolute;
+        bottom: 40px;
+        right: 40px;
+        z-index: 100;
+        font-size: 24px;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 500;
+        color: var(--primary-blue);
+        transition: 0.3s;
+        background: none;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: pointer;
+        transition: 0.3s;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .exit-button img {
+        width: 24px;
+        height: 24px;
+        color: var(--white);
+      }
+
+      .exit-button:hover {
+        transform: scale(1.1);
+        color: var(--accent-orange);
+      }
+
+      /* Main Home Page (for redirect after quiz) */
+      #main-home {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 1.5s ease;
+        z-index: 40;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+      }
+
+      #main-home.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Unicorn Studio Bg Banner -->
+    <div class="aura-background-component">
+      <div
+        data-us-project="DoOd3Go3n2GfFUD6kVn8"
+        style="width: 100%; height: 100%"
+      ></div>
+    </div>
+
+    <div class="aura-bg"></div>
+    <div class="grid-overlay"></div>
+
+    <div id="quiz-container">
+      <div class="dashboard-card">
+        <div class="scan-line"></div>
+        <div class="question-header">
+          <span class="system-status">SYSTEM CHECK: ACTIVE</span>
+          <span class="timer-display">00:10</span>
+        </div>
+        <div id="quiz-content">
+          <h3 class="question-text">Loading protocol...</h3>
+          <div class="options-grid" id="options-holder"></div>
+        </div>
+        <div class="progress-bar" id="timer-bar" style="width: 100%"></div>
+      </div>
+      <button class="exit-button">
+        <span>Escape</span>
+        <img src="images/exit.svg" alt="exit" />
+      </button>
+    </div>
+
+    <div id="transition-msg">
+      <div>
+        <h1 class="trap-text">你已經落入圈套</h1>
+        <p class="brand-solution">
+          讓
+          <span style="color: var(--accent-orange); font-weight: bold"
+            >華生 WATCHSENSE</span
+          >
+          將您從勒索解救
+        </p>
+      </div>
+    </div>
+
+    <div id="main-home">
+      <p>問卷完成，即將跳轉至首頁...</p>
+    </div>
+
+    <script>
+      // Data Configuration
+      const questions = [
+        {
+          q: "收到一封標題為「緊急：您的帳戶即將被鎖定」的郵件，並附帶一個連結，您會？",
+          options: [
+            "立即點擊連結確認狀況",
+            "檢查寄件人地址是否正確",
+            "轉發給同事詢問意見",
+          ],
+        },
+        {
+          q: "為了方便記憶，公司內部的伺服器密碼，您傾向設定為？",
+          options: [
+            "公司統編加上當年生份",
+            "包含大小寫、符號的無意義字串",
+            "與個人社群帳號相同的密碼",
+          ],
+        },
+        {
+          q: "電腦跳出「系統更新」通知，但工作正忙，您通常會？",
+          options: [
+            "選擇「稍後提醒」直到下班",
+            "忽略它，舊版本比較穩定",
+            "立即存檔並執行更新",
+          ],
+        },
+      ];
+
+      let currentQIndex = 0;
+      let timerInterval;
+      const questionTime = 10;
+      let timeLeft = questionTime;
+
+      const quizContainer = document.getElementById("quiz-container");
+      const qText = document.querySelector(".question-text");
+      const optionsHolder = document.getElementById("options-holder");
+      const timerDisplay = document.querySelector(".timer-display");
+      const timerBar = document.getElementById("timer-bar");
+      const transitionMsg = document.getElementById("transition-msg");
+      const mainHome = document.getElementById("main-home");
+      const exitButton = document.querySelector(".exit-button");
+
+      // Start quiz on load
+      window.addEventListener("load", () => {
+        setTimeout(() => {
+          startQuiz();
+        }, 500);
+      });
+
+      function startQuiz() {
+        quizContainer.classList.add("active");
+        loadQuestion(currentQIndex);
+      }
+
+      function loadQuestion(index) {
+        if (index >= questions.length) {
+          endQuiz();
+          return;
+        }
+        const data = questions[index];
+        qText.innerText = data.q;
+        optionsHolder.innerHTML = "";
+        timeLeft = questionTime;
+        updateTimerVisuals();
+        startTimer();
+
+        data.options.forEach((opt) => {
+          const btn = document.createElement("div");
+          btn.className = "option-btn";
+          btn.innerText = opt;
+          btn.onclick = () => handleSelection(btn);
+          optionsHolder.appendChild(btn);
+        });
+      }
+
+      function startTimer() {
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          timeLeft--;
+          updateTimerVisuals();
+          if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            handleTimeOut();
+          }
+        }, 1000);
+      }
+
+      function updateTimerVisuals() {
+        timerDisplay.innerText = `00:${timeLeft.toString().padStart(2, "0")}`;
+        const percentage = (timeLeft / questionTime) * 100;
+        timerBar.style.width = `${percentage}%`;
+      }
+
+      function handleSelection(selectedBtn) {
+        clearInterval(timerInterval);
+        const allBtns = document.querySelectorAll(".option-btn");
+        allBtns.forEach((b) => (b.style.pointerEvents = "none"));
+        selectedBtn.classList.add("selected");
+        setTimeout(() => {
+          currentQIndex++;
+          loadQuestion(currentQIndex);
+        }, 500);
+      }
+
+      function handleTimeOut() {
+        const allBtns = document.querySelectorAll(".option-btn");
+        allBtns.forEach((b) => (b.style.pointerEvents = "none"));
+        setTimeout(() => {
+          currentQIndex++;
+          loadQuestion(currentQIndex);
+        }, 500);
+      }
+
+      function endQuiz() {
+        quizContainer.classList.remove("active");
+        transitionMsg.classList.add("active");
+        setTimeout(() => {
+          transitionMsg.classList.remove("active");
+          setTimeout(() => {
+            transitionMsg.style.display = "none";
+            // Redirect to main page
+            window.location.href = "index.html";
+          }, 1000);
+        }, 4000);
+      }
+
+      function exitQuiz() {
+        quizContainer.classList.remove("active");
+        transitionMsg.classList.remove("active");
+        transitionMsg.style.display = "none";
+        // Redirect to main page
+        window.location.href = "index.html";
+      }
+
+      exitButton.addEventListener("click", () => {
+        exitQuiz();
+      });
+    </script>
+
+    <!-- Unicorn Studio Script -->
+    <script type="text/javascript">
+      !(function () {
+        if (!window.UnicornStudio) {
+          window.UnicornStudio = { isInitialized: !1 };
+          var i = document.createElement("script");
+          (i.src =
+            "https://cdn.jsdelivr.net/gh/hiunicornstudio/unicornstudio.js@v1.5.2/dist/unicornStudio.umd.js"),
+            (i.onload = function () {
+              window.UnicornStudio.isInitialized ||
+                (UnicornStudio.init(),
+                (window.UnicornStudio.isInitialized = !0));
+            }),
+            (document.head || document.body).appendChild(i);
+        }
+      })();
+    </script>
+  </body>
+</html>

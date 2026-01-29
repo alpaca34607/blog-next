@@ -1,0 +1,217 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+@import "./SectionStyle.module.scss";
+
+
+.timelineSection {
+  padding: 64px 16px;
+  background-color: $bg-color;
+
+  @include rwd-md {
+    padding: 48px 16px;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.container {
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 48px;
+}
+
+.title {
+  font-size: 32px;
+  font-weight: 700;
+  color: $text-main;
+  margin-bottom: 8px;
+
+  @include rwd-md {
+    font-size: 26px;
+  }
+}
+
+.subtitle {
+  font-size: 16px;
+  color: $text-muted;
+}
+
+.timelineWrapper {
+  position: relative;
+}
+
+.timelineLine {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background-color: rgba(255, 170, 0, 0.3);
+  transform: translateX(-50%);
+
+  @include rwd-md {
+    left: 24px;
+    transform: none;
+  }
+}
+
+.items {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+
+  &.reverse {
+    flex-direction: row-reverse;
+  }
+
+  @include rwd-md {
+    gap: 32px;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+
+    &.reverse {
+      flex-direction: row-reverse;
+    }
+  }
+}
+
+.contentHalf {
+  width: 50%;
+
+  @include rwd-md {
+    width: calc(100% - 64px);
+  }
+}
+
+.contentInner {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 24px;
+
+}
+
+.contentRight {
+  display: flex;
+  justify-content: flex-end;
+
+
+  .contentInner {
+    text-align: right;
+    flex-direction: row-reverse;
+  }
+
+  @include rwd-md {
+    justify-content: flex-start;
+
+    .contentInner {
+      text-align: left;
+      flex-direction: row;
+    }
+  }
+}
+
+.contentLeft {
+  margin-right: auto;
+
+  @include rwd-md {
+    margin-right: 0;
+  }
+}
+
+.year {
+  display: inline-block;
+  font-size: 24px;
+  font-weight: 700;
+  color: $accent-orange;
+  margin-bottom: 4px;
+}
+
+.itemTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: $text-main;
+  margin-bottom: 4px;
+
+  @include rwd-md {
+    font-size: 14px;
+  }
+
+  // 避免長標題在 flex 版面時擠壓圖片導致變形
+  overflow-wrap: anywhere;
+}
+
+.description {
+  font-size: 14px;
+  color: $text-muted;
+  line-height: 1.6;
+}
+
+.dotWrapper {
+  position: relative;
+}
+
+.contentImage {
+  width: 100px;
+  height: auto;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  overflow: hidden;
+  min-width: 100px;
+
+  @include rwd-md {
+    width: 72px;
+    min-width: 72px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.contentText {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.dot {
+  width: 16px;
+  height: 16px;
+  background-color: $accent-orange;
+  border-radius: 50%;
+  position: relative;
+  z-index: 2;
+}
+
+.spacer {
+  width: 50%;
+
+  @include rwd-md {
+    display: none;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 32px 16px 0;
+  color: $text-muted;
+}

@@ -1,0 +1,140 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+.imageTextSection {
+  padding: 100px 32px;
+  width: 100%;
+
+  @include rwd-md {
+    padding: 24px;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.wrapper {
+  max-width: 1280px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 16px;
+  @media (min-width: 640px) {
+    padding: 0 24px;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 0 32px;
+  }
+}
+
+.header {
+  @include section-header;
+}
+.contentContainer {
+  display: flex;
+  align-items: center;
+  gap: 48px;
+
+  @include rwd-lg {
+    flex-direction: column;
+    gap: 32px;
+    padding-bottom: 60px;
+  }
+}
+
+.containerLeftImage {
+  flex-direction: row;
+  
+
+  @include rwd-md {
+    flex-direction: column;
+  }
+}
+
+.containerRightImage {
+  flex-direction: row-reverse;
+  @include rwd-md {
+    flex-direction: column;
+  }
+}
+
+
+
+.imageWrapper {
+  flex: 1;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  @include rwd-md {
+    flex: none;
+  }
+}
+
+.image {
+  width: 100%;
+  border-radius: 16px;
+  object-fit: cover;
+  display: block;
+}
+
+.textWrapper {
+  flex: 1;
+  @include rwd-md {
+    flex: none;
+    width: 100%;
+
+  }
+}
+
+.noImage {
+
+  // 沒有圖片時，內容佔滿整個寬度
+  @media (min-width: 768px) {
+    width: 100%;
+  }
+}
+
+.title {
+  @include section-title;
+}
+
+.subtitle {
+  @include section-subtitle;
+}
+
+.content {
+  max-width: 600px;
+  @include section-content;
+}
+
+.buttonLink {
+  display: inline-block;
+  text-decoration: none;
+}
+
+.button {
+  @include section-button;
+}
+
+.buttonIcon {
+  @include section-buttonIcon;
+}
+
+.button:hover .buttonIcon {
+  @include section-buttonIconHover;
+}
+.containerVertical {
+  flex-direction: column;
+  .textWrapper {
+    width: 100%;
+    .content {
+      max-width: 100%;
+    }
+  }
+}

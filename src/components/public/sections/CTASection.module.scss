@@ -1,0 +1,57 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+
+.ctaSection {
+  padding: 80px 0;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 60px 0;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+  }
+}
+
+.container {
+  @include section-container(1024px);
+  text-align: center;
+}
+
+.title {
+  @include section-title;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  @include section-subtitle;
+  color: rgba(42, 42, 42, 0.8);
+  margin-bottom: 32px;
+}
+
+.ctaContent {
+  @include section-content;
+}
+
+.buttonContainer {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.button {
+ @include section-button;
+}
+
+.arrowIcon {
+  @include section-buttonIcon;
+}
+
+.button:hover .arrowIcon {
+  @include section-buttonIconHover;
+}

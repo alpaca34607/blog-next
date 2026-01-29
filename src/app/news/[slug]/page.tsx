@@ -1,0 +1,254 @@
+"use client";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
+import Layout from "@/components/Frontend/Layout";
+import { FiArrowLeft, FiCalendar, FiTag } from "react-icons/fi";
+import styles from "./page.module.scss";
+import { API_GetNewsWithParams } from "@/app/api/public_api";
+
+interface NewsArticle {
+  id: string;
+  title: string;
+  slug: string;
+  category?: string | null;
+  excerpt?: string | null;
+  content: string;
+  featuredImage?: string | null;
+  publishDate?: string | null;
+  isPublished: boolean;
+  isFeatured: boolean;
+}
+
+interface NewsPageProps {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export default function NewsPage({ params }: NewsPageProps) {
+  const { slug } = use(params);
+  const router = useRouter();
+  const [article, setArticle] = useState<NewsArticle | null>(null);
+  const [relatedNews, setRelatedNews] = useState<NewsArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        setLoading(true);
+
+        const res = await API_GetNewsWithParams({ slug });
+        if (!res?.success) {
+          router.push("/404");
+          return;
+        }
+
+        const items: any[] = Array.isArray(res.data) ? res.data : [];
+        const mapped: NewsArticle[] = items.map((n: any) => ({
+          id: n.id,
+          title: n.title,
+          slug: n.slug,
+          category: n.category ?? null,
+          excerpt: n.excerpt ?? null,
+          content: n.content,
+          featuredImage: n.featuredImage ?? null,
+          publishDate: n.publishDate ?? null,
+          isPublished: !!n.isPublished,
+          isFeatured: !!n.isFeatured,
+        }));
+
+        const current = mapped[0];
+        if (!current || !current.isPublished) {
+          router.push("/404");
+          return;
+        }
+
+        if (cancelled) return;
+        setArticle(current);
+
+        // 相關文章（同分類）
+        if (!current.category) {
+          setRelatedNews([]);
+          return;
+        }
+        const relatedRes = await API_GetNewsWithParams({
+          category: current.category,
+        });
+        if (!relatedRes?.success) {
+          setRelatedNews([]);
+          return;
+        }
+        const relatedItems: any[] = Array.isArray(relatedRes.data)
+          ? relatedRes.data
+          : [];
+        const relatedMapped: NewsArticle[] = relatedItems.map((n: any) => ({
+          id: n.id,
+          title: n.title,
+          slug: n.slug,
+          category: n.category ?? null,
+          excerpt: n.excerpt ?? null,
+          content: n.content,
+          featuredImage: n.featuredImage ?? null,
+          publishDate: n.publishDate ?? null,
+          isPublished: !!n.isPublished,
+          isFeatured: !!n.isFeatured,
+        }));
+
+        const related = relatedMapped
+          .filter((a) => a.isPublished && a.id !== current.id)
+          .sort(
+            (a, b) =>
+              new Date(b.publishDate || 0).getTime() -
+              new Date(a.publishDate || 0).getTime()
+          )
+          .slice(0, 3);
+
+        if (!cancelled) setRelatedNews(related);
+      } catch (error) {
+        console.error("載入新聞時發生錯誤:", error);
+        router.push("/404");
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, router]);
+
+  const formatDate = (dateString: string) => {
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("zh-TW", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className={styles.loading}>載入中...</div>
+      </Layout>
+    );
+  }
+
+  if (!article) {
+    return null;
+  }
+
+  return (
+    <Layout>
+      <div className={styles.newsPage}>
+        {/* Breadcrumb */}
+        <div className={styles.breadcrumb}>
+          <Link href="/" className={styles.breadcrumbLink}>
+            首頁
+          </Link>
+          <span className={styles.breadcrumbSeparator}>/</span>
+          <Link href="/news" className={styles.breadcrumbLink}>
+            最新消息
+          </Link>
+          <span className={styles.breadcrumbSeparator}>/</span>
+          <span className={styles.breadcrumbCurrent}>{article.title}</span>
+        </div>
+
+        {/* Article */}
+        <article className={styles.article}>
+          {/* Back Button */}
+          <Link href="/news" className={styles.backButton}>
+            <FiArrowLeft size={20} />
+            <span>返回列表</span>
+          </Link>
+
+          {/* Article Header */}
+          <header className={styles.articleHeader}>
+            <div className={styles.meta}>
+              <span className={styles.category}>
+                <FiTag size={16} />
+                {article.category}
+              </span>
+              <span className={styles.date}>
+                <FiCalendar size={16} />
+                {formatDate(article.publishDate || "")}
+              </span>
+            </div>
+            <h1 className={styles.title}>{article.title}</h1>
+            {/* {article.excerpt && (
+              <p className={styles.excerpt}>{article.excerpt}</p>
+            )} */}
+          </header>
+
+          {/* Featured Image */}
+          {article.featuredImage && (
+            <div className={styles.featuredImage}>
+              <Image
+                src={article.featuredImage}
+                alt={article.title}
+                width={1200}
+                height={600}
+                className={styles.image}
+              />
+            </div>
+          )}
+
+          {/* Article Content */}
+          <div
+            className={styles.content}
+            dangerouslySetInnerHTML={{ __html: article.content }}
+          />
+        </article>
+
+        {/* Related News */}
+        {relatedNews.length > 0 && (
+          <section className={styles.relatedNews}>
+            <h2 className={styles.relatedTitle}>相關文章</h2>
+            <div className={styles.relatedGrid}>
+              {relatedNews.map((news) => (
+                <Link
+                  key={news.id}
+                  href={`/news/${news.slug}`}
+                  className={styles.relatedCard}
+                >
+                  {news.featuredImage && (
+                    <div className={styles.relatedImage}>
+                      <Image
+                        src={news.featuredImage}
+                        alt={news.title}
+                        width={400}
+                        height={250}
+                        className={styles.image}
+                      />
+                    </div>
+                  )}
+                  <div className={styles.relatedContent}>
+                    <span className={styles.relatedCategory}>
+                      {news.category}
+                    </span>
+                    <h3 className={styles.relatedCardTitle}>{news.title}</h3>
+                    {news.excerpt && (
+                      <p className={styles.relatedExcerpt}>{news.excerpt}</p>
+                    )}
+                    <span className={styles.relatedDate}>
+                      {formatDate(news.publishDate || "")}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
+    </Layout>
+  );
+}

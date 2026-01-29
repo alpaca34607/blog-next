@@ -1,0 +1,40 @@
+@import "@/styles/variables";
+@import "@/styles/_mixins.scss";
+/**
+ * 共用 Section 樣式模組
+ * 統一管理所有 section 的背景圖片響應式樣式
+ */
+
+// 有背景圖片時的響應式處理
+.hasBgImage {
+  // 背景圖片樣式（桌機版）
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 800px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  // 平板及手機隱藏背景圖片
+  @include rwd-lg {
+    min-height: auto !important;
+    background-size: contain !important;
+    background-position: bottom !important;
+  }
+
+  .container {
+    min-height: 800px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+
+    @include rwd-lg {
+      padding-top:30px;
+      background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8) 70%, rgba(255, 255, 255, 0) 100%) !important;
+      min-height: auto;
+      padding-bottom: 60px;
+    }
+  }
+}

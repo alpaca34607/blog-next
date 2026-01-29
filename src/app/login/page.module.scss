@@ -1,0 +1,86 @@
+@import "@/styles/variables";
+@import "@/styles/mixins";
+
+.loginWrapper {
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.loginContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  @include rwd-lg {
+    flex-direction: column;
+  }
+}
+
+.imageContainer {
+  flex: 1;
+  height: 100%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    object-position: center;
+
+  }
+}
+
+.loginFormWrapper {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.loginForm {
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.buttonGroup {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.submitButton {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  color: $white;
+  background-color: $text-main;
+  transition: all 0.2s;
+  cursor: pointer;
+  &:first-child {
+    background-color: $text-muted;
+  }
+  &:hover {
+    color: $text-main;
+    background-color: $accent-orange;
+  }
+}

@@ -1,0 +1,140 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.flipButton {
+  --transition: 0.5s;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: $text-main;
+  opacity: 0.8;
+  font-size: 18px;
+  font-weight: 500;
+  text-decoration: none;
+  overflow: hidden;
+  padding: 4px 30px;
+  border: 1px solid $text-main;
+  background: $glass-bg;
+  transition: var(--transition);
+  cursor: pointer;
+  @include clip-path-button;
+
+  &:before {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    right: -9px;
+    bottom: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+    z-index: 2;
+  }
+
+  &:after {
+    background-color: $text-main;
+    content: "";
+    display: block;
+    height: 1px;
+    position: absolute;
+    left: -9px;
+    top: 9px;
+    transform: rotate(-45deg);
+    width: 32px;
+    z-index: 2;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 1;
+      background: $accent-orange;
+
+      .flipButtonBg {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .flipButtonTextInner:first-child {
+        transform: translate(0, -100%);
+      }
+
+      .flipButtonTextInner:last-child {
+        transform: translate(-50%, -100%);
+      }
+    }
+  }
+
+  @media (hover: none) {
+    &:active {
+      opacity: 1;
+      background: $accent-orange;
+
+      .flipButtonBg {
+        transform: translate(-50%, -50%) rotate(45deg);
+      }
+
+      .flipButtonTextInner:first-child {
+        transform: translate(0, -100%);
+      }
+
+      .flipButtonTextInner:last-child {
+        transform: translate(-50%, -100%);
+      }
+    }
+  }
+
+  &.active {
+    opacity: 1;
+    background: $accent-orange;
+
+    .flipButtonBg {
+      transform: translate(-50%, -50%) rotate(45deg);
+    }
+
+    .flipButtonTextInner:first-child {
+      transform: translate(0, -100%);
+    }
+
+    .flipButtonTextInner:last-child {
+      transform: translate(-50%, -100%);
+    }
+  }
+}
+
+.flipButtonBg {
+  display: block;
+  aspect-ratio: 1;
+  width: 200%;
+  background: $text-main;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(0%, 0%) rotate(45deg);
+  transition: var(--transition);
+  z-index: 0;
+}
+
+.flipButtonText {
+  display: block;
+  position: relative;
+  z-index: 1;
+}
+
+.flipButtonTextInner {
+  display: block;
+  transition: var(--transition);
+  color: $text-main;
+  transform: translate(0, 0);
+
+  &:last-child {
+    color: $bg-color;
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    width: 100%;
+    text-align: center;
+  }
+}

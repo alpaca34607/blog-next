@@ -1,0 +1,189 @@
+@import "@/styles/variables";
+
+.navigationManager {
+  width: 100%;
+}
+
+// Table Container
+.tableContainer {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHead {
+  background-color: $bg-lightgray;
+}
+
+.tableHeader {
+  padding: 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: $text-main;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.dragColumn {
+  width: 48px;
+}
+
+.actionsColumn {
+  text-align: right;
+  width: 120px;
+}
+
+.tableRow {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: $bg-lightgray;
+  }
+}
+
+.childRow {
+  background-color: rgba(0, 0, 0, 0.02);
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+}
+
+.tableCell {
+  padding: 16px;
+  font-size: 16px;
+  color: $text-main;
+}
+
+.dragCell {
+  width: 48px;
+  padding: 16px 8px;
+}
+
+.dragHandleWrapper {
+  display: inline-flex;
+  align-items: center;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.dragHandle {
+  color: $text-lightgray;
+  transition: color 0.2s;
+
+  .dragHandleWrapper:hover & {
+    color: $accent-orange;
+  }
+}
+
+.dragging {
+  background-color: rgba(255, 170, 0, 0.1) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.nameCell {
+  font-weight: 500;
+}
+
+.childName {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 8px;
+  color: $text-muted;
+}
+
+.slugCell {
+  color: $text-muted;
+  font-family: monospace;
+}
+
+.typeCell {
+
+  .badgeInternal,
+  .badgeExternal {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .badgeInternal {
+    background-color: $bg-lightgray;
+    color: $text-muted;
+  }
+
+  .badgeExternal {
+    background-color: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+  }
+}
+
+.statusCell {
+  .eyeIcon {
+    color: #10b981;
+  }
+
+  .eyeOffIcon {
+    color: $text-lightgray;
+  }
+}
+
+.actionsCell {
+  text-align: right;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.actionButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  color: $text-muted;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    background-color: $bg-lightgray;
+    color: $text-main;
+  }
+}
+
+.deleteButton {
+  &:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+  }
+}
+
+.emptyState {
+  text-align: center;
+  padding: 48px 16px;
+  color: $text-muted;
+}

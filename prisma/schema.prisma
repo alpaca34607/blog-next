@@ -1,0 +1,187 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("admin")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model SiteSettings {
+  id              String   @id @default(cuid())
+  siteName        String
+  siteNameEn      String?
+  logo            String?
+  footerLogo      String?
+  copyright       String?
+  phone           String?
+  email           String?
+  contactTime     String?
+  address         String?
+  lineQrCode      String?
+  socialLinks     Json?
+  additionalLinks Json?
+  metaTitle       String?   @db.VarChar(255)
+  metaDescription String?   @db.Text
+  contactImage    String?   @db.VarChar(2048)
+  contactBanner   String?   @db.VarChar(2048)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@map("site_settings")
+}
+
+model Navigation {
+  id        String       @id @default(cuid())
+  title     String
+  titleEn   String?
+  url       String?
+  /// 產品分類（選填）：若設定，前台會用此分類自動產生產品子選單
+  productCategory String?   @db.VarChar(255)
+  type      String       @default("internal")
+  isVisible Boolean      @default(true)
+  sortOrder Int          @default(0)
+  parentId  String?
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  parent    Navigation?  @relation("NavigationHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children  Navigation[] @relation("NavigationHierarchy")
+
+  @@index([parentId], map: "navigation_parentId_fkey")
+  @@map("navigation")
+}
+
+model Page {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  type            String    @default("page")
+  content         String?   @db.LongText
+  metaTitle       String?
+  metaDescription String?
+  isPublished     Boolean   @default(false)
+  logo            String?
+  externalUrl     String?
+  category        String?
+  sortOrder       Int       @default(0)
+  videoUrl        String?   @db.VarChar(2048)
+  introImage      String?   @db.VarChar(2048)
+  isFeatured      Boolean   @default(false)
+  heroTitle       String?
+  heroSubtitle    String?
+  heroImages      Json?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  sections        Section[]
+
+  @@map("pages")
+}
+
+model Section {
+  id          String   @id @default(cuid())
+  pageId      String
+  sectionType String
+  title       String?
+  subtitle    String?
+  content     String?   @db.LongText
+  sortOrder   Int      @default(0)
+  settings    Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  page        Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
+  @@index([pageId], map: "sections_pageId_fkey")
+  @@map("sections")
+}
+
+model News {
+  id            String    @id @default(cuid())
+  title         String
+  slug          String    @unique
+  excerpt       String?
+  content       String    @db.LongText
+  category      String?
+  isPublished   Boolean   @default(false)
+  isFeatured    Boolean   @default(false)
+  featuredImage String?
+  publishDate   DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@map("news")
+}
+
+model Table {
+  id          String     @id @default(cuid())
+  name        String
+  description String?
+  columns     Json
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  rows        TableRow[]
+
+  @@map("tables")
+}
+
+model TableRow {
+  id        String   @id @default(cuid())
+  tableId   String
+  data      Json
+  sortOrder Int      @default(0)
+  isVisible Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  table     Table    @relation(fields: [tableId], references: [id], onDelete: Cascade)
+
+  @@index([tableId], map: "table_rows_tableId_fkey")
+  @@map("table_rows")
+}
+
+model Timeline {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  items       TimelineItem[]
+
+  @@map("timelines")
+}
+
+model TimelineItem {
+  id         String   @id @default(cuid())
+  timelineId String
+  title      String
+  content    String?
+  image      String?
+  year       String?
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  timeline   Timeline @relation(fields: [timelineId], references: [id], onDelete: Cascade)
+
+  @@index([timelineId], map: "timeline_items_timelineId_fkey")
+  @@map("timeline_items")
+}
+
+// 用於儲存各種不想新增欄位的設定（例如：news 列表頁設定）
+model AppConfig {
+  key       String   @id
+  value     Json?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("app_config")
+}

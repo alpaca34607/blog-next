@@ -1,0 +1,229 @@
+@import "@/styles/variables";
+@import "./SectionStyle.module.scss";
+@import "@/styles/_mixins.scss";
+
+.heroSection {
+  position: relative;
+  height: 400px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  overflow: hidden;
+  height: 600px;
+
+  @include rwd-lg {
+    height: 500px;
+  }
+
+  @include rwd-md {
+    height: 250px;
+  }
+
+  // 有背景圖片時的響應式處理
+  // 使用共用的 SectionStyle 模組
+  &.hasBgImage {
+    @extend .hasBgImage;
+    height: auto;
+    // HeroSection 特殊處理：桌機版高度改為 auto
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+}
+
+.content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  max-width: 1024px;
+  margin: 0 auto;
+  padding: 0 32px;
+
+  @include rwd-lg {
+    padding: 0 24px;
+  }
+
+  @include rwd-md {
+    padding: 0 16px;
+  }
+}
+
+.subtitle {
+  color: $orange-brown;
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+}
+
+.title {
+  font-size: 36px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 16px;
+  line-height: 1.2;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  font-size: 60px;
+  margin-bottom: 24px;
+
+  @include rwd-lg {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  @include rwd-md {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+}
+
+.logo {
+  width: auto;
+  height: auto;
+  max-width: 250px;
+  max-height: 100px;
+  margin-bottom: 24px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 32px;
+
+  @include rwd-lg {
+    margin-bottom: 24px;
+  }
+
+  @include rwd-md {
+    margin-bottom: 16px;
+  }
+}
+
+.description {
+  font-size: 16px;
+  color: $text-main;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 0 auto;
+
+  @media (min-width: 768px) {
+    font-size: 18px;
+  }
+}
+
+// 輪播容器
+.carouselContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+// 輪播單張圖片
+.carouselSlide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+
+  @include rwd-lg {
+    background-size: 150%;
+    background-position: top center;
+  }
+
+  &.active {
+    opacity: 1;
+    z-index: 1;
+  }
+}
+
+// 從 API 渲染的頁面 Hero（在 RWD 時使用 cover）
+// 當 carouselSlide 有 pageHero class 時，影響父層 heroSection 的高度
+.heroSection:has(:global(.pageHero)) {
+  @include rwd-lg {
+    height: 300px;
+  }
+}
+
+// carouselSlide 本身的樣式調整
+.carouselSlide:global(.pageHero) {
+  @include rwd-lg {
+    background-size: cover !important;
+  }
+}
+
+.containInBanner {
+  .carouselSlide {
+      background-size: contain;
+    }
+}
+
+// 輪播指示器
+.carouselIndicators {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  z-index: 20;
+
+  @media (min-width: 768px) {
+    bottom: 32px;
+    gap: 16px;
+  }
+}
+
+.indicator {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  background-color: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.3s ease;
+
+  @media (min-width: 768px) {
+    width: 12px;
+    height: 12px;
+  }
+
+  &:hover {
+    border-color: rgba(255, 255, 255, 0.8);
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  &.active {
+    background-color: white;
+    border-color: white;
+    width: 24px;
+    border-radius: 6px;
+
+    @media (min-width: 768px) {
+      width: 28px;
+    }
+  }
+}

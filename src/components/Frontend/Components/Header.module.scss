@@ -1,0 +1,108 @@
+@import "../../../styles/variables";
+@import "../../../styles/mixins";
+
+.wrapper {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  padding: 24px 40px;
+  margin: 0 auto;
+
+  @include rwd-xl {
+    padding: 20px 24px;
+  }
+}
+
+.brandLogo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: #fff;
+  z-index: 101;
+  @include rwd-xl {
+    flex: none;
+  }
+  span {
+    color: $accent-orange;
+  }
+
+  img {
+    height: auto;
+    max-height: 50px;
+    width: auto;
+    display: block;
+
+    @include rwd-xl {
+      max-height: 40px;
+    }
+  }
+}
+
+.navRight {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  font-size: 15px;
+  color: $text-muted;
+  padding: 8px 0;
+
+  @include rwd-xl {
+    display: none;
+  }
+}
+
+.hamburgerBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid $text-main;
+  cursor: pointer;
+  background: none;
+  gap: 6px;
+  padding: 0;
+  position: relative;
+  z-index: 101;
+  transition: all 0.3s ease;
+  @include clip-path-button;
+
+  @include rwd-xl {
+    display: flex;
+  }
+
+  span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: $text-main;
+    transition: all 0.3s ease;
+    transform-origin: center;
+  }
+
+  &:hover {
+    border-color: $accent-orange;
+
+    span {
+      background: $accent-orange;
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}

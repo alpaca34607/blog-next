@@ -1,0 +1,74 @@
+@import "../../../../styles/variables";
+@import "../../../../styles/mixins";
+
+.langToggleGroup {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: $glass-bg;
+  border: 1px solid $text-main;
+  border-radius: 25px;
+  padding: 4px;
+  gap: 0;
+  width: 120px;
+  height: 40px;
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+
+  &[data-lang="en"] .langToggleSlider {
+    transform: translateX(100%);
+  }
+  @include rwd-xl {
+    background: none;
+    backdrop-filter: none;
+  }
+}
+
+.langToggleBtn {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  border: none;
+  border-radius: 20px;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  display: flex;
+  height: 100%;
+  width: 50%;
+  justify-content: center;
+  align-items: center;
+  color: $text-main;
+  font-weight: 500;
+  font-size: 14px;
+  transition: color 0.3s ease;
+  outline: none;
+
+  &.active {
+    color: $bg-color;
+  }
+
+  &:hover {
+    color: $accent-orange;
+  }
+
+  &.active:hover {
+    color: $bg-color;
+  }
+}
+
+.langToggleSlider {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  height: calc(100% - 8px);
+  background: $accent-orange;
+  border-radius: 20px;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  @include rwd-xl {
+    background: $text-main;
+  }
+}

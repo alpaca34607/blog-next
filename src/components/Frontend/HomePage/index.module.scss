@@ -1,0 +1,10 @@
+@import "../../../styles/variables";
+
+.wrapper {
+  width: 100%;
+  position: relative;
+  color: $text-main;
+  font-family: "Inter", "Noto Sans TC", sans-serif;
+  min-height: 100vh;
+}
+
