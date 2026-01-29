@@ -8,6 +8,7 @@
     "start": "next start -p 3000",
     "lint": "eslint",
     "prisma:generate": "prisma generate",
+    "prisma:studio": "prisma studio",
     "migrate:camel": "node scripts/migrate-json-keys-to-camel.mjs",
     "hash-passwords": "node scripts/hash-passwords.mjs",
     "postinstall": "prisma generate"
