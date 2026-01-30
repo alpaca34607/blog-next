@@ -14,8 +14,20 @@ export function hashPassword(password: string): string {
   return bcrypt.hashSync(password, 10)
 }
 
-export function verifyPassword(password: string, hashedPassword: string): boolean {
-  return bcrypt.compareSync(password, hashedPassword)
+/** 是否為 bcrypt 雜湊（以 $2a$, $2b$, $2y$ 開頭） */
+function isBcryptHash(stored: string): boolean {
+  return /^\$2[aby]\$\d{2}\$/.test(stored)
+}
+
+/**
+ * 驗證密碼：若資料庫存的是 bcrypt 雜湊則用 bcrypt 比對，否則視為明文比對。
+ * 方便在 Prisma Studio 直接寫入明文密碼進行測試。
+ */
+export function verifyPassword(password: string, storedPassword: string): boolean {
+  if (isBcryptHash(storedPassword)) {
+    return bcrypt.compareSync(password, storedPassword)
+  }
+  return password === storedPassword
 }
 
 export function generateToken(payload: JWTPayload): string {
