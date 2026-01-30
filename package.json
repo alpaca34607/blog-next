@@ -11,6 +11,7 @@
     "prisma:studio": "prisma studio",
     "migrate:camel": "node scripts/migrate-json-keys-to-camel.mjs",
     "hash-passwords": "node scripts/hash-passwords.mjs",
+    "db:create": "node scripts/create-database.mjs",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -60,6 +61,7 @@
     "@types/swagger-ui-react": "^5.18.0",
     "eslint": "^9",
     "eslint-config-next": "^16.0.7",
+    "mysql2": "^3.16.2",
     "typescript": "^5"
   }
 }
