@@ -144,7 +144,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
               都能在後台輕鬆完成，讓網站更新變成日常。
             </p>
             <a href="#" className={styles.link}>
-              查看模板與功能
+              查看我們的服務
               <div className={styles.linkIconWrapper}>
                 <svg
                   className={styles.linkIcon}

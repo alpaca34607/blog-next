@@ -1,6 +1,6 @@
 # 待實現 API 端點規格文檔
 
-本文檔詳細列出 Watchsense項目中需要實現的所有 API 端點規格，基於後台管理功能和前端需求分析。目前所有管理功能均通過前端 localStorage 實現，需轉換為後端 API 調用。
+本文檔詳細列出 Blogcraft項目中需要實現的所有 API 端點規格，基於後台管理功能和前端需求分析。目前所有管理功能均通過前端 localStorage 實現，需轉換為後端 API 調用。
 
 ## 概述
 
@@ -62,20 +62,20 @@
 **請求範例**:
 ```json
 {
-  "siteName": "Watchsense",
-  "siteNameEn": "Watchsense",
+  "siteName": "Blogcraft",
+  "siteNameEn": "Blogcraft",
   "logo": "base64_encoded_image",
   "footerLogo": "base64_encoded_image",
-  "copyright": "© 2024 Watchsense. All rights reserved.",
+  "copyright": "© 2024 Blogcraft. All rights reserved.",
   "phone": "+886-2-1234-5678",
-  "email": "contact@watchsense.com",
+  "email": "contact@blogcraft.com",
   "contactTime": "週一至週五 09:00-18:00",
   "address": "台北市信義區...",
   "lineQrCode": "base64_encoded_qrcode",
   "socialLinks": {
-    "facebook": "https://facebook.com/watchsense",
-    "line": "https://line.me/watchsense",
-    "youtube": "https://youtube.com/watchsense"
+    "facebook": "https://facebook.com/blogcraft",
+    "line": "https://line.me/blogcraft",
+    "youtube": "https://youtube.com/blogcraft"
   },
   "additionalLinks": [
     {

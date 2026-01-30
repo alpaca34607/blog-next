@@ -28,7 +28,7 @@ export async function generateMetadata({
     ]);
 
     if (!page || !page.isPublished) {
-      const fallbackSiteName = siteSettings?.siteName || "Watchsense";
+      const fallbackSiteName = siteSettings?.siteName || "Blogcraft";
       return {
         title: `找不到頁面 | ${fallbackSiteName}`,
         description: "",
@@ -36,7 +36,7 @@ export async function generateMetadata({
       };
     }
 
-    const fallbackSiteName = siteSettings?.siteName || "Watchsense";
+    const fallbackSiteName = siteSettings?.siteName || "Blogcraft";
     const title = page.metaTitle || page.title || fallbackSiteName;
     const description = page.metaDescription || "";
 
@@ -58,7 +58,7 @@ export async function generateMetadata({
   } catch {
     // 保守 fallback：避免 metadata 生成影響整頁 render
     return {
-      title: "Watchsense",
+      title: "Blogcraft",
       description: "",
     };
   }

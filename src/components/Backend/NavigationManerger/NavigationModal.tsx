@@ -164,7 +164,7 @@ const NavigationModal = ({
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
-              placeholder="例如：關於華生"
+              placeholder="例如：關於布創"
               required
             />
           </div>

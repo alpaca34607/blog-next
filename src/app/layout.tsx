@@ -16,7 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     })
     .catch(() => null);
 
-  const siteName = settings?.siteName || "華生 WATCHSENSE";
+  const siteName = settings?.siteName || "布創 BLOGCRAFT";
   const fallbackTitle = `${siteName} | 部落格式形象網頁方案`;
   const fallbackDescription =
     "專為客戶打造部落格式形象網頁，主打模板化快速上線、簡約版面、後台輕鬆管理與便利維護，讓內容更新像寫部落格一樣自然。";

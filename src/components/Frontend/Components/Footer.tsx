@@ -274,16 +274,16 @@ const Footer = () => {
             <div className={styles.footerLogo}>
               <Image
                 src={siteSettings?.logo || "/images/logo.png"}
-                alt="WATCHSENSE Logo"
+                alt="BLOGCRAFT Logo"
                 width={200}
                 height={60}
                 className={styles.footerLogoImg}
               />
               <p className={styles.footerCompanyName}>
-                {siteSettings?.siteNameEn || "Watchsense Co., Ltd."}
+                {siteSettings?.siteNameEn || "Blogcraft Co., Ltd."}
               </p>
               <p className={styles.footerCompanyNameChinese}>
-                {siteSettings?.siteName || "華生網頁股份有限公司"}
+                {siteSettings?.siteName || "布創設計股份有限公司"}
               </p>
             </div>
             <div className={styles.footerDivider} />
@@ -397,7 +397,7 @@ const Footer = () => {
         <div className={styles.footerCopyright}>
           <p>
             {siteSettings?.copyright ||
-              "Copyright © 2025 Watchsense Co., Ltd. All rights reserved."}
+              "Copyright © 2025 Blogcraft Co., Ltd. All rights reserved."}
           </p>
         </div>
       </div>

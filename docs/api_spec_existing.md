@@ -1,6 +1,6 @@
 # 已實現 API 端點規格文檔
 
-本文檔詳細列出 Watchsense項目中已實現的所有 API 端點規格，基於前端 API 調用函數和相關規格文檔分析。
+本文檔詳細列出 Blogcraft項目中已實現的所有 API 端點規格，基於前端 API 調用函數和相關規格文檔分析。
 
 ## 概述
 
@@ -21,20 +21,20 @@
 **回應範例**:
 ```json
 {
-  "siteName": "Watchsense",
-  "siteNameEn": "Watchsense",
+  "siteName": "Blogcraft",
+  "siteNameEn": "Blogcraft",
   "logo": "base64_encoded_image",
   "footerLogo": "base64_encoded_image",
-  "copyright": "© 2024 Watchsense. All rights reserved.",
+  "copyright": "© 2024 Blogcraft. All rights reserved.",
   "phone": "+886-2-1234-5678",
-  "email": "contact@watchsense.com",
+  "email": "contact@blogcraft.com",
   "contactTime": "週一至週五 09:00-18:00",
   "address": "台北市信義區...",
   "lineQrCode": "base64_encoded_qrcode",
   "socialLinks": {
-    "facebook": "https://facebook.com/watchsense",
-    "line": "https://line.me/watchsense",
-    "youtube": "https://youtube.com/watchsense"
+    "facebook": "https://facebook.com/blogcraft",
+    "line": "https://line.me/blogcraft",
+    "youtube": "https://youtube.com/blogcraft"
   },
   "additionalLinks": [
     {
@@ -135,7 +135,7 @@
 [
   {
     "id": "news-001",
-    "title": "Watchsense 推出全新資安解決方案",
+    "title": "Blogcraft 推出全新資安解決方案",
     "slug": "new-security-solution",
     "excerpt": "我們很高興宣布推出全新的企業資安解決方案...",
     "content": "<p>詳細內容...</p>",

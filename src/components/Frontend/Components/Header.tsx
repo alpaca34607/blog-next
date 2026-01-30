@@ -56,7 +56,7 @@ interface OldNavItem {
 const oldNavItemsData: OldNavItem[] = [
   {
     id: 1,
-    text: "關於華生",
+    text: "關於布創",
     link: "#",
   },
 
@@ -91,28 +91,6 @@ const oldNavItemsData: OldNavItem[] = [
           },
         ],
       },
-
-      {
-        text: "網域名稱與主機代管",
-        link: "javascript:;",
-        submenu: [
-          {
-            text: "網域名稱註冊與方案規劃",
-            link: "#",
-          },
-        ],
-      },
-
-      {
-        text: "網站維護與技術支援",
-        link: "javascript:;",
-        submenu: [
-          {
-            text: "更新維護服務",
-            link: "#",
-          },
-        ],
-      },
     ],
   },
 
@@ -125,7 +103,7 @@ const oldNavItemsData: OldNavItem[] = [
   {
     id: 4,
     text: "最新消息",
-    link: "#",
+    link: "/news",
   },
   {
     id: 5,
@@ -380,7 +358,7 @@ const Header = () => {
     <>
       <header className={styles.wrapper}>
         <Link href="/" className={styles.brandLogo}>
-          <img src="/images/logo.png" alt="WATCHSENSE Logo" />
+          <img src="/images/logo.png" alt="BLOGCRAFT Logo" />
         </Link>
         <Navigation navItems={navItems} products={products} />
         <div className={styles.navRight}>

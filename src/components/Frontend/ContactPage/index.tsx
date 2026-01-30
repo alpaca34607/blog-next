@@ -86,7 +86,7 @@ const ContactPage = () => {
       title: "LINE ID",
       qrCode:
         siteSettings?.lineQrCode ||
-        "https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fwatchsense.com%2F&searchId=939qqenx",
+        "https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fblogcraft.com%2F&searchId=939qqenx",
       time:
         siteSettings?.contactTime ||
         "週一至週五，09:00~18:00 (國定假日、例假日休息)",
@@ -169,7 +169,7 @@ const ContactPage = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>線上諮詢表單</h1>
         <p className={styles.description}>
-          想進一步了解 華生網路 的產品或服務，或是對華生網有任何寶貴意見，
+          想進一步了解 布創網路 的產品或服務，或是對布創網有任何寶貴意見，
           我們都誠摯地邀請您留下訊息，或將資訊傳送到我們專人服務的電子郵件信箱，
           我們將立即與您聯繫！
         </p>
@@ -275,7 +275,7 @@ const ContactPage = () => {
                 { value: "youtube", label: "Youtube" },
                 { value: "workshop", label: "Workshop" },
                 { value: "展覽會", label: "展覽會" },
-                { value: "華生官網", label: "華生官網" },
+                { value: "布創官網", label: "布創官網" },
                 { value: "同業介紹", label: "同業介紹" },
                 { value: "other", label: "其他" },
               ]}

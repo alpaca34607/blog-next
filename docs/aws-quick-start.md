@@ -22,14 +22,14 @@
    - ✅ **MySQL**
    - ✅ **範本**：開發/測試（免費方案）
    - ✅ **執行個體類別**：db-t3-micro
-   - ✅ **資料庫名稱**：`watchsense-dev`
+   - ✅ **資料庫名稱**：`blogcraft-dev`
    - ✅ **主使用者名稱**：`admin`
    - ✅ **主密碼**：設定強密碼（**記下來！**）
    - ✅ **公開存取**：否（資料庫不公開存取）
 
 4. 點擊「建立資料庫」
 5. 等待 5-10 分鐘建立完成
-6. **記下端點**：例如 `watchsense-db.xxxxx.us-east-1.rds.amazonaws.com`
+6. **記下端點**：例如 `blogcraft-db.xxxxx.us-east-1.rds.amazonaws.com`
 
 ### ⚠️ 重要：本機開發連線設定
 
@@ -57,7 +57,7 @@
 1. 搜尋並進入 **S3** 服務
 2. 點擊「建立儲存貯體」
 3. 設定：
-   - ✅ **名稱**：`watchsense-dev`（必須全球唯一）
+   - ✅ **名稱**：`blogcraft-dev`（必須全球唯一）
    - ✅ **區域**：與 RDS 相同（如 `ap-northeast-1`）
    - ✅ **阻擋所有公開存取**：根據需求設定
 
@@ -67,7 +67,7 @@
 
 1. 進入 **IAM** 服務
 2. 點擊「使用者」→「建立使用者」
-3. 名稱：`watchsense-s3-user`
+3. 名稱：`blogcraft-s3-user`
 4. 附加政策：`AmazonS3FullAccess`
 5. 建立存取金鑰：
    - 記錄 **Access Key ID**
@@ -88,14 +88,14 @@
 
 ```env
 # 資料庫（從 RDS 取得）
-DATABASE_URL="mysql://admin:YOUR_PASSWORD@watchsense-db.xxxxx.us-east-1.rds.amazonaws.com:3306/watchsense_dev"
+DATABASE_URL="mysql://admin:YOUR_PASSWORD@blogcraft-db.xxxxx.us-east-1.rds.amazonaws.com:3306/blogcraft_dev"
 
 # S3（從 IAM 取得）
 S3_ENDPOINT=https://s3.ap-northeast-1.amazonaws.com
 S3_REGION=us-east-1
 S3_ACCESS_KEY_ID=YOUR_ACCESS_KEY_ID
 S3_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
-S3_BUCKET=watchsense-dev
+S3_BUCKET=blogcraft-dev
 
 # JWT（產生強密碼）
 JWT_SECRET="your-super-secret-jwt-key-here-change-in-devuction"
@@ -126,18 +126,18 @@ JWT_SECRET="your-super-secret-jwt-key-here-change-in-devuction"
    搬遷所需的「內容」就是**舊資料庫的連線資訊**，從舊主機的 `.env` 即可取得：
    - **舊主機**：`DATABASE_URL` 裡的 host（例如 `m-ava-game.intersense.cloud`）
    - **舊埠號**：通常是 `3306`
-   - **舊使用者**：`watchsense`
+   - **舊使用者**：`blogcraft`
    - **舊密碼**：`4kItTw3I6Iss4wyV`
-   - **舊資料庫名稱**：`watchsense_dev`
+   - **舊資料庫名稱**：`blogcraft_dev`
    
    匯出舊資料庫（在本機執行，會提示輸入舊密碼）：
    ```bash
-   mysqldump -h m-ava-game.intersense.cloud -P 3306 -u watchsense -p watchsense_dev > backup.sql
+   mysqldump -h m-ava-game.intersense.cloud -P 3306 -u blogcraft -p blogcraft_dev > backup.sql
    ```
    
    匯入到新 RDS（會提示輸入新密碼，即 `.env` 裡 RDS 的主密碼）：
    ```bash
-   mysql -h watchsense-dev.chyyoc6kest7.ap-northeast-1.rds.amazonaws.com -P 3306 -u admin -p watchsense-dev < backup.sql
+   mysql -h blogcraft-dev.chyyoc6kest7.ap-northeast-1.rds.amazonaws.com -P 3306 -u admin -p blogcraft-dev < backup.sql
    ```
    要直接改資料庫某一筆的某個值，可以用下面幾種方式：
    專案有使用 Prisma，最簡單的方式是用 Prisma Studio（內建、免裝其他軟體）：

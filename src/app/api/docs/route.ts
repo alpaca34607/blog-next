@@ -4,9 +4,9 @@ const options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Watchsense API',
+      title: 'Blogcraft API',
       version: '1.0.0',
-      description: 'API documentation for Watchsenseproject',
+      description: 'API documentation for Blogcraftproject',
     },
     servers: [
       {

@@ -42,7 +42,7 @@ const Loading = ({ onLoadingComplete }: LoadingProps) => {
   return (
     <div className={cn(styles.loadingLayer, !isVisible && styles.hidden)}>
       <div className={styles.loaderContent}>
-        <div className={styles.loaderText}>WATCHSENSE</div>
+        <div className={styles.loaderText}>BLOGCRAFT</div>
         <div className={styles.loaderBar}>
           <div className={styles.loaderProgress} />
         </div>

@@ -20,7 +20,7 @@ const getDefaultSettings = (): PageSectionSettings => ({
   },
   cardGrid: {
     title: "最新消息",
-    subtitle: "掌握華生最新動態與產業資訊",
+    subtitle: "掌握最新動態與設計趨勢",
     settings: {
       backgroundColor: "transparent",
       templateVariant: "grid-3",

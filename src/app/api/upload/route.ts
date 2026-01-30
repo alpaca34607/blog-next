@@ -170,6 +170,8 @@ async function uploadFile(request: NextRequest) {
           Key: key,
           Body: buffer,
           ContentType: (file.type || 'application/octet-stream').trim(),
+          // 讓物件可被公開讀取，否則回傳的 URL 會 403。需在 S3 停用「封鎖公用存取」或設定 Bucket Policy。
+          ACL: 'public-read',
         })
       )
 
@@ -210,6 +212,7 @@ async function uploadFile(request: NextRequest) {
             Key: key,
             Body: buffer,
             ContentType: (file.type || 'application/octet-stream').trim(),
+            ACL: 'public-read',
           })
         )
 

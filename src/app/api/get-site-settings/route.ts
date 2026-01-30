@@ -10,23 +10,23 @@ export async function GET() {
     if (!settings) {
       // 如果沒有設定，回傳一組安全的預設值（避免前台渲染失敗）
       return successResponse({
-        siteName: "Watchsense",
-        siteNameEn: "Watchsense",
+        siteName: "Blogcraft",
+        siteNameEn: "Blogcraft",
         // SEO（若尚未建立 SiteSettings，回傳安全值以保持介面穩定）
-        metaTitle: "Watchsense",
+        metaTitle: "Blogcraft",
         metaDescription: "",
         logo: null,
         footerLogo: null,
-        copyright: "© 2024 Watchsense. All rights reserved.",
+        copyright: "© 2024 Blogcraft. All rights reserved.",
         phone: "+886-2-1234-5678",
-        email: "contact@watchsense.com",
+        email: "contact@blogcraft.com",
         contactTime: "週一至週五 09:00-18:00",
         address: "台北市信義區...",
         lineQrCode: null,
         socialLinks: {
-          facebook: "https://facebook.com/watchsense",
-          line: "https://line.me/watchsense",
-          youtube: "https://youtube.com/watchsense",
+          facebook: "https://facebook.com/blogcraft",
+          line: "https://line.me/blogcraft",
+          youtube: "https://youtube.com/blogcraft",
         },
         additionalLinks: [
           {

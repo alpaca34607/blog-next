@@ -285,7 +285,7 @@ export default function SiteSettingsManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, siteName: e.target.value })
                   }
-                  placeholder="例如：Watchsense 華生網頁"
+                  placeholder="例如：Blogcraft 布創設計"
                 />
               </div>
               <div className={styles.formGroup}>
@@ -297,7 +297,7 @@ export default function SiteSettingsManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, siteNameEn: e.target.value })
                   }
-                  placeholder="例如：Watchsense Co., Ltd."
+                  placeholder="例如：Blogcraft Co., Ltd."
                 />
               </div>
 
@@ -379,7 +379,7 @@ export default function SiteSettingsManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, copyright: e.target.value })
                   }
-                  placeholder="例如：Copyright © 2024 Watchsense Co., Ltd. All rights reserved."
+                  placeholder="例如：Copyright © 2024 Blogcraft Co., Ltd. All rights reserved."
                 />
               </div>
               <div className={styles.formGroup}>
@@ -391,7 +391,7 @@ export default function SiteSettingsManager() {
                   onChange={(e) =>
                     setFormData({ ...formData, metaTitle: e.target.value })
                   }
-                  placeholder="例如：Watchsense 華生網頁"
+                  placeholder="例如：Blogcraft 布創設計"
                 />
               </div>
               <div className={styles.formGroup}>
@@ -403,7 +403,7 @@ export default function SiteSettingsManager() {
                   onChangeFun={(e) =>
                     setFormData({ ...formData, metaDescription: e.target.value })
                   }
-                  placeholder="例如：華生網頁提供全方位的企業資安解決方案，從雲端資料防護到AI影像辨識技術，協助企業建立完善的資安防護體系，提升營運效率與數據管理能力。"
+                  placeholder="例如：布創設計提供全方位的企業資安解決方案，從雲端資料防護到AI影像辨識技術，協助企業建立完善的資安防護體系，提升營運效率與數據管理能力。"
                 />
               </div>
             </div>
@@ -604,7 +604,7 @@ export default function SiteSettingsManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, lineQrCode: e.target.value })
                     }
-                    placeholder="例如：https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fwatchsense.com%2F&searchId=939qqenx"
+                    placeholder="例如：https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fblogcraft.com%2F&searchId=939qqenx"
                   />
                 </div>
 

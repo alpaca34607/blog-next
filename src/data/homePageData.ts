@@ -26,7 +26,7 @@ export const servicesData: Product[] = [
   {
     id: "1",
     title: "品牌部落格形象模板",
-    slug: "brand-blog-template",
+    slug: "#",
     category: "網站模板",
     heroTitle: "品牌部落格形象模板",
     heroSubtitle:
@@ -45,14 +45,14 @@ export const servicesData: Product[] = [
   },
   {
     id: "2",
-    title: "極簡企業官網模板",
-    slug: "minimal-corporate-template",
+    title: "形象首頁設計",
+    slug: "#",
     category: "網站模板",
-    heroTitle: "極簡企業官網模板",
+    heroTitle: "形象首頁設計",
     heroSubtitle:
-      "簡約排版、區塊式組合，首頁與服務頁快速上線，維護乾淨俐落。",
+      "根據您的品牌形象與需求，量身打造獨特的首頁設計，讓您的品牌在眾多競爭者中脫穎而出。",
     metaDescription:
-      "簡約排版、區塊式組合，首頁與服務頁快速上線，維護乾淨俐落。",
+      "根據您的品牌形象與需求，量身打造獨特的首頁設計，讓您的品牌在眾多競爭者中脫穎而出。",
     heroImages: ["/images/services/ReadyTechQV1360-intro.jpg"],
     logo: "/images/services/ReadyTechQV1360.png",
     thumbImage: "/images/services/ReadyTechQV1360.png",
@@ -65,14 +65,14 @@ export const servicesData: Product[] = [
   },
   {
     id: "3",
-    title: "行銷 Landing Page 模板",
-    slug: "landing-page-template",
+    title: "客製化網站開發",
+    slug: "#",
     category: "網站模板",
-    heroTitle: "行銷 Landing Page 模板",
+    heroTitle: "客製化網站開發",
     heroSubtitle:
-      "適合活動與產品宣傳，套用版型快速發布，並可隨時在後台調整內容。",
+      "您的品牌有獨特的營運需求？我們可以為您規劃兼具美感與體貼近使用者需求的網站，並提供完整的開發與維護服務。",
     metaDescription:
-      "適合活動與產品宣傳，套用版型快速發布，並可隨時在後台調整內容。",
+      "您的品牌有獨特的營運需求？我們可以為您規劃兼具美感與體貼近使用者需求的網站，並提供完整的開發與維護服務。",
     heroImages: ["/images/services/BeseyeAI-intro.jpg"],
     logo: "/images/services/BeseyeAI.png",
     thumbImage: "/images/services/BeseyeAI.png",

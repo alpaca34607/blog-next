@@ -275,7 +275,7 @@ const Hero = () => {
                 Simple · Clean · Template-ready
               </h2>
               <p className={styles.heroSubtitleCn}>
-                專為客戶打造部落格式形象網頁
+                輕鬆打造專屬於您的形象網頁
               </p>
               <div className={styles.ctaGroup}>
                 <button className={styles.shinyCta}>立即諮詢</button>
