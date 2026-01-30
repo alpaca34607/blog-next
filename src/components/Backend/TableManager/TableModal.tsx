@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { FiX, FiTrash2, FiPlus } from "react-icons/fi";
 import Swal from "sweetalert2";
 import styles from "./TableModal.module.scss";
+import { accentOrange } from "@/styles/theme";
 
 interface CustomTable {
   id?: string;
@@ -75,7 +76,7 @@ const TableModal = ({
         title: "資料驗證錯誤",
         text: "請輸入表格名稱",
         confirmButtonText: "確定",
-        confirmButtonColor: "#ffaa00",
+        confirmButtonColor: accentOrange,
       });
       return;
     }
@@ -89,7 +90,7 @@ const TableModal = ({
         title: "資料驗證錯誤",
         text: "至少需要一個欄位",
         confirmButtonText: "確定",
-        confirmButtonColor: "#ffaa00",
+        confirmButtonColor: accentOrange,
       });
       return;
     }

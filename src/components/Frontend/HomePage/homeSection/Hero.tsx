@@ -7,6 +7,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { cn } from "@/utils/cn";
 import { heroAnimations } from "@/utils/gsapAnimations";
 import styles from "./Hero.module.scss";
+import { accentOrange } from "@/styles/theme";
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
@@ -18,7 +19,7 @@ const marqueeTexts = [
   {
     id: 1,
     text: "模板快速上線 · 版面一致好維護",
-    color: "#ffaa00",
+    color: accentOrange,
   },
 
   {
@@ -297,7 +298,7 @@ const Hero = () => {
                   viewBox="-3 -4 39 39"
                 >
                   <polygon
-                    fill="#ffaa00"
+                    fill={accentOrange}
                     stroke="#333333"
                     strokeWidth="0"
                     points="16,4.288 32,32 0,32"

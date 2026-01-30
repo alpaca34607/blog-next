@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FiArrowRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./CTASection.module.scss";
+import { accentOrange } from "@/styles/theme";
 
 interface CTASectionProps {
   section: {
@@ -27,7 +28,7 @@ const CTASection = ({ section }: CTASectionProps) => {
     getSectionStyle({
       backgroundColor: section.settings?.backgroundColor,
       backgroundImage: section.settings?.backgroundImage,
-      defaultBgColor: "#ffaa00",
+      defaultBgColor: accentOrange,
     });
 
   const buttonText = section.settings?.buttonText || "前往瞭解";

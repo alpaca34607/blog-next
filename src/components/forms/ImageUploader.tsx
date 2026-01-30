@@ -4,6 +4,7 @@ import { useRef, ReactNode } from "react";
 import { FiUpload } from "react-icons/fi";
 import Swal from "sweetalert2";
 import styles from "./ImageUploader.module.scss";
+import { accentOrange } from "@/styles/theme";
 import { tryFetch } from "@/app/api/api_client";
 
 interface ImageUploaderProps {
@@ -86,7 +87,7 @@ const ImageUploader = ({
           title: "圖片大小超過限制",
           text: `圖片大小不能超過 ${(maxSize / 1024 / 1024).toFixed(0)}MB`,
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -97,7 +98,7 @@ const ImageUploader = ({
           title: "檔案類型錯誤",
           text: "請選擇正確的圖片檔案",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -134,7 +135,7 @@ const ImageUploader = ({
         title: "圖片上傳失敗",
         text: message,
         confirmButtonText: "確定",
-        confirmButtonColor: "#ffaa00",
+        confirmButtonColor: accentOrange,
       });
       return;
     }

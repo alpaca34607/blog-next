@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import TableModal from "./TableModal";
 import RowModal from "./RowModal";
 import styles from "./TableManager.module.scss";
+import { accentOrange } from "@/styles/theme";
 import adminStyles from "@/styles/AdminPagePublic.module.scss";
 import {
   API_GetTablesAdmin,
@@ -89,7 +90,7 @@ const TableManager = () => {
       title,
       ...(html ? { html } : { text: String(title) }),
       confirmButtonText: "確定",
-      confirmButtonColor: "#ffaa00",
+      confirmButtonColor: accentOrange,
     });
   };
 
@@ -203,7 +204,7 @@ const TableManager = () => {
           title: "資料驗證錯誤",
           text: "至少需要一個欄位",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -279,7 +280,7 @@ const TableManager = () => {
             title: "資料驗證錯誤",
             text: "至少需要一個欄位",
             confirmButtonText: "確定",
-            confirmButtonColor: "#ffaa00",
+            confirmButtonColor: accentOrange,
           });
           return;
         }

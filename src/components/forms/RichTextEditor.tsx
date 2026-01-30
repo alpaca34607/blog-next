@@ -17,6 +17,7 @@ import { FiUpload } from "react-icons/fi";
 import { FiLink } from "react-icons/fi";
 import Swal from "sweetalert2";
 import styles from "./RichTextEditor.module.scss";
+import { accentOrange } from "@/styles/theme";
 import { tryFetch } from "@/app/api/api_client";
 
 interface RichTextEditorProps {
@@ -146,7 +147,7 @@ const RichTextEditor = ({
           title: "圖片大小超過限制",
           text: "圖片大小不能超過 5MB",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -158,7 +159,7 @@ const RichTextEditor = ({
           title: "檔案類型錯誤",
           text: "請選擇圖片檔案",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -191,7 +192,7 @@ const RichTextEditor = ({
           title: "圖片上傳失敗",
           text: message,
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
         return;
       }
@@ -490,7 +491,7 @@ const RichTextEditor = ({
                 showCancelButton: true,
                 confirmButtonText: "確定",
                 cancelButtonText: "取消",
-                confirmButtonColor: "#ffaa00",
+                confirmButtonColor: accentOrange,
                 cancelButtonColor: "#6c757d",
                 inputValidator: (value) => {
                   if (!value) {

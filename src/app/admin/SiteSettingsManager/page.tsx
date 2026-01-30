@@ -25,6 +25,7 @@ import { MdOutlineQrCode } from "react-icons/md";
 import Image from "next/image";
 import Swal from "sweetalert2";
 import styles from "./page.module.scss";
+import { accentOrange } from "@/styles/theme";
 import adminStyles from "@/styles/AdminPagePublic.module.scss";
 import {
   API_GetSiteSettingsAdmin,
@@ -164,7 +165,7 @@ export default function SiteSettingsManager() {
           title: "設定已儲存",
           text: "網站設定已成功儲存",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
       } else {
         setError(response?.error?.message || "儲存設定失敗");
@@ -173,7 +174,7 @@ export default function SiteSettingsManager() {
           title: "儲存失敗",
           text: response?.error?.message || "無法儲存設定，請重試",
           confirmButtonText: "確定",
-          confirmButtonColor: "#ffaa00",
+          confirmButtonColor: accentOrange,
         });
       }
     } catch (err) {
@@ -184,7 +185,7 @@ export default function SiteSettingsManager() {
         title: "儲存失敗",
         text: "無法儲存設定，請重試",
         confirmButtonText: "確定",
-        confirmButtonColor: "#ffaa00",
+        confirmButtonColor: accentOrange,
       });
     } finally {
       setIsSaving(false);
