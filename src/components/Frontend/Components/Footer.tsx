@@ -383,8 +383,7 @@ const Footer = () => {
               <FaMapMarkerAlt className={styles.footerContactIcon} />
               <div className={styles.footerAddresses}>
                 <span>
-                  {siteSettings?.address ||
-                    "台北:台北市大安區信義路三段106號3樓之4\n高雄:高雄市左營區明誠二路322號6樓"}
+                  {siteSettings?.address || "台北市中正區忠孝東路走9遍"}
                 </span>
               </div>
             </div>

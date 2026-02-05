@@ -1,6 +1,6 @@
 # 已實現 API 端點規格文檔
 
-本文檔詳細列出 Blogcraft項目中已實現的所有 API 端點規格，基於前端 API 調用函數和相關規格文檔分析。
+本文檔詳細列出 Blogcraft 項目中已實現的所有 API 端點規格，基於前端 API 調用函數和相關規格文檔分析。
 
 ## 概述
 
@@ -11,6 +11,7 @@
 ### 1. 網站設定 API
 
 #### GET /api/get-site-settings
+
 - **功能描述**: 獲取網站基本設定資訊
 - **請求方式**: GET
 - **認證**: 需要 Bearer Token
@@ -19,6 +20,7 @@
 - **資料來源**: localStorage (鍵名: siteSettings)
 
 **回應範例**:
+
 ```json
 {
   "siteName": "Blogcraft",
@@ -33,7 +35,7 @@
   "lineQrCode": "base64_encoded_qrcode",
   "socialLinks": {
     "facebook": "https://facebook.com/blogcraft",
-    "line": "https://line.me/blogcraft",
+    "line": "https://line.me/ti/p/blogcraft",
     "youtube": "https://youtube.com/blogcraft"
   },
   "additionalLinks": [
@@ -48,6 +50,7 @@
 ### 2. 導航選單 API
 
 #### GET /api/get-navigation-item
+
 - **功能描述**: 獲取網站導航選單結構
 - **請求方式**: GET
 - **認證**: 需要 Bearer Token
@@ -56,6 +59,7 @@
 - **資料來源**: localStorage (鍵名: navigationItems)
 
 **回應範例**:
+
 ```json
 [
   {
@@ -94,6 +98,7 @@
 ### 3. 產品列表 API
 
 #### GET /api/get-products
+
 - **功能描述**: 獲取所有產品頁面資訊
 - **請求方式**: GET
 - **認證**: 需要 Bearer Token
@@ -102,6 +107,7 @@
 - **資料來源**: localStorage (鍵名: pages, 篩選 type="product")
 
 **回應範例**:
+
 ```json
 [
   {
@@ -123,6 +129,7 @@
 ### 4. 最新消息 API
 
 #### GET /api/get-news
+
 - **功能描述**: 獲取所有已發布的新聞文章
 - **請求方式**: GET
 - **認證**: 需要 Bearer Token
@@ -131,6 +138,7 @@
 - **資料來源**: localStorage (鍵名: news, 篩選 isPublished=true)
 
 **回應範例**:
+
 ```json
 [
   {
@@ -157,6 +165,7 @@
 根據 `API_SPEC_SECTION_SETTINGS.md` 規格，所有 Section 都支援統一的 `settings` 欄位，用於儲存不同 section 類型的特定參數。
 
 **支援的 Section 類型**:
+
 - `hero`: Hero 區塊
 - `icon_features`: 圖標特色區塊
 - `image_text`: 圖文區塊
@@ -223,21 +232,25 @@
 ## 技術實現細節
 
 ### 認證機制
+
 - 使用 JWT Bearer Token 認證
 - Token 通過 `getAuthToken()` 函數獲取
 - 支援 Authorization Header: `Bearer {token}`
 
 ### 錯誤處理
+
 - 統一的錯誤回應格式
 - 支援網路錯誤和 API 錯誤區分
 - 自動重試機制（前端實現）
 
 ### 資料同步
+
 - 使用 localStorage 作為主要儲存
 - 支援跨分頁即時同步（storage 事件）
 - 自訂事件系統用於組件間通訊
 
 ### 請求/回應格式
+
 - **Content-Type**: `application/json; charset=utf-8`
 - **Accept**: `*/*`
 - 支援 FormData 上傳（圖片等）
@@ -258,6 +271,7 @@
 ### 適合繼續使用 localStorage 的資料
 
 #### 1. 用戶界面狀態資料
+
 - **資料類型**: 展開/收起狀態、表單草稿、篩選條件等
 - **原因**: 這些資料通常是臨時性的，用戶偏好設定，不需要跨裝置同步
 - **範例**:
@@ -266,6 +280,7 @@
   - 表單輸入草稿（非重要資料）
 
 #### 2. 應用程式快取資料
+
 - **資料類型**: API 回應快取、靜態資源快取
 - **原因**: 提升效能，減少重複請求，但資料遺失不影響核心功能
 - **範例**:
@@ -274,6 +289,7 @@
   - 圖片資源快取
 
 #### 3. 離線支援資料
+
 - **資料類型**: 基本頁面內容快取
 - **原因**: 支援離線瀏覽，但以唯讀模式為主
 - **範例**:
@@ -283,22 +299,26 @@
 ### 建議改為資料庫持久化的資料
 
 #### 1. 核心內容資料
+
 - **新聞文章** (`news`): 需要長期保存、版本控制、搜尋功能
 - **頁面內容** (`pages`): 動態頁面和產品頁面，包含區塊設定
 - **產品資訊**: 產品規格、分類、排序等商業資料
 - **原因**: 這些是網站核心內容，需要持久化儲存、備份和恢復
 
 #### 2. 網站設定資料
+
 - **網站基本設定** (`siteSettings`): 公司資訊、聯絡方式、社群連結
 - **導航選單** (`navigationItems`): 選單結構和連結設定
 - **原因**: 全站共用設定，影響網站運營，需要集中管理
 
 #### 3. 管理資料
+
 - **表格資料** (`tables`): 自訂表格和資料行
 - **時間軸資料** (`timelines`): 時間軸項目和排序
 - **原因**: 管理後台建立的內容，需要持久化儲存
 
 #### 4. 用戶和權限資料
+
 - **管理員帳號**: 登入認證和權限設定
 - **操作日誌**: 內容修改記錄和稽核追蹤
 - **原因**: 安全性要求，需要可靠的持久化儲存
@@ -306,16 +326,19 @@
 ### 遷移建議
 
 #### 短期方案（保持相容性）
+
 1. **雙重儲存**: 同時寫入 localStorage 和資料庫
 2. **漸進式遷移**: 優先遷移核心資料（新聞、頁面）
 3. **快取層**: 使用 localStorage 作為資料庫資料的快取
 
 #### 長期方案（完整遷移）
+
 1. **統一資料來源**: 所有資料從資料庫獲取
 2. **localStorage 降級**: 僅用於離線模式和效能優化
 3. **同步機制**: 實現資料庫和前端的即時同步
 
 #### 技術實現考量
+
 - **資料庫選型**: 建議使用 PostgreSQL 或 MySQL
 - **API 設計**: 保持現有 API 接口，後端切換儲存方式
 - **資料遷移**: 提供從 localStorage 到資料庫的資料遷移工具

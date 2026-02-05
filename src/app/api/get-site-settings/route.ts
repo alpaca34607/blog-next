@@ -25,7 +25,7 @@ export async function GET() {
         lineQrCode: null,
         socialLinks: {
           facebook: "https://facebook.com/blogcraft",
-          line: "https://line.me/blogcraft",
+          line: "https://line.me/ti/p/OD4fPP6GtD",
           youtube: "https://youtube.com/blogcraft",
         },
         additionalLinks: [

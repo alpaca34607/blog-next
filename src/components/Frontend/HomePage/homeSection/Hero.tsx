@@ -314,7 +314,7 @@ const Hero = () => {
                 >
                   <polygon
                     fill="none"
-                    stroke="#2a2a2a"
+                    stroke="#273840"
                     strokeWidth="0.3"
                     points="16,4.288 32,32 0,32"
                   />

@@ -208,7 +208,7 @@ const SectionModal = ({
   const getTemplateVariants = (sectionType: string) => {
     const baseVariants: Record<string, string[]> = {
       hero: ["default", "centered", "left-aligned"],
-      icon_features: ["grid-2","grid-3", "grid-4", "grid-5", "list"],
+      icon_features: ["grid-2", "grid-3", "grid-4", "grid-5", "list"],
       card_grid: ["grid-3", "grid-4", "list"],
       image_text: ["left-image", "right-image", "vertical"],
       video_text: ["left-video", "right-video", "vertical"],
@@ -380,7 +380,9 @@ const SectionModal = ({
 
   const updateFeatureItemBatch = (
     index: number,
-    updates: Partial<Record<"icon" | "iconImage" | "title" | "description", string>>
+    updates: Partial<
+      Record<"icon" | "iconImage" | "title" | "description", string>
+    >
   ) => {
     setFormData((prev) => {
       const features = [...((prev.settings as any)?.features || [])];
@@ -1723,7 +1725,7 @@ const SectionModal = ({
                     <input
                       type="color"
                       value={
-                        (formData.settings as any)?.buttonColor || "#2a2a2a"
+                        (formData.settings as any)?.buttonColor || "#273840"
                       }
                       onChange={(e) =>
                         setFormData({
@@ -1740,7 +1742,7 @@ const SectionModal = ({
                       type="text"
                       className={styles.input}
                       value={
-                        (formData.settings as any)?.buttonColor || "#2a2a2a"
+                        (formData.settings as any)?.buttonColor || "#273840"
                       }
                       onChange={(e) =>
                         setFormData({
@@ -1751,7 +1753,7 @@ const SectionModal = ({
                           },
                         })
                       }
-                      placeholder="#2a2a2a"
+                      placeholder="#273840"
                     />
                   </div>
                 </div>

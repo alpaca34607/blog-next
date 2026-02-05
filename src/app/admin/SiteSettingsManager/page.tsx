@@ -404,7 +404,7 @@ export default function SiteSettingsManager() {
                   onChangeFun={(e) =>
                     setFormData({ ...formData, metaDescription: e.target.value })
                   }
-                  placeholder="例如：布創設計提供全方位的企業資安解決方案，從雲端資料防護到AI影像辨識技術，協助企業建立完善的資安防護體系，提升營運效率與數據管理能力。"
+                  placeholder="例如：布創設計提供部落格形象網站方案，主打模板化快速上線、簡約版面、後台輕鬆管理與便利維護，讓內容更新像寫部落格一樣自然。"
                 />
               </div>
             </div>
@@ -605,7 +605,7 @@ export default function SiteSettingsManager() {
                     onChange={(e) =>
                       setFormData({ ...formData, lineQrCode: e.target.value })
                     }
-                    placeholder="例如：https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fblogcraft.com%2F&searchId=939qqenx"
+                    placeholder="例如：https://line.me/ti/p/OD4fPP6GtD"
                   />
                 </div>
 

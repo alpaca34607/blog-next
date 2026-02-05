@@ -143,7 +143,7 @@ const settings = {
 | `cta_content`       | `string \| null` | CTA 內容（支援 HTML）    | `"<p>立即聯絡我們</p>"`                 |
 | `button_text`       | `string \| null` | 按鈕文字                 | `"前往瞭解"`                            |
 | `button_link`       | `string \| null` | 按鈕連結 URL             | `"/contact"` 或 `"https://example.com"` |
-| `button_color`      | `string \| null` | 按鈕背景顏色（Hex 色碼） | `"#2a2a2a"`                             |
+| `button_color`      | `string \| null` | 按鈕背景顏色（Hex 色碼） | `"#273840"`                             |
 | `button_text_color` | `string \| null` | 按鈕文字顏色（Hex 色碼） | `"#ffffff"`                             |
 
 ### Card Grid Section 相關欄位
@@ -276,7 +276,7 @@ const settings = {
   "cta_content": "<p>立即聯絡我們</p>",
   "button_text": "前往瞭解",
   "button_link": "/contact",
-  "button_color": "#2a2a2a",
+  "button_color": "#273840",
   "button_text_color": "#ffffff",
   "data_source": "custom",
   "limit": 6,
@@ -338,7 +338,7 @@ const settings = {
   "cta_content": "<p>立即聯絡我們</p>",
   "button_text": "前往瞭解",
   "button_link": "/contact",
-  "button_color": "#2a2a2a",
+  "button_color": "#273840",
   "button_text_color": "#ffffff"
 }
 ```
@@ -424,7 +424,7 @@ const settings = {
     "cta_content": "<p>立即聯絡我們</p>",
     "button_text": "前往聯絡頁面",
     "button_link": "/contact",
-    "button_color": "#2a2a2a",
+    "button_color": "#273840",
     "button_text_color": "#ffffff"
   }
 }
@@ -456,7 +456,7 @@ const settings = {
     "cta_content": "<p>立即聯絡我們</p>",
     "button_text": "前往聯絡頁面",
     "button_link": "/contact",
-    "button_color": "#2a2a2a",
+    "button_color": "#273840",
     "button_text_color": "#ffffff"
   }
 }

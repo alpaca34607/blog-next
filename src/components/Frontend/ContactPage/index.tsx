@@ -86,7 +86,7 @@ const ContactPage = () => {
       title: "LINE ID",
       qrCode:
         siteSettings?.lineQrCode ||
-        "https://qr-official.line.me/gs/M_939qqenx_GW.png?from=page&liff.referrer=https%3A%2F%2Fblogcraft.com%2F&searchId=939qqenx",
+        "https://line.me/ti/p/OD4fPP6GtD",
       time:
         siteSettings?.contactTime ||
         "週一至週五，09:00~18:00 (國定假日、例假日休息)",
@@ -169,24 +169,9 @@ const ContactPage = () => {
       <div className={styles.header}>
         <h1 className={styles.title}>線上諮詢表單</h1>
         <p className={styles.description}>
-          想進一步了解 布創網路 的產品或服務，或是對布創網有任何寶貴意見，
-          我們都誠摯地邀請您留下訊息，或將資訊傳送到我們專人服務的電子郵件信箱，
-          我們將立即與您聯繫！
+          布創設計提供部落格形象模板、形象首頁設計、客製化網站開發等服務，若是有網頁製作需求、維護需求或任何寶貴意見，
+          我們都誠摯地邀請您留下訊息，或將資訊傳送到我們專人服務的電子郵件信箱，我們將立即與您聯繫！
         </p>
-        <div className={styles.address}>
-          公司地址：
-          {isLoading
-            ? "載入中..."
-            : address ||
-              "台北: 台北市大安區信義路三段106號3樓之4 高雄: 高雄市左營區明誠二路322號6樓"}
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${address}`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <PiMapPinFill size="100%" />
-          </a>
-        </div>
       </div>
       <div className={styles.container}>
         <div className={styles.cardWrapper}>
@@ -273,10 +258,7 @@ const ContactPage = () => {
                 { value: "google", label: "Google" },
                 { value: "facebook", label: "Facebook" },
                 { value: "youtube", label: "Youtube" },
-                { value: "workshop", label: "Workshop" },
-                { value: "展覽會", label: "展覽會" },
-                { value: "布創官網", label: "布創官網" },
-                { value: "同業介紹", label: "同業介紹" },
+                { value: "behance", label: "Behance" },
                 { value: "other", label: "其他" },
               ]}
             />
@@ -290,24 +272,14 @@ const ContactPage = () => {
               type="select"
               options={[
                 {
-                  value: "VirtualES 雲端資料防護系統",
-                  label: "VirtualES 雲端資料防護系統",
+                  value: "品牌部落格形象模板",
+                  label: "品牌部落格形象模板",
                 },
                 {
-                  value: "Ready Tech QV1 360°全景視訊會議系統",
-                  label: "Ready Tech QV1 360°全景視訊會議系統",
+                  value: "形象首頁設計",
+                  label: "形象首頁設計",
                 },
-                { value: "資訊解密方案", label: "資訊解密方案" },
-                { value: "AI 遠端自動巡檢平台", label: "AI 遠端自動巡檢平台" },
-                {
-                  value: "AI影像辨識·智慧城市·大數據分析",
-                  label: "AI影像辨識·智慧城市·大數據分析",
-                },
-                {
-                  value: "AI邊緣運算·科技減災·安防監控",
-                  label: "AI邊緣運算·科技減災·安防監控",
-                },
-                { value: "QCT AI GPU Server ", label: "QCT AI GPU Server " },
+                { value: "客製化網站開發", label: "客製化網站開發" },
                 { value: "other", label: "其他" },
               ]}
             />
@@ -321,16 +293,16 @@ const ContactPage = () => {
               type="select"
               options={[
                 {
-                  value: "合作洽談",
-                  label: "合作洽談",
+                  value: "網站製作諮詢",
+                  label: "網站製作諮詢",
                 },
                 {
-                  value: "業務需求",
-                  label: "業務需求",
+                  value: "維護提問",
+                  label: "維護提問",
                 },
                 {
-                  value: "技術提問",
-                  label: "技術提問",
+                  value: "回饋建議",
+                  label: "回饋建議",
                 },
 
                 {

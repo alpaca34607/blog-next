@@ -33,7 +33,7 @@ const CTASection = ({ section }: CTASectionProps) => {
 
   const buttonText = section.settings?.buttonText || "前往瞭解";
   const buttonLink = section.settings?.buttonLink || "#";
-  const buttonColor = section.settings?.buttonColor || "#2a2a2a";
+  const buttonColor = section.settings?.buttonColor || "#273840";
   const buttonTextColor = section.settings?.buttonTextColor || "#ffffff";
 
   // CTA 區塊應該總是顯示按鈕（只要有標題或副標題）
