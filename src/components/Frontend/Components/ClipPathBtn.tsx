@@ -2,22 +2,24 @@
 import React from "react";
 import { cn } from "@/utils/cn";
 import styles from "./ClipPathBtn.module.scss";
+import Link from "next/link";
 
 interface ClipPathBtnProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
   children: React.ReactNode;
   showArrow?: boolean;
-  // className 已經包含在 React.ButtonHTMLAttributes 中，不需要重複定義
+  href?: string;
 }
 
 const ClipPathBtn = ({
   children,
   showArrow = true,
   className,
+  href = "#",
   ...props
 }: ClipPathBtnProps) => {
   return (
-    <button className={cn(styles.clipPathBtn, className)} {...props}>
+    <Link href={href} className={cn(styles.clipPathBtn, className)} {...props}>
       {children}
       {showArrow && (
         <svg
@@ -36,7 +38,7 @@ const ClipPathBtn = ({
           />
         </svg>
       )}
-    </button>
+    </Link>
   );
 };
 

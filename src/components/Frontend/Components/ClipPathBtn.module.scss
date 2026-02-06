@@ -1,7 +1,6 @@
 @import "../../../styles/variables";
 
 .clipPathBtn {
-  position: relative;
   height: 40px;
   font-size: 16px;
   display: flex;
@@ -15,6 +14,7 @@
   border: 1px solid $text-main;
   background: none;
   padding: 0 20px;
+  text-decoration: none;
   clip-path: polygon(18px 0px,
       100% 0px,
       100% calc(100% - 18px),

@@ -11,11 +11,6 @@ export interface RequestOptions {
   method?: HttpMethod;
   body?: Record<string, any> | string | FormData;
   contentType?: string;
-  /**
-   * 是否要在 Header 內帶上 Authorization
-   * - 預設為 true（保持與舊版行為一致）
-   * - public API 可設為 false，避免不必要的 token 讀取/傳送
-   */
   withAuth?: boolean;
 }
 

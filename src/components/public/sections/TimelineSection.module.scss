@@ -4,8 +4,9 @@
 
 
 .timelineSection {
-  padding: 64px 16px;
+  padding: 100px 0;
   background-color: $bg-color;
+  width: 100%;
 
   @include rwd-md {
     padding: 48px 16px;
@@ -19,8 +20,8 @@
 }
 
 .container {
-  max-width: 1120px;
-  margin: 0 auto;
+  width: 100%;
+  @include section-container(1280px);
 }
 
 .header {
@@ -46,6 +47,7 @@
 
 .timelineWrapper {
   position: relative;
+  width: 100%;
 }
 
 .timelineLine {

@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 import styles from "./IntroSection.module.scss";
 import ClipPathBtn from "../../Components/ClipPathBtn";
+import Link from "next/link";
 
 const IntroSection = () => {
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -90,48 +91,7 @@ const IntroSection = () => {
         }}
       >
         <div className={styles.contentWrapper}>
-          <ul
-            className={cn(
-              styles.productContainer,
-              leftElementsActive && !isFadeOut && styles.active,
-              isFadeOut && styles.fadeOut
-            )}
-          >
-            <li className={styles.socialIcon}>
-              <i className="fa-solid fa-cloud" style={{ fontSize: "20px" }} />
-              雲端後台，一站式管理
-            </li>
-            <li className={styles.socialIcon}>
-              <i className="fa-solid fa-video" style={{ fontSize: "20px" }} />
-              模板套用，快速上線
-            </li>
-            <li className={styles.socialIcon}>
-              <i className="fa-solid fa-brain" style={{ fontSize: "20px" }} />
-              文章與頁面，輕鬆編輯
-            </li>
-          </ul>
-
-          <ClipPathBtn
-            className={cn(
-              styles.moreAboutBtn,
-              rightElementsActive && !isFadeOut && styles.active,
-              isFadeOut && styles.fadeOut
-            )}
-            showArrow={true}
-          >
-            了解方案特色
-          </ClipPathBtn>
-
-          <p
-            className={cn(
-              styles.coords,
-              leftElementsActive && !isFadeOut && styles.active,
-              isFadeOut && styles.fadeOut
-            )}
-          >
-            N 25° 3' 29.084" / E 121° 32' 49.210"
-          </p>
-
+          {/* 環 */}
           <div
             className={cn(
               styles.ellipsesContainer,
@@ -177,20 +137,61 @@ const IntroSection = () => {
             </div>
             <div className={cn(styles.ellipses, styles.ellipsesOuterThick)} />
           </div>
-
-          <div
-            className={cn(
-              styles.scroller,
-              rightElementsActive && !isFadeOut && styles.active,
-              isFadeOut && styles.fadeOut
-            )}
-          >
-            <p className={styles.pageTitle}>About Us</p>
-            <div className={styles.timeline}>
-              <span className={styles.timelineUnit} />
-              <span className={cn(styles.timelineUnit, styles.active)} />
-              <span className={styles.timelineUnit} />
+          <div className={styles.decoTextWrapper}>
+            <ul
+              className={cn(
+                styles.productContainer,
+                leftElementsActive && !isFadeOut && styles.active,
+                isFadeOut && styles.fadeOut
+              )}
+            >
+              <li className={styles.socialIcon}>
+                <i className="fa-solid fa-cloud" style={{ fontSize: "20px" }} />
+                雲端後台，一站式管理
+              </li>
+              <li className={styles.socialIcon}>
+                <i className="fa-solid fa-video" style={{ fontSize: "20px" }} />
+                模板套用，快速上線
+              </li>
+              <li className={styles.socialIcon}>
+                <i className="fa-solid fa-brain" style={{ fontSize: "20px" }} />
+                文章與頁面，輕鬆編輯
+              </li>
+            </ul>
+            <p
+              className={cn(
+                styles.coords,
+                leftElementsActive && !isFadeOut && styles.active,
+                isFadeOut && styles.fadeOut
+              )}
+            >
+              N 25° 3' 29.084" / E 121° 32' 49.210"
+            </p>
+            <div
+              className={cn(
+                styles.scroller,
+                rightElementsActive && !isFadeOut && styles.active,
+                isFadeOut && styles.fadeOut
+              )}
+            >
+              <p className={styles.pageTitle}>About Us</p>
+              <div className={styles.timeline}>
+                <span className={styles.timelineUnit} />
+                <span className={cn(styles.timelineUnit, styles.active)} />
+                <span className={styles.timelineUnit} />
+              </div>
             </div>
+            <ClipPathBtn
+                href="/about"
+                className={cn(
+                  styles.moreAboutBtn,
+                  rightElementsActive && !isFadeOut && styles.active,
+                  isFadeOut && styles.fadeOut
+                )}
+                showArrow={true}
+              >
+                關於我們
+              </ClipPathBtn>
           </div>
         </div>
       </section>

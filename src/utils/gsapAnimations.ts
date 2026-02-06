@@ -7,11 +7,11 @@ if (typeof window !== "undefined") {
 }
 
 /**
- * 淡入淡出动画配置
+ * 淡入淡出動畫配置
  */
 export const fadeAnimations = {
   /**
-   * 基础淡入动画
+   * 基礎淡入動畫
    */
   fadeIn: {
     from: {
@@ -27,7 +27,7 @@ export const fadeAnimations = {
   },
 
   /**
-   * 基础淡出动画
+   * 基礎淡出動畫
    */
   fadeOut: {
     to: {
@@ -39,7 +39,7 @@ export const fadeAnimations = {
   },
 
   /**
-   * 从左侧淡入
+   * 從左側淡入
    */
   fadeInFromLeft: {
     from: {
@@ -55,7 +55,7 @@ export const fadeAnimations = {
   },
 
   /**
-   * 从右侧淡入
+   * 從右側淡入
    */
   fadeInFromRight: {
     from: {
@@ -95,7 +95,7 @@ export const fadeAnimations = {
   },
 
   /**
-   * 缩放淡入
+   * 縮放淡入
    */
   fadeInScale: {
     from: {
@@ -111,7 +111,7 @@ export const fadeAnimations = {
   },
 
   /**
-   * 缩放淡出
+   * 縮放淡出
    */
   fadeOutScale: {
     to: {
@@ -124,11 +124,11 @@ export const fadeAnimations = {
 };
 
 /**
- * Hero Section 动画
+ * Hero Section 動畫
  */
 export const heroAnimations = {
   /**
-   * Hero左侧内容淡出
+   * Hero 左側內容淡出
    */
   leftContentFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -142,7 +142,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero左侧内容淡入
+   * Hero 左側內容淡入
    */
   leftContentFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -156,7 +156,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero右侧spinner淡出
+   * Hero 右側 spinner 淡出
    */
   spinnerFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -170,7 +170,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero右侧spinner淡入
+   * Hero 右側 spinner 淡入
    */
   spinnerFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -184,7 +184,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero装饰元素淡出
+   * Hero 裝飾元素淡出
    */
   decoItemsFadeOut: (elements: (HTMLElement | null)[]) => {
     elements.forEach((element) => {
@@ -200,7 +200,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero装饰元素淡入
+   * Hero 裝飾元素淡入
    */
   decoItemsFadeIn: (elements: (HTMLElement | null)[]) => {
     elements.forEach((element) => {
@@ -216,7 +216,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero底部标签淡出
+   * Hero 底部標籤淡出
    */
   bottomTaglineFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -229,7 +229,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero底部标签淡入
+   * Hero 底部標籤淡入
    */
   bottomTaglineFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -242,7 +242,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero整个section淡出
+   * Hero 整個 section 淡出
    */
   heroSectionFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -256,7 +256,7 @@ export const heroAnimations = {
   },
 
   /**
-   * Hero整个section淡入
+   * Hero 整個 section 淡入
    */
   heroSectionFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -271,7 +271,7 @@ export const heroAnimations = {
 };
 
 /**
- * Intro Section 动画
+ * Intro Section 動畫
  */
 export const introAnimations = {
   /**
@@ -303,7 +303,7 @@ export const introAnimations = {
   },
 
   /**
-   * 左侧元素淡入
+   * 左側元素淡入
    */
   leftElementsFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -323,7 +323,7 @@ export const introAnimations = {
   },
 
   /**
-   * 左侧元素淡出
+   * 左側元素淡出
    */
   leftElementsFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -336,7 +336,7 @@ export const introAnimations = {
   },
 
   /**
-   * 右侧元素淡入
+   * 右側元素淡入
    */
   rightElementsFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -356,7 +356,7 @@ export const introAnimations = {
   },
 
   /**
-   * 右侧元素淡出
+   * 右側元素淡出
    */
   rightElementsFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -369,7 +369,7 @@ export const introAnimations = {
   },
 
   /**
-   * 缩放元素淡入
+   * 縮放元素淡入
    */
   scaleElementFadeIn: (element: HTMLElement | null) => {
     if (!element) return;
@@ -389,7 +389,7 @@ export const introAnimations = {
   },
 
   /**
-   * 缩放元素淡出
+   * 縮放元素淡出
    */
   scaleElementFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -402,7 +402,7 @@ export const introAnimations = {
   },
 
   /**
-   * 文本元素淡入（带延迟）
+   * 文字元素淡入（帶延遲）
    */
   textElementFadeIn: (element: HTMLElement | null, delay: number = 0) => {
     if (!element) return;
@@ -423,7 +423,7 @@ export const introAnimations = {
   },
 
   /**
-   * 文本元素淡出
+   * 文字元素淡出
    */
   textElementFadeOut: (element: HTMLElement | null) => {
     if (!element) return;
@@ -437,11 +437,11 @@ export const introAnimations = {
 };
 
 /**
- * 通用ScrollTrigger动画
+ * 通用 ScrollTrigger 動畫
  */
 export const scrollTriggerAnimations = {
   /**
-   * 使用ScrollTrigger创建淡入动画
+   * 使用 ScrollTrigger 建立淡入動畫
    */
   fadeInOnScroll: (
     element: HTMLElement | null,
@@ -485,7 +485,7 @@ export const scrollTriggerAnimations = {
   },
 
   /**
-   * 使用ScrollTrigger创建从左侧淡入动画
+   * 使用 ScrollTrigger 建立從左側淡入動畫
    */
   fadeInFromLeftOnScroll: (
     element: HTMLElement | null,
@@ -529,7 +529,7 @@ export const scrollTriggerAnimations = {
   },
 
   /**
-   * 使用ScrollTrigger创建从右侧淡入动画
+   * 使用 ScrollTrigger 建立從右側淡入動畫
    */
   fadeInFromRightOnScroll: (
     element: HTMLElement | null,
@@ -573,7 +573,7 @@ export const scrollTriggerAnimations = {
   },
 
   /**
-   * 使用ScrollTrigger创建缩放淡入动画
+   * 使用 ScrollTrigger 建立縮放淡入動畫
    */
   fadeInScaleOnScroll: (
     element: HTMLElement | null,
@@ -618,7 +618,7 @@ export const scrollTriggerAnimations = {
 };
 
 /**
- * 清理ScrollTrigger实例
+ * 清理 ScrollTrigger 實例
  */
 export const cleanupScrollTriggers = () => {
   if (typeof window !== "undefined") {

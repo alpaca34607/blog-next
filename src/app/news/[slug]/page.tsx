@@ -150,7 +150,7 @@ export default function NewsPage({ params }: NewsPageProps) {
   return (
     <Layout>
       <div className={styles.newsPage}>
-        {/* Breadcrumb */}
+        {/* 麵包屑 */}
         <div className={styles.breadcrumb}>
           <Link href="/" className={styles.breadcrumbLink}>
             首頁
@@ -163,15 +163,15 @@ export default function NewsPage({ params }: NewsPageProps) {
           <span className={styles.breadcrumbCurrent}>{article.title}</span>
         </div>
 
-        {/* Article */}
+        {/* 文章區塊*/}
         <article className={styles.article}>
-          {/* Back Button */}
+          {/* 返回*/}
           <Link href="/news" className={styles.backButton}>
             <FiArrowLeft size={20} />
             <span>返回列表</span>
           </Link>
 
-          {/* Article Header */}
+          {/* 文章標題區 */}
           <header className={styles.articleHeader}>
             <div className={styles.meta}>
               <span className={styles.category}>
@@ -189,7 +189,7 @@ export default function NewsPage({ params }: NewsPageProps) {
             )} */}
           </header>
 
-          {/* Featured Image */}
+          {/* 文章配圖 */}
           {article.featuredImage && (
             <div className={styles.featuredImage}>
               <Image
@@ -202,14 +202,14 @@ export default function NewsPage({ params }: NewsPageProps) {
             </div>
           )}
 
-          {/* Article Content */}
+          {/* 文章內容 */}
           <div
             className={styles.content}
             dangerouslySetInnerHTML={{ __html: article.content }}
           />
         </article>
 
-        {/* Related News */}
+        {/* 關聯新聞 */}
         {relatedNews.length > 0 && (
           <section className={styles.relatedNews}>
             <h2 className={styles.relatedTitle}>相關文章</h2>

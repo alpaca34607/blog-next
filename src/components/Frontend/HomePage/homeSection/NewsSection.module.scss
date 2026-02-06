@@ -13,15 +13,16 @@
   align-items: center;
   gap: 20px;
   z-index: 10;
+
   @include rwd-lg {
-   overflow-x: hidden;
-   height: auto;
-   padding-bottom: 100px;
+    overflow-x: hidden;
+    height: auto;
+    padding-bottom: 100px;
   }
 }
 
 .newsSection {
-  width: 70%;
+  @include section-container(1280px);
   height: 100%;
   position: relative;
   display: flex;
@@ -58,8 +59,10 @@
       }
     }
   }
+
   @include rwd-lg {
-    width: 80%;
+    padding: 0 5%;
+    width: 100%;
   }
 }
 
@@ -97,8 +100,14 @@
   align-items: flex-start;
   width: 100%;
   opacity: 0;
-  transform: translateY(-30px);
   transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
+
+  @include rwd-lg {
+    flex-direction: column-reverse;
+    transform: none;
+    align-items: center;
+    justify-content: center;
+  }
 
   h2 {
     font-size: 88px;
@@ -106,7 +115,7 @@
     color: $accent-orange;
     line-height: 1.2;
     font-family: "Audiowide", sans-serif;
-    -webkit-text-stroke: 1px $accent-orange;
+    -webkit-text-stroke: 1px $text-main;
     -webkit-text-fill-color: $bg-color;
     letter-spacing: 12px;
 
@@ -119,15 +128,20 @@
       height: 40px;
       transform: skewX(42deg);
       z-index: -1;
-      border: 1px solid $accent-orange;
+      border: 1px solid $text-main;
+      background: $text-main;
     }
+
     @include rwd-lg {
+      position: relative;
+      top: 0;
+      left: 0;
+      transform: none;
+      -webkit-text-stroke: 2px $accent-orange;
       font-size: 80px;
+
       &::before {
-        top: 20px;
-        width: 300px;
-        height: 40px;
-        transform: skewX(-42deg);
+        display: none;
       }
     }
   }
@@ -138,11 +152,12 @@
     transform: translateY(-50%);
     left: 300px;
     font-size: 20px;
-    font-weight: 300;
-    color: $accent-orange;
-    line-height: 1.2;
-    padding: 2px 40px;
+    font-weight: 400;
+    color: $text-main;
+    line-height: 1.5;
     z-index: -1;
+    width: 150px;
+    text-align: center;
 
     &::before {
       content: "";
@@ -151,41 +166,56 @@
       left: 0;
       width: 100%;
       height: 100%;
-      border: 1px solid $accent-orange;
+      border: 1px solid $text-main;
       background: $bg-color;
       transform: skewX(42deg);
       z-index: -1;
     }
+
     @include rwd-lg {
-      left: 20px;
-      top: -10px;
-      font-size: 16px;
+      position: relative;
+      top: 0;
+      left: 0;
+      color: $accent-orange;
+      transform: none;
+
       &::before {
-        transform: skewX(-42deg);
+        display: none;
       }
     }
   }
 }
 
+.morebtnWrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+
+  @include rwd-lg {
+    justify-content: center;
+  }
+}
+
 .morebtn {
-  position: absolute;
-  right: 0;
-  bottom: 100px;
-  min-height: 40px;
+  position: relative;
+  width: fit-content;
+  height: 40px;
   min-width: 250px;
+  text-decoration: none;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 10px;
   font-size: 16px;
   font-weight: 500;
-  color: $bg-color;
+  color: $text-main;
   line-height: 1.2;
   font-family: "Orbitron", sans-serif;
   padding-left: 40px;
   border-radius: 5px;
-  text-decoration: none;
-  z-index: 1;
   transition: 0.3s;
 
   span {
@@ -237,8 +267,16 @@
       color: $text-main;
     }
   }
+
   @include rwd-lg {
-    bottom: -50px;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    transform: none;
+    min-height: 40px;
+    min-width: 200px;
+    padding-left: 20px;
+    font-size: 14px;
   }
 }
 
@@ -251,13 +289,15 @@
   align-items: center;
   gap: 20px;
   overflow: hidden;
-  @include rwd-lg {
+
+  @include rwd-xl {
     .cardWrapper {
       &:last-child {
         display: none;
       }
     }
   }
+
   @include rwd-md {
     flex-direction: column;
     gap: 20px;
@@ -299,6 +339,10 @@
     &::before {
       transform: translateY(10px);
     }
+  }
+
+  @include rwd-lg {
+    padding: 10px 5px;
   }
 }
 
@@ -392,6 +436,7 @@
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     text-overflow: ellipsis;
+
     @include rwd-lg {
       font-size: 14px;
     }
@@ -413,9 +458,11 @@
   background: $text-main;
   transition: 0.3s;
   text-decoration: none;
+
   @include rwd-lg {
     padding: 16px 0;
   }
+
   &:hover {
     background: $text-muted;
   }

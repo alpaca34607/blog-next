@@ -70,18 +70,20 @@
   z-index: 10;
   overflow: hidden;
   padding: 100px 0;
-  
+  gap: 100px;
+
 
   @include rwd-xl {
+    justify-content: flex-start;
     width: 100%;
-    padding: 100px 0;
-    height: 100%;
+    padding: 0;
+    padding-top: 120px;
+    height: 100vh;
     min-height: 600px;
   }
+
   @include rwd-lg {
     width: 100%;
-    padding: 100px 0;
-    height: 100vh;
     min-height: 1000px;
   }
 }
@@ -141,8 +143,8 @@
 }
 
 .moreAboutBtn {
-  position: absolute !important;
-  bottom: 10%;
+  position: absolute;
+  bottom: 20%;
   right: 5%;
   height: 40px;
   font-size: 16px;
@@ -167,12 +169,7 @@
 
   &.active {
     opacity: 1;
-    transform: translateX(0);
     pointer-events: auto;
-
-    @include rwd-xl {
-      transform: translateX(50%);
-    }
   }
 
   &.fadeOut {
@@ -217,7 +214,7 @@
     transform: scale(1.05);
 
     @include rwd-xl {
-      transform: translateX(50%) scale(1.05);
+      transform: scale(1.05);
     }
 
     .btnArrow {
@@ -227,22 +224,14 @@
   }
 
   @include rwd-lg {
-    right: 50%;
-    font-size: 14px;
-    height: 36px;
-    padding: 0 16px;
-  }
-
-  @include rwd-md {
-    font-size: 13px;
-    height: 34px;
-    padding: 0 14px;
-  }
-
-  @include rwd-sm {
-    font-size: 12px;
-    height: 32px;
-    padding: 0 12px;
+    position: relative;
+    bottom: 0;
+    right: 0;
+    transform: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
   }
 }
 
@@ -278,6 +267,29 @@
   }
 }
 
+.decoTextWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+
+  @include rwd-lg {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
+    width: 100%;
+    height: auto;
+  }
+}
+
 .ellipsesContainer {
   display: flex;
   justify-content: center;
@@ -305,10 +317,15 @@
   }
 
   @include rwd-lg {
+    position: relative;
+    top: 0;
+    left: 0;
+    transform: none;
     width: 90vw;
     max-width: 90vw;
     height: 90vw;
     max-height: 90vw;
+    min-height: 90vw;
   }
 
 }

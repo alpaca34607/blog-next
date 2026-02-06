@@ -128,57 +128,58 @@ const NewsSection = () => {
             </div>
           ))}
         </div>
-
-        <Link href="/news" className={styles.morebtn}>
-          <svg
-            className={styles.btnBgSvg}
-            viewBox="0 0 343 56"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="none"
-          >
-            <path
-              d="M74.0574 38.4068L1.89676 38.5711L25.0227 0.5L338.5 0.501982V17.9437L299.441 53.8703L89.3722 53.7995L74.0574 38.4068Z"
-              fill="currentColor"
-            />
-            <path
-              d="M71.707 44.6873L79.7607 52.741L77.6396 54.8621L70.4648 47.6873H0.5V44.6873H71.707Z"
-              fill="currentColor"
-            />
-            <path
-              d="M308.521 54.8009L306.478 52.6036L340.022 21.4044L342.065 23.6017L308.521 54.8009Z"
-              fill="currentColor"
-            />
-            <path
-              d="M74.0574 38.4068L1.89676 38.5711L25.0227 0.5L338.5 0.501982V17.9437L299.441 53.8703L89.3722 53.7995L74.0574 38.4068Z"
+        <div className={styles.morebtnWrapper}>
+          <Link href="/news" className={styles.morebtn}>
+            <svg
+              className={styles.btnBgSvg}
+              viewBox="0 0 343 56"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              preserveAspectRatio="none"
+            >
+              <path
+                d="M74.0574 38.4068L1.89676 38.5711L25.0227 0.5L338.5 0.501982V17.9437L299.441 53.8703L89.3722 53.7995L74.0574 38.4068Z"
+                fill="currentColor"
+              />
+              <path
+                d="M71.707 44.6873L79.7607 52.741L77.6396 54.8621L70.4648 47.6873H0.5V44.6873H71.707Z"
+                fill="currentColor"
+              />
+              <path
+                d="M308.521 54.8009L306.478 52.6036L340.022 21.4044L342.065 23.6017L308.521 54.8009Z"
+                fill="currentColor"
+              />
+              <path
+                d="M74.0574 38.4068L1.89676 38.5711L25.0227 0.5L338.5 0.501982V17.9437L299.441 53.8703L89.3722 53.7995L74.0574 38.4068Z"
+                stroke="currentColor"
+              />
+              <path
+                d="M71.707 44.6873L79.7607 52.741L77.6396 54.8621L70.4648 47.6873H0.5V44.6873H71.707Z"
+                stroke="currentColor"
+              />
+              <path
+                d="M308.521 54.8009L306.478 52.6036L340.022 21.4044L342.065 23.6017L308.521 54.8009Z"
+                stroke="currentColor"
+              />
+            </svg>
+            <span>查看更多內容</span>
+            <svg
+              className={styles.btnArrow}
+              width="24"
+              height="24"
+              viewBox="0 0 67 65"
               stroke="currentColor"
-            />
-            <path
-              d="M71.707 44.6873L79.7607 52.741L77.6396 54.8621L70.4648 47.6873H0.5V44.6873H71.707Z"
-              stroke="currentColor"
-            />
-            <path
-              d="M308.521 54.8009L306.478 52.6036L340.022 21.4044L342.065 23.6017L308.521 54.8009Z"
-              stroke="currentColor"
-            />
-          </svg>
-          <span>查看更多內容</span>
-          <svg
-            className={styles.btnArrow}
-            width="24"
-            height="24"
-            viewBox="0 0 67 65"
-            stroke="currentColor"
-            strokeWidth="2"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M43.804 49.0942H39.772V47.9422C39.772 40.2622 43.74 35.7822 50.076 33.9262V33.2222C46.684 33.6702 42.844 33.9262 38.3 33.9262H4.89197V29.7022H38.3C42.844 29.7022 46.684 29.9582 50.076 30.4062V29.7022C43.74 27.8462 39.772 23.3662 39.772 15.6862V14.5342H43.804V15.4302C43.804 24.0702 49.564 30.2782 60.444 30.2782H61.212V33.3502H60.444C49.564 33.3502 43.804 39.6222 43.804 48.2622V49.0942Z"
-              fill="currentColor"
-            />
-          </svg>
-        </Link>
+              strokeWidth="2"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M43.804 49.0942H39.772V47.9422C39.772 40.2622 43.74 35.7822 50.076 33.9262V33.2222C46.684 33.6702 42.844 33.9262 38.3 33.9262H4.89197V29.7022H38.3C42.844 29.7022 46.684 29.9582 50.076 30.4062V29.7022C43.74 27.8462 39.772 23.3662 39.772 15.6862V14.5342H43.804V15.4302C43.804 24.0702 49.564 30.2782 60.444 30.2782H61.212V33.3502H60.444C49.564 33.3502 43.804 39.6222 43.804 48.2622V49.0942Z"
+                fill="currentColor"
+              />
+            </svg>
+          </Link>
+        </div>
       </section>
     </div>
   );
