@@ -36,7 +36,7 @@ export const servicesData: Product[] = [
     heroImages: ["/images/services/VirtualES-intro.jpg"],
     logo: "/images/services/service-blog.png",
     thumbImage: "/images/services/service-blog.png",
-    introImage: "/images/services/service-blog-intro.jpg",
+    introImage: "/images/services/service-blog-intro.png",
     videoUrl: "https://www.youtube.com/embed/MxPdn6jJMMQ?si=erikyLY85bhOvooV",
     externalUrl: "/contact",
     navOrder: 1,
