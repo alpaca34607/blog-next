@@ -107,7 +107,7 @@ const oldNavItemsData: OldNavItem[] = [
   },
   {
     id: 5,
-    text: "操作範本",
+    text: "頁面範本",
     link: "#",
   },
 ];

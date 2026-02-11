@@ -61,7 +61,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&family=Keania+One&family=Monoton&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Audiowide&family=Bungee+Outline&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Inter:wght@300;400;600&family=Noto+Sans+TC:wght@300;500;700&family=Orbitron:wght@400;500;600;700;800;900&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&family=Keania+One&family=Monoton&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&family=Audiowide&family=Bruno+Ace&family=Bungee+Outline&display=swap"
           rel="stylesheet"
         />
         <link

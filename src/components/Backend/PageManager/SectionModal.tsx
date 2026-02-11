@@ -829,13 +829,13 @@ const SectionModal = ({
                           }
                         }}
                       >
+                        <option value="custom">自定義圖片</option>
                         <option value="shield">盾牌 (Shield)</option>
                         <option value="zap">閃電 (Zap)</option>
                         <option value="users">用戶 (Users)</option>
                         <option value="award">獎盃 (Award)</option>
                         <option value="check">勾選 (Check)</option>
                         <option value="star">星星 (Star)</option>
-                        <option value="custom">自定義圖片</option>
                       </select>
                       <p className={styles.helpText}>
                         選擇預設圖標或使用自定義圖片
