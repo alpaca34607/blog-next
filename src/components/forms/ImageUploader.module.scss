@@ -1,6 +1,12 @@
 @import "@/styles/variables";
 @import "@/styles/mixins";
 
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .uploadButton {
   // 與後台各處「上傳佔位區」一致（虛線框樣式）
   @include upload-placeholder;
@@ -17,5 +23,52 @@
   &:focus-visible {
     outline: none;
     box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.12);
+  }
+}
+
+.urlInputBlock {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.urlInput {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  background: var(--bg-input, #fff);
+
+  &::placeholder {
+    color: #999;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $accent-orange;
+    box-shadow: 0 0 0 2px rgba(255, 170, 0, 0.15);
+  }
+}
+
+.urlSubmitBtn {
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background: $accent-orange;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    filter: brightness(1.05);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
