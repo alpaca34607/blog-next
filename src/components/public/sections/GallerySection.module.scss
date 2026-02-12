@@ -43,12 +43,14 @@
 // 輪播樣式
 .carouselWrapper {
   position: relative;
+  width: 100%;
   max-width: 1024px;
   margin: 0 auto;
 }
 
 .swiper {
   width: 100%;
+  aspect-ratio: 16 / 9; // 與 imageWrapper 比例一致，避免 Swiper 初始化時寬高收斂為 0
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
@@ -157,6 +159,7 @@
   width: 100%;
   border-radius: 16px;
   overflow: hidden;
+
   img {
     width: 100%;
     height: auto;

@@ -3,7 +3,7 @@
 @import "@/styles/_mixins.scss";
 
 .imageTextSection {
-  padding: 100px 32px;
+  padding: 60px 32px;
   width: 100%;
 
   @include rwd-md {
@@ -76,6 +76,20 @@
   border-radius: 16px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   aspect-ratio: 4 / 3;
+  @include rwd-md {
+    flex: none;
+  }
+}
+
+.videoWrapper {
+  flex: 1;
+  width: 100%;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-height: 584px;
   @include rwd-md {
     flex: none;
   }

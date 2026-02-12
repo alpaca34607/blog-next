@@ -3,7 +3,7 @@
 @import "@/styles/_mixins.scss";
 
 .iconFeaturesSection {
-  padding: 100px 0;
+  padding: 60px 0;
   width: 100%;
 
   @media (max-width: 768px) {
@@ -14,11 +14,13 @@
   // 使用共用的 SectionStyle 模組
   &.hasBgImage {
     @extend .hasBgImage;
+    min-height: 200px !important;
   }
 }
 
 .container {
   @include section-container(1280px);
+  min-height: 200px !important;
 }
 
 .header {

@@ -15,6 +15,7 @@
   // 使用共用的 SectionStyle 模組
   &.hasBgImage {
     @extend .hasBgImage;
+    min-height: 500px;
   }
 }
 

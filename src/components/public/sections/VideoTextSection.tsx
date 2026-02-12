@@ -102,7 +102,7 @@ const VideoTextSection = ({ section }: VideoTextSectionProps) => {
         <div className={`${styles.contentContainer} ${getContainerClass()}`}>
           {/* 影片 */}
           {embedUrl && (
-            <div className={styles.imageWrapper}>
+            <div className={styles.videoWrapper}>
               <div
                 style={{
                   position: "relative",
