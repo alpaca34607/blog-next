@@ -165,6 +165,12 @@
   overflow-y: auto;
   background-color: white;
   padding-bottom: env(safe-area-inset-bottom, 0);
+
+  // 防止 flex 子元素被壓縮，確保 HeroSection 等區塊在捲動容器內正確顯示
+  &>* {
+    flex-shrink: 0;
+  }
+
   scrollbar-width: thin;
   scrollbar-color: rgba($text-lightgray, 0.4) transparent;
 

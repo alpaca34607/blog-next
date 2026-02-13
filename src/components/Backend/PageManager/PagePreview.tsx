@@ -346,7 +346,10 @@ const PagePreview = () => {
             onClick={handleToggleMobileView}
             title={isMobileView ? "切換為桌面預覽" : "切換為手機預覽"}
           >
-            <span> {isMobileView ?  <FaDesktop size={16} /> :  <ImMobile size={16} />}</span>
+            <span>
+              {" "}
+              {isMobileView ? <FaDesktop size={16} /> : <ImMobile size={16} />}
+            </span>
           </button>
           <Link
             href={`/${page.slug}`}
