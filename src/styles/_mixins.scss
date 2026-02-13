@@ -172,17 +172,29 @@
  * 目標：集中管理各 section 常見的 .container/.header/.title/.subtitle
  */
 
- @mixin section-container($max-width: 1280px) {
+@mixin section-base {
+  width: 100%;
+  padding: 100px 32px;
+  @include rwd-xl {
+    padding: 80px 32px;
+  }
+  @include rwd-lg {
+    padding: 60px 24px;
+  }
+}
+
+@mixin section-container($max-width: 1280px) {
   max-width: $max-width;
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 32px;
+  gap: 32px;
 
-  @media (min-width: 640px) {
+  @include rwd-xl {
     padding: 0 24px;
   }
 
-  @media (min-width: 1024px) {
-    padding: 0 32px;
+  @include rwd-lg {
+    padding: 0 16px;
   }
 }
 
@@ -415,7 +427,7 @@
   overflow: hidden;
   position: relative;
   text-decoration: none;
-  
+
 
   &:after {
     content: "";

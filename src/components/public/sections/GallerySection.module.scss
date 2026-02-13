@@ -4,15 +4,13 @@
 
 
 .gallerySection {
-  padding: 100px 0;
+  padding: 60px 32px;
   width: 100%;
 
-  @media (max-width: 768px) {
-    padding: 48px 0;
+  @include rwd-lg {
+    padding: 24px;
   }
 
-  // 有背景圖片時的響應式處理
-  // 使用共用的 SectionStyle 模組
   &.hasBgImage {
     @extend .hasBgImage;
   }
@@ -20,6 +18,7 @@
 
 .container {
   @include section-container(1280px);
+  width: 100%;
 }
 
 .loading {
@@ -50,10 +49,22 @@
 
 .swiper {
   width: 100%;
-  aspect-ratio: 16 / 9; // 與 imageWrapper 比例一致，避免 Swiper 初始化時寬高收斂為 0
+  max-width: 100%;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+
+  // 覆蓋 Swiper 預設樣式，避免 slide 高度為 0
+  :global(.swiper-wrapper) {
+    align-items: stretch;
+  }
+
+  // 覆蓋 Swiper 以 inline style 設定的 slide 寬度（如 1248px），強制遵守容器 max-width
+  :global(.swiper-slide) {
+    height: auto;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
 }
 
 .swiperSlide {

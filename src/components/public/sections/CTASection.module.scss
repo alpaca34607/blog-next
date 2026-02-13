@@ -4,23 +4,22 @@
 
 
 .ctaSection {
-  padding: 80px 0;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    padding: 60px 0;
-  }
-
-  // 有背景圖片時的響應式處理
-  // 使用共用的 SectionStyle 模組
+  @include section-base;
   &.hasBgImage {
     @extend .hasBgImage;
-    min-height: 500px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    .container{
+      min-height: 0px !important;
+    }
+    min-height: 0px !important;
   }
 }
 
 .container {
   @include section-container(1024px);
+  
   text-align: center;
 }
 
@@ -35,7 +34,7 @@
   margin-bottom: 32px;
 }
 
-.ctaContent {
+.content {
   @include section-content;
 }
 

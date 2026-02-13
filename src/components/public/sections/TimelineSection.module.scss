@@ -4,16 +4,7 @@
 
 
 .timelineSection {
-  padding: 100px 0;
-  background-color: $bg-color;
-  width: 100%;
-
-  @include rwd-md {
-    padding: 48px 16px;
-  }
-
-  // 有背景圖片時的響應式處理
-  // 使用共用的 SectionStyle 模組
+  @include section-base;
   &.hasBgImage {
     @extend .hasBgImage;
   }

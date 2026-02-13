@@ -4,17 +4,16 @@
 
 
 .downloadsSection {
-  padding: 100px 0;
-  width: 100%;
-
-  @media (max-width: 768px) {
-    padding: 48px 0;
-  }
-
-  // 有背景圖片時的響應式處理
-  // 使用共用的 SectionStyle 模組
+  @include section-base;
   &.hasBgImage {
     @extend .hasBgImage;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    .container{
+      min-height: 0px !important;
+    }
+    min-height: 0px !important;
   }
 }
 

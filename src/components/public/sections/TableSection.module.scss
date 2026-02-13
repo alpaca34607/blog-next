@@ -3,24 +3,16 @@
 @import "@/styles/_mixins.scss";
 
 .tableSection {
-  width: 100%;
-  padding: 60px 0;
+    @include section-base;
 
-  // 有背景圖片時的響應式處理
-  // 使用共用的 SectionStyle 模組
   &.hasBgImage {
     @extend .hasBgImage;
   }
 }
 
 .container {
-  max-width: 1400px;
+  @include section-container(1400px);
   margin: 0 auto;
-  padding: 0 24px;
-
-  @media (max-width: 768px) {
-    padding: 0 16px;
-  }
 }
 
 .header {
