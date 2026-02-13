@@ -59,7 +59,7 @@
     transform: translateY(-2px);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
@@ -73,7 +73,7 @@
   gap: 16px;
   flex: 1;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
   }
 }
@@ -105,7 +105,7 @@
   margin-bottom: 8px;
   line-height: 1.4;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 16px;
   }
 }
@@ -150,7 +150,7 @@
     transform: translateY(0);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     justify-content: center;
   }

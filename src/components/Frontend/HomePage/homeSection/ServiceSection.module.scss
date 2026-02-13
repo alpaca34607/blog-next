@@ -79,7 +79,7 @@
   color: $text-main;
   line-height: 1.2;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 32px;
     font-weight: 500;
     font-family: "Orbitron", sans-serif;
@@ -155,7 +155,7 @@
     transform: translateX(0);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     height: auto;
   }

@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .previewContainer {
   width: 100%;
@@ -16,7 +17,7 @@
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 24px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
@@ -46,6 +47,7 @@
 .previewButton {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   padding: 8px 16px;
   background-color: $accent-orange;
@@ -64,6 +66,11 @@
   }
 }
 
+.previewButtonActive {
+  background-color: $orange-dark;
+  box-shadow: 0 2px 8px rgba(255, 170, 0, 0.3);
+}
+
 // Page Info
 .pageInfo {
   padding: 0 24px 24px;
@@ -75,7 +82,7 @@
   color: $text-main;
   margin-bottom: 8px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 24px;
   }
 }
@@ -124,7 +131,7 @@
   color: $text-main;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 32px;
   }
 }
@@ -133,7 +140,7 @@
   font-size: 20px;
   color: $text-muted;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 16px;
   }
 }
@@ -142,6 +149,41 @@
 .sectionsContainer {
   display: flex;
   flex-direction: column;
+}
+
+// 手機版預覽：限制寬度並置中，模擬手機視窗
+// container-type / container-name 讓子層的 @include rwd-lg、rwd-md 等 mixin 能依此容器寬度觸發
+.sectionsContainerMobile {
+  container-type: inline-size;
+  container-name: mobile-preview;
+  max-width: 390px;
+  height: 844px;
+  margin: 0 auto;
+  box-shadow: 0 0 0 12px #1a1a1a, 0 0 0 14px #333;
+  border-radius: 36px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: white;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  scrollbar-width: thin;
+  scrollbar-color: rgba($text-lightgray, 0.4) transparent;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba($text-lightgray, 0.4);
+    border-radius: 3px;
+  }
 }
 
 // Section Placeholder

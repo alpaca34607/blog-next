@@ -118,7 +118,7 @@
     transform: translateY(-50%) scale(0.95);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 40px;
     height: 40px;
   }
@@ -127,7 +127,7 @@
 .swiperButtonPrev {
   left: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     left: 8px;
   }
 }
@@ -135,7 +135,7 @@
 .swiperButtonNext {
   right: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     right: 8px;
   }
 }
@@ -181,24 +181,23 @@
 // 雙張樣式
 .doubleWrapper {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
   max-width: 1536px;
   margin: 0 auto;
 
-  @media (min-width: 768px) {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 32px;
+  @include rwd-md {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 24px;
   }
 
   .imageWrapper {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-    padding-top: 75%; // 4:3 比例
-
-    @media (min-width: 768px) {
-      padding-top: 66.67%; // 3:2 比例（桌面版）
+    padding-top: 66.67%; // 3:2 比例（桌面版）
+    @include rwd-md {
+      padding-top: 75%; // 4:3 比例
     }
   }
 }

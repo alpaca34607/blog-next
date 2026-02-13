@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .adminLayout {
   min-height: 100vh;
@@ -239,7 +240,7 @@
 .contentWrapper {
   padding: 24px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     padding: 16px;
   }
 }

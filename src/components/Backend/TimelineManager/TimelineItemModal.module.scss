@@ -29,7 +29,7 @@
   animation: modalSlideIn 0.3s ease-out;
   margin: auto;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     max-height: 95vh;
     max-width: 100%;
   }

@@ -21,7 +21,7 @@
 .title {
   @include section-title;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 28px;
   }
 }
@@ -32,13 +32,13 @@
 
 .contentGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 48px;
   align-items: center;
 
-  @media (min-width: 1024px) {
-    grid-template-columns: 1fr 1fr;
-    gap: 48px;
+  @include rwd-xl {
+    grid-template-columns: repeat(1, 1fr);
+    gap: 32px;
   }
 }
 
@@ -94,7 +94,7 @@
     transform: translateY(-50%) scale(0.95);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 36px;
     height: 36px;
     left: 12px;
@@ -105,7 +105,7 @@
   left: auto;
   right: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     right: 12px;
   }
 }
@@ -170,7 +170,7 @@
   display: flex;
   align-items: center;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     padding: 12px;
     font-size: 14px;
   }
@@ -184,7 +184,7 @@
   word-break: break-word;
   white-space: pre-wrap;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     padding: 12px;
     font-size: 14px;
   }

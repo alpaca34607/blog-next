@@ -1,5 +1,5 @@
 @import "@/styles/variables";
-@import "@/styles/mixins";
+@import "@/styles/_mixins.scss";
 
 .modalOverlay {
   position: fixed;
@@ -29,7 +29,7 @@
   animation: modalSlideIn 0.3s ease-out;
   margin: auto;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     max-height: 95vh;
     max-width: 100%;
   }
@@ -118,7 +118,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     grid-template-columns: 1fr;
   }
 }

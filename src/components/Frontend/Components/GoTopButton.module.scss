@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .goTopBtn {
   position: fixed;
@@ -127,7 +128,7 @@
     }
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     bottom: 20px;
     right: 20px;
     width: 70px;

@@ -1,5 +1,5 @@
 @import "@/styles/variables";
-
+@import "@/styles/_mixins.scss";
 // 後台管理頁共用樣式（集中維護）
 
 // Header
@@ -17,7 +17,7 @@
   justify-content: space-between;
   gap: 24px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
   }
 }
@@ -28,7 +28,7 @@
   color: $text-main;
   margin-bottom: 8px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 24px;
   }
 }
@@ -96,7 +96,7 @@
     box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     justify-content: center;
   }

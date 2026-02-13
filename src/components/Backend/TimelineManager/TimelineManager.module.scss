@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .timelineManager {
   width: 100%;
@@ -10,7 +11,7 @@
   grid-template-columns: 300px 1fr;
   gap: 24px;
 
-  @media (max-width: 1024px) {
+  @include rwd-lg {
     grid-template-columns: 1fr;
   }
 }
@@ -25,7 +26,7 @@
   position: sticky;
   top: 20px;
 
-  @media (max-width: 1024px) {
+   @include rwd-lg {
     position: static;
   }
 }
@@ -131,7 +132,7 @@
   justify-content: space-between;
   margin-bottom: 24px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     align-items: flex-start;
     gap: 16px;
@@ -164,7 +165,7 @@
     box-shadow: 0 4px 12px rgba(255, 170, 0, 0.3);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     justify-content: center;
   }
@@ -174,7 +175,7 @@
   position: relative;
   padding-left: 80px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     padding-left: 60px;
   }
 }
@@ -187,7 +188,7 @@
   width: 2px;
   background-color: rgba(255, 170, 0, 0.3);
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     left: 52px;
   }
 }
@@ -236,7 +237,7 @@
   padding-top: 8px;
   flex-shrink: 0;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 48px;
     font-size: 16px;
   }

@@ -1,7 +1,13 @@
 "use client";
+
 import { useSearchParams } from "next/navigation";
+
 import { useState, useEffect } from "react";
+
 import { FiArrowLeft, FiEye } from "react-icons/fi";
+import { FaDesktop } from "react-icons/fa";
+
+import { ImMobile } from "react-icons/im";
 import Link from "next/link";
 import CTASection from "@/components/public/sections/CTASection";
 import CardGridSection from "@/components/public/sections/CardGridSection";
@@ -16,6 +22,7 @@ import ProductSpecsSection from "@/components/public/sections/ProductSpecsSectio
 import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import styles from "./PagePreview.module.scss";
+
 import {
   API_GetPagesAdmin,
   API_GetPageSectionsAdmin,
@@ -60,15 +67,19 @@ const PagePreview = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isMobileView, setIsMobileView] = useState(false);
 
-  // 在客戶端載入 API 資料（避免依賴 localStorage）
   useEffect(() => {
     setIsClient(true);
 
     const load = async () => {
       try {
         setLoading(true);
-        const res = await API_GetPagesAdmin({ limit: 2000 });
+
+        const res = await API_GetPagesAdmin({
+          limit: 2000,
+        });
+
         if (res?.success && Array.isArray(res.data)) {
           const items: any[] = res.data as any[];
           setPages(items.filter((p) => p.type === "page"));
@@ -95,7 +106,10 @@ const PagePreview = () => {
 
     const reload = async () => {
       try {
-        const res = await API_GetPagesAdmin({ limit: 2000 });
+        const res = await API_GetPagesAdmin({
+          limit: 2000,
+        });
+
         if (res?.success && Array.isArray(res.data)) {
           const items: any[] = res.data as any[];
           setPages(items.filter((p) => p.type === "page"));
@@ -108,6 +122,7 @@ const PagePreview = () => {
 
     window.addEventListener("pagesUpdated", reload);
     window.addEventListener("productsUpdated", reload);
+
     return () => {
       window.removeEventListener("pagesUpdated", reload);
       window.removeEventListener("productsUpdated", reload);
@@ -132,6 +147,7 @@ const PagePreview = () => {
     const loadSections = async () => {
       try {
         const res = await API_GetPageSectionsAdmin(page.id);
+
         if (res?.success && Array.isArray(res.data)) {
           setSections(res.data as any);
         } else {
@@ -153,6 +169,7 @@ const PagePreview = () => {
     const reload = async () => {
       try {
         const res = await API_GetPageSectionsAdmin(page.id);
+
         if (res?.success && Array.isArray(res.data)) {
           setSections(res.data as any);
         }
@@ -184,7 +201,7 @@ const PagePreview = () => {
             className={styles.backButton}
           >
             <FiArrowLeft size={20} />
-            <span>{isProduct ? "返回產品管理" : "返回頁面管理"}</span>
+            <span> {isProduct ? "返回產品管理" : "返回頁面管理"}</span>
           </Link>
         </div>
         <div className={styles.errorState}>
@@ -262,18 +279,17 @@ const PagePreview = () => {
         return <TableSection key={section.id} section={sectionForView} />;
       case "timeline":
         return <TimelineSection key={section.id} section={sectionForView} />;
-      default:
-        // 其他類型的佔位符
+      default: // 其他類型的佔位符
         return (
           <div key={section.id} className={styles.sectionPlaceholder}>
             <div className={styles.sectionHeader}>
               <span className={styles.sectionType}>{section.sectionType}</span>
               {section.title && (
-                <span className={styles.sectionTitle}>{section.title}</span>
+                <span className={styles.sectionTitle}> {section.title}</span>
               )}
             </div>
             <div className={styles.sectionContent}>
-              <p>此區塊類型：{section.sectionType}</p>
+              <p>此區塊類型： {section.sectionType}</p>
               <p className={styles.sectionNote}>
                 區塊內容渲染功能待實作，請參考提供的 section 組件進行整合
               </p>
@@ -301,12 +317,16 @@ const PagePreview = () => {
             className={styles.backButton}
           >
             <FiArrowLeft size={20} />
-            <span>{isProduct ? "返回產品管理" : "返回頁面管理"}</span>
+            <span> {isProduct ? "返回產品管理" : "返回頁面管理"}</span>
           </Link>
         </div>
       </div>
     );
   }
+
+  const handleToggleMobileView = () => {
+    setIsMobileView(!isMobileView);
+  };
 
   return (
     <div className={styles.previewContainer}>
@@ -317,28 +337,38 @@ const PagePreview = () => {
           className={styles.backButton}
         >
           <FiArrowLeft size={20} />
-          <span>{isProduct ? "返回產品管理" : "返回頁面管理"}</span>
+          <span> {isProduct ? "返回產品管理" : "返回頁面管理"}</span>
         </Link>
         <div className={styles.headerActions}>
+          <button
+            className={`${styles.previewButton}
+      ${isMobileView ? styles.previewButtonActive : ""} `}
+            onClick={handleToggleMobileView}
+            title={isMobileView ? "切換為桌面預覽" : "切換為手機預覽"}
+          >
+            <span> {isMobileView ?  <FaDesktop size={16} /> :  <ImMobile size={16} />}</span>
+          </button>
           <Link
             href={`/${page.slug}`}
             target="_blank"
             className={styles.previewButton}
           >
-            <FiEye size={16} />
-            <span>前往前台頁面</span>
+            <FiEye size={16} /> <span>前往前台頁面</span>
           </Link>
         </div>
       </div>
-
       {/* Page Info */}
       <div className={styles.pageInfo}>
-        <h1 className={styles.pageTitle}>{page.title} - 頁面預覽</h1>
+        <h1 className={styles.pageTitle}> {page.title}- 頁面預覽</h1>
         <p className={styles.pageSubtitle}>拖放排序區塊，點擊編輯內容</p>
       </div>
-
       {/* Sections */}
-      <div className={styles.sectionsContainer}>
+      <div
+        className={`${styles.sectionsContainer}
+      ${isMobileView ? styles.sectionsContainerMobile : ""}
+
+      `}
+      >
         {shouldRenderHero && (
           <HeroSection
             section={{
@@ -363,13 +393,14 @@ const PagePreview = () => {
             }}
           />
         )}
-
         {pageSections.map((section) => renderSection(section))}
         {pageSections.length === 0 && (
           <div className={styles.emptyState}>
             <p>此頁面尚無區塊內容</p>
             <Link
-              href={`/admin/PageManager/${page.id}/blocks`}
+              href={`/admin/PageManager/${page.id}
+
+          /blocks`}
               className={styles.addBlockLink}
             >
               新增區塊

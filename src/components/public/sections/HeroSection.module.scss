@@ -118,14 +118,14 @@
 }
 
 .description {
-  font-size: 16px;
+  font-size: 18px;
   color: $text-main;
   line-height: 1.6;
   max-width: 800px;
   margin: 0 auto;
 
-  @media (min-width: 768px) {
-    font-size: 18px;
+  @include rwd-md {
+    font-size: 16px;
   }
 }
 
@@ -187,22 +187,22 @@
 // 輪播指示器
 .carouselIndicators {
   position: absolute;
-  bottom: 24px;
+  bottom: 32px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 12px;
+  gap: 16px;
   z-index: 20;
 
-  @media (min-width: 768px) {
-    bottom: 32px;
-    gap: 16px;
+  @include rwd-md {
+    bottom: 24px;
+    gap: 12px;
   }
 }
 
 .indicator {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   border: 2px solid rgba(255, 255, 255, 0.5);
   background-color: transparent;
@@ -210,9 +210,9 @@
   padding: 0;
   transition: all 0.3s ease;
 
-  @media (min-width: 768px) {
-    width: 12px;
-    height: 12px;
+  @include rwd-md {
+    width: 10px;
+    height: 10px;
   }
 
   &:hover {
@@ -223,11 +223,11 @@
   &.active {
     background-color: white;
     border-color: white;
-    width: 24px;
+    width: 28px;
     border-radius: 6px;
 
-    @media (min-width: 768px) {
-      width: 28px;
+    @include rwd-md {
+      width: 24px;
     }
   }
 }

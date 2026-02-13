@@ -6,8 +6,9 @@
 @include section-base;
   &.hasBgImage {
     @extend .hasBgImage;
+    min-height: 600px !important;
     .container{
-      min-height: 0px !important;
+      min-height: 600px !important;
     }
   }
 }
@@ -16,13 +17,13 @@
   max-width: 1280px;
   margin: 0 auto;
   width: 100%;
-  padding: 0 16px;
-  @media (min-width: 640px) {
+  padding: 0 32px;
+  
+  @include rwd-xl {
     padding: 0 24px;
   }
-
-  @media (min-width: 1024px) {
-    padding: 0 32px;
+  @include rwd-md {
+    padding: 0 16px;
   }
 }
 
@@ -67,7 +68,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  max-height: 584px;
+  max-height: 450px;
   border-radius: 16px;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   @include rwd-md {
@@ -106,11 +107,7 @@
 }
 
 .noImage {
-
-  // 沒有圖片時，內容佔滿整個寬度
-  @media (min-width: 768px) {
-    width: 100%;
-  }
+  width: 100%;
 }
 
 .title {

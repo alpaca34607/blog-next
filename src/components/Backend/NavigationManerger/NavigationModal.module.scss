@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .modalOverlay {
   position: fixed;
@@ -26,7 +27,7 @@
     0 10px 10px -5px rgba(0, 0, 0, 0.04);
   animation: modalSlideIn 0.3s ease-out;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     max-height: 95vh;
   }
 }

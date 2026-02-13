@@ -1,5 +1,5 @@
 @import "@/styles/variables";
-
+@import "@/styles/_mixins.scss";
 .tableManager {
   width: 100%;
 }
@@ -10,7 +10,7 @@
   grid-template-columns: 300px 1fr;
   gap: 24px;
 
-  @media (max-width: 1024px) {
+   @include rwd-lg {
     grid-template-columns: 1fr;
   }
 }
@@ -25,7 +25,7 @@
   position: sticky;
   top: 24px;
 
-  @media (max-width: 1024px) {
+   @include rwd-lg {
     position: static;
   }
 }
@@ -121,7 +121,7 @@
   margin-bottom: 24px;
   gap: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     align-items: flex-start;
   }
@@ -137,7 +137,7 @@
   display: flex;
   gap: 12px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     flex-direction: column;
   }
@@ -162,7 +162,7 @@
     background-color: #f5f5f5;
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     justify-content: center;
   }

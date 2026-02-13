@@ -1,4 +1,5 @@
 @import "@/styles/variables";
+@import "@/styles/_mixins.scss";
 
 .previewContainer {
   width: 100%;
@@ -18,7 +19,7 @@
   margin-bottom: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
@@ -129,7 +130,7 @@
   margin-bottom: 4rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     padding: 1.5rem;
   }
 }
@@ -169,7 +170,7 @@
   line-height: 1.3;
   margin-bottom: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 1.75rem;
   }
 }
@@ -313,11 +314,11 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 
-  @media (max-width: 1024px) {
+   @include rwd-lg {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     grid-template-columns: 1fr;
   }
 }

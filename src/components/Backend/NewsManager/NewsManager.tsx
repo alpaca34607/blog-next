@@ -456,7 +456,6 @@ const NewsManager = () => {
                         <div className={styles.date}>
                           <FiCalendar size={14} />
                           <span>
-                            {" "}
                             {article.publishDate
                               ? new Date(
                                   article.publishDate

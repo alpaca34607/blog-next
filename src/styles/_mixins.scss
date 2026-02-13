@@ -1,7 +1,14 @@
 // RWD 響應式斷點
+// 同時支援 viewport（一般頁面）與 container（如 .sectionsContainerMobile 手機預覽）
+// 使用 container-name: mobile-preview 的父層會觸發對應的 container query
+
 // XL: 1280px 以下
 @mixin rwd-xl {
   @media screen and (max-width: 1280px) {
+    @content;
+  }
+
+  @container mobile-preview (max-width: 1280px) {
     @content;
   }
 }
@@ -11,11 +18,19 @@
   @media screen and (max-width: 1024px) {
     @content;
   }
+
+  @container mobile-preview (max-width: 1024px) {
+    @content;
+  }
 }
 
 // MD: 768px 以下
 @mixin rwd-md {
   @media screen and (max-width: 768px) {
+    @content;
+  }
+
+  @container mobile-preview (max-width: 768px) {
     @content;
   }
 }
@@ -25,6 +40,10 @@
   @media screen and (max-width: 430px) {
     @content;
   }
+
+  @container mobile-preview (max-width: 430px) {
+    @content;
+  }
 }
 
 // SS: 320px 以下
@@ -32,11 +51,19 @@
   @media screen and (max-width: 320px) {
     @content;
   }
+
+  @container mobile-preview (max-width: 320px) {
+    @content;
+  }
 }
 
 // XS: 319px 以下
 @mixin rwd-xs {
   @media screen and (max-width: 319px) {
+    @content;
+  }
+
+  @container mobile-preview (max-width: 319px) {
     @content;
   }
 }
@@ -175,9 +202,11 @@
 @mixin section-base {
   width: 100%;
   padding: 100px 32px;
+
   @include rwd-xl {
     padding: 80px 32px;
   }
+
   @include rwd-lg {
     padding: 60px 24px;
   }
@@ -238,7 +267,7 @@
   color: $text-main;
   margin-bottom: 32px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     font-size: 16px;
     margin-bottom: 24px;
   }

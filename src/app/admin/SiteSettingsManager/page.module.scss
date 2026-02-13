@@ -35,7 +35,7 @@
   margin-bottom: 32px;
   gap: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     flex-direction: column;
   }
 }
@@ -64,7 +64,7 @@
     cursor: not-allowed;
   }
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     width: 100%;
     justify-content: center;
   }
@@ -76,7 +76,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 24px;
 
-  @media (max-width: 1024px) {
+   @include rwd-lg {
     grid-template-columns: 1fr;
   }
 }
@@ -169,7 +169,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     grid-template-columns: 1fr;
   }
 }
@@ -246,7 +246,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 
-  @media (max-width: 768px) {
+  @include rwd-md {
     grid-template-columns: 1fr;
   }
 }

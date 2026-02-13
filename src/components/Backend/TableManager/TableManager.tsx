@@ -64,7 +64,10 @@ const TableManager = () => {
 
   const showApiErrorSwal = (apiError?: any, fallbackTitle = "操作失敗") => {
     const title =
-      apiError?.message || apiError?.error?.message || fallbackTitle || "操作失敗";
+      apiError?.message ||
+      apiError?.error?.message ||
+      fallbackTitle ||
+      "操作失敗";
 
     const details = apiError?.details || apiError?.error?.details;
     const issues = Array.isArray(details) ? details : [];
@@ -408,34 +411,26 @@ const TableManager = () => {
 
   return (
     <div className={styles.tableManager}>
-      {" "}
       {/* Header */}
       <div className={adminStyles.header}>
-        {" "}
         <div className={adminStyles.headerContent}>
-          {" "}
           <div>
-            {" "}
-            <h1 className={adminStyles.title}>表格管理</h1>{" "}
-            <p className={adminStyles.subtitle}>建立與管理多個自訂表格</p>{" "}
-          </div>{" "}
+            <h1 className={adminStyles.title}>表格管理</h1>
+            <p className={adminStyles.subtitle}>建立與管理多個自訂表格</p>
+          </div>
           <button
             className={adminStyles.addButton}
             onClick={() => handleOpenTableModal(null)}
           >
-            {" "}
-            <FiPlus size={20} /> <span>新增表格</span>{" "}
-          </button>{" "}
-        </div>{" "}
-      </div>{" "}
+            <FiPlus size={20} /> <span>新增表格</span>
+          </button>
+        </div>
+      </div>
       <div className={styles.contentGrid}>
-        {" "}
         {/* Table List */}
         <div className={styles.tableList}>
-          {" "}
-          <h3 className={styles.listTitle}>表格列表</h3>{" "}
+          <h3 className={styles.listTitle}>表格列表</h3>
           <div className={styles.tableItems}>
-            {" "}
             {isLoadingTables ? (
               <div className={styles.loading}>
                 <FiLoader className={styles.spinner} size={24} />
@@ -452,19 +447,15 @@ const TableManager = () => {
                   }`}
                   onClick={() => setSelectedTableId(table.id)}
                 >
-                  {" "}
                   <div className={styles.tableItemContent}>
-                    {" "}
-                    <h4 className={styles.tableItemName}> {table.name}</h4>{" "}
+                    <h4 className={styles.tableItemName}> {table.name}</h4>
                     {table.description && (
                       <p className={styles.tableItemDesc}>
-                        {" "}
                         {table.description}
                       </p>
                     )}
-                  </div>{" "}
+                  </div>
                   <div className={styles.tableItemActions}>
-                    {" "}
                     <button
                       className={styles.actionButton}
                       onClick={(e) => {
@@ -473,9 +464,8 @@ const TableManager = () => {
                       }}
                       title="編輯"
                     >
-                      {" "}
-                      <FiEdit size={14} />{" "}
-                    </button>{" "}
+                      <FiEdit size={14} />
+                    </button>
                     <button
                       className={`${styles.actionButton} ${styles.deleteButton}`}
                       onClick={(e) => {
@@ -484,15 +474,14 @@ const TableManager = () => {
                       }}
                       title="刪除"
                     >
-                      {" "}
-                      <FiTrash2 size={14} />{" "}
-                    </button>{" "}
-                  </div>{" "}
+                      <FiTrash2 size={14} />
+                    </button>
+                  </div>
                 </div>
               ))
             )}
-          </div>{" "}
-        </div>{" "}
+          </div>
+        </div>
         {/* Table Content */}
         <div className={styles.tableContent}>
           {error && (
@@ -512,31 +501,23 @@ const TableManager = () => {
           )}
           {selectedTableId && selectedTable ? (
             <>
-              {" "}
               <div className={styles.contentHeader}>
-                {" "}
-                <h3 className={styles.contentTitle}>
-                  {" "}
-                  {selectedTable.name}
-                </h3>{" "}
+                <h3 className={styles.contentTitle}>{selectedTable.name}</h3>
                 <div className={styles.contentActions}>
-                  {" "}
                   <button
                     className={styles.settingsButton}
                     onClick={handleOpenColumnsModal}
                   >
-                    {" "}
-                    <FiSettings size={18} /> <span>設定欄位</span>{" "}
-                  </button>{" "}
+                    <FiSettings size={18} /> <span>設定欄位</span>
+                  </button>
                   <button
                     className={styles.addDataButton}
                     onClick={() => handleOpenRowModal(null)}
                   >
-                    {" "}
-                    <FiPlus size={18} /> <span>新增資料</span>{" "}
-                  </button>{" "}
-                </div>{" "}
-              </div>{" "}
+                    <FiPlus size={18} /> <span>新增資料</span>
+                  </button>
+                </div>
+              </div>
               {(selectedTable.columns || []).length > 0 ? (
                 <div className={styles.tableWrapper}>
                   <table className={styles.dataTable}>
@@ -602,27 +583,24 @@ const TableManager = () => {
                 </div>
               ) : (
                 <div className={styles.emptyState}>
-                  {" "}
-                  <p>此表格尚未設定欄位</p>{" "}
+                  <p>此表格尚未設定欄位</p>
                   <button
                     className={styles.settingsButton}
                     onClick={handleOpenColumnsModal}
                   >
-                    {" "}
-                    立即設定欄位{" "}
-                  </button>{" "}
+                    立即設定欄位
+                  </button>
                 </div>
               )}
             </>
           ) : (
             <div className={styles.emptyState}>
-              {" "}
-              <FiFileText size={48} className={styles.emptyIcon} />{" "}
-              <p>請選擇左側的表格來管理資料</p>{" "}
+              <FiFileText size={48} className={styles.emptyIcon} />
+              <p>請選擇左側的表格來管理資料</p>
             </div>
           )}
-        </div>{" "}
-      </div>{" "}
+        </div>
+      </div>
       {/* Table Modal */}
       <TableModal
         open={tableModalOpen}
@@ -632,7 +610,7 @@ const TableManager = () => {
         }}
         onSubmit={handleSubmitTable}
         editingTable={editingTable}
-      />{" "}
+      />
       {/* Columns Modal */}
       <TableModal
         open={columnsModalOpen}
@@ -643,7 +621,7 @@ const TableManager = () => {
         onSubmit={handleSubmitColumns}
         editingTable={editingTable}
         columnsOnly={true}
-      />{" "}
+      />
       {/* Row Modal */}
       {selectedTable && (
         <RowModal
