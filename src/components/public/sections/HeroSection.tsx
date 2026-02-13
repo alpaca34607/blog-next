@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./HeroSection.module.scss";
+import { isRichTextEmpty } from "@/utils/common";
 
 interface HeroSectionProps {
   className?: string;
@@ -129,7 +130,7 @@ const HeroSection = ({
         )} */}
         {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         {title && <h1 className={styles.title}>{title}</h1>}
-        {section.content && (
+        {section.content && !isRichTextEmpty(section.content) && (
           <p className={styles.description}>{section.content}</p>
         )}
       </div>

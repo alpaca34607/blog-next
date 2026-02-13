@@ -1,6 +1,7 @@
 "use client";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./ContentBlockSection.module.scss";
+import { isRichTextEmpty } from "@/utils/common";
 
 interface ContentBlockSectionProps {
   section: {
@@ -39,7 +40,7 @@ const ContentBlockSection = ({ section }: ContentBlockSectionProps) => {
           </div>
         )}
 
-        {section.content && (
+        {section.content && !isRichTextEmpty(section.content) && (
           <div
             className={styles.content}
             dangerouslySetInnerHTML={{ __html: section.content }}

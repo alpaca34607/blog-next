@@ -1,6 +1,7 @@
 "use client";
 import { FiArrowRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
+import { isRichTextEmpty } from "@/utils/common";
 import styles from "./ImageTextSection.module.scss";
 
 interface ImageTextSectionProps {
@@ -80,7 +81,7 @@ const ImageTextSection = ({ section }: ImageTextSectionProps) => {
             }`}
           >
           
-            {section.content && (
+            {section.content && !isRichTextEmpty(section.content) && (
               <div
                 className={styles.content}
                 dangerouslySetInnerHTML={{ __html: section.content }}

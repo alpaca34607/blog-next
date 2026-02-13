@@ -108,6 +108,7 @@ const GallerySection = ({ section }: GallerySectionProps) => {
               modules={[Navigation, Pagination, Autoplay]}
               spaceBetween={0}
               slidesPerView={1}
+              autoHeight
               loop={images.length > 1}
               autoplay={
                 images.length > 1
@@ -159,7 +160,7 @@ const GallerySection = ({ section }: GallerySectionProps) => {
         {/* 單張樣式 */}
         {variant === "single" && (
           <div className={styles.singleWrapper}>
-              <img src={images[0]} alt="Gallery" />
+            <img src={images[0]} alt="Gallery" />
           </div>
         )}
 

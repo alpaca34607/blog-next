@@ -31,3 +31,18 @@ export const isPopupShown = (): boolean => {
 export const clearPopupShown = (): void => {
   Cookies.remove(PopupCookieName);
 };
+
+/**
+ * 檢查富文本 HTML 是否為空（例如只有 <p></p> 或空白標籤）
+ * 富文本編輯器在留空時常會輸出 <p></p>
+ */
+export const isRichTextEmpty = (html?: string): boolean => {
+  if (!html) return true;
+  const text = html
+    .replace(/<style[\s\S]*?<\/style>/gi, "")
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/<[^>]*>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .trim();
+  return text.length === 0;
+};
