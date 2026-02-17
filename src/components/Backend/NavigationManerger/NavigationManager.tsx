@@ -199,13 +199,16 @@ const NavigationManager = () => {
         url = normalizeInternalUrlFromSlug(formData.slug);
       }
 
+      const normalizedCategory = (formData.productCategory || "").trim();
+
       const apiData = {
         title: formData.title,
         titleEn: formData.titleEn,
         parentId: formData.parentId || undefined,
         type: (isExternal ? "external" : "internal") as "internal" | "external",
         url,
-        productCategory: (formData.productCategory || "").trim() || undefined,
+        // 若使用者選「不設定產品分類」，明確送出 null 來清空後端欄位
+        productCategory: normalizedCategory === "" ? null : normalizedCategory,
         isVisible: formData.isVisible,
         sortOrder:
           typeof formData.sortOrder === "number"

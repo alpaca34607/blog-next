@@ -131,7 +131,7 @@ const NavigationModal = ({
     if (!submitData.pageId) delete submitData.pageId;
     if (!submitData.externalUrl) delete submitData.externalUrl;
     if (!submitData.hasChildren) delete submitData.hasChildren;
-    if (!submitData.productCategory) delete submitData.productCategory;
+    // 保留 productCategory，即使為空字串，讓上層可以明確判斷「清空」動作
     onSubmit(submitData);
   };
 
