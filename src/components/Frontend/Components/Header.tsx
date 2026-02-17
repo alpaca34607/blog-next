@@ -96,18 +96,12 @@ const oldNavItemsData: OldNavItem[] = [
 
   {
     id: 3,
-    text: "合作案例",
-    link: "#",
-  },
-
-  {
-    id: 4,
     text: "最新消息",
     link: "/news",
   },
   {
-    id: 5,
-    text: "頁面範本",
+    id: 4,
+    text: "範例展示",
     link: "#",
   },
 ];

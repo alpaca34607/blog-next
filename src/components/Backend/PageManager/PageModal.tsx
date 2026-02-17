@@ -233,7 +233,8 @@ const PageModal = ({
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>產品官網</label>
+                  <label className={styles.label}>產品官網
+                  </label>
                   <input
                     type="url"
                     className={styles.input}

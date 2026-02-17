@@ -60,7 +60,7 @@ const PartnerSection = () => {
   return (
     <div id="partner-section-wrapper" className={styles.partnerSectionWrapper}>
       <section className={styles.partnerSection}>
-        {/* 合作夥伴輪播 */}
+        {/* 合作品牌輪播 */}
         <div ref={group1Ref} className={styles.group}>
           <div className={styles.title}>
             <h2>合作品牌</h2>
@@ -119,7 +119,7 @@ const PartnerSection = () => {
           </div>
         </div>
 
-        {/* 成功案例輪播 */}
+        {/* 上線案例輪播 */}
         <div ref={group2Ref} className={styles.group}>
           <div className={styles.title}>
             <h2>上線案例</h2>
@@ -184,8 +184,8 @@ const PartnerSection = () => {
           </div>
         </div>
 
-        {/* 更多合作夥伴連結 */}
-        <div ref={moreRef} className={styles.more}>
+        {/* 更多合作品牌連結 */}
+        {/* <div ref={moreRef} className={styles.more}>
           <a href="#" className={styles.link}>
             更多合作品牌
             <div className={styles.linkIconWrapper}>
@@ -206,7 +206,7 @@ const PartnerSection = () => {
               </svg>
             </div>
           </a>
-        </div>
+        </div> */}
       </section>
     </div>
   );
