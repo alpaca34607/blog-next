@@ -56,7 +56,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
             introImage: p.introImage ?? undefined,
             navOrder: typeof p.sortOrder === "number" ? p.sortOrder : undefined,
             isPublished: !!p.isPublished,
-            isFeatured: false,
+            isFeatured: p.isFeatured ?? false,
           }));
           const publishedProducts = allProducts
             .filter((product) => product.isPublished && product.isFeatured)
