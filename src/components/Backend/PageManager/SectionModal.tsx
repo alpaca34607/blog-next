@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from "react";
 import { FiX, FiUpload, FiTrash2, FiPlus, FiFileText } from "react-icons/fi";
 import RichTextEditor from "@/components/forms/RichTextEditor";
 import ImageUploader from "@/components/forms/ImageUploader";
-import FileUploader from "@/components/forms/FileUploader";
+import { tryFetch } from "@/app/api/api_client";
 import {
   BgSettingsForm,
   BgSettings,
@@ -67,6 +67,9 @@ const SectionModal = ({
   const [tables, setTables] = useState<any[]>([]);
   const [timelines, setTimelines] = useState<any[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const [uploadingDownloadIndex, setUploadingDownloadIndex] = useState<
+    number | null
+  >(null);
   const typeMenuRef = useRef<HTMLDivElement>(null);
   const variantMenuRef = useRef<HTMLDivElement>(null);
   const tableMenuRef = useRef<HTMLDivElement>(null);
@@ -285,40 +288,82 @@ const SectionModal = ({
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
-  // 處理檔案上傳
-  const handleFileUpload = (
+  // 處理檔案上傳（改用 /api/upload，上傳至 S3 相容服務）
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     downloadIndex: number
   ) => {
-    const file = e.target.files?.[0];
+    const inputEl = e.currentTarget;
+    const file = inputEl.files?.[0];
+    if (!file) return;
 
-    if (file) {
-      // 計算檔案大小
-      const fileSize = formatFileSize(file.size);
+    // 重置 input，以便可以再次選擇同一檔案
+    const resetInput = () => {
+      try {
+        inputEl.value = "";
+      } catch {
+        // ignore
+      }
+    };
 
-      // 將檔案轉換為 base64（臨時方案，之後可替換為實際的檔案上傳 API）
-      const reader = new FileReader();
+    // 基本大小檢查（後端也會再驗一次）
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      alert(`檔案大小不能超過 ${(maxSize / 1024 / 1024).toFixed(0)}MB`);
+      resetInput();
+      return;
+    }
 
-      reader.onloadend = () => {
-        const downloads = [...(formData.settings?.downloads || [])];
+    setUploadingDownloadIndex(downloadIndex);
+    try {
+      const uploadFormData = new FormData();
+      uploadFormData.append("file", file);
 
+      const res = await tryFetch<{
+        filename: string;
+        url: string;
+        size: number;
+        mimeType: string;
+      }>("/api/upload", {
+        method: "POST",
+        body: uploadFormData,
+        withAuth: true,
+      });
+
+      if (!res.success) {
+        throw new Error(res.error?.message || "上傳失敗");
+      }
+
+      const url = (res.data as any)?.url;
+      if (typeof url !== "string" || !url) {
+        throw new Error("上傳回應格式不正確");
+      }
+
+      setFormData((prev) => {
+        const prevSettings = (prev.settings || {}) as Record<string, any>;
+        const downloads = [...(prevSettings.downloads || [])];
         downloads[downloadIndex] = {
           ...downloads[downloadIndex],
-          fileUrl: reader.result as string, // 儲存 base64 資料
-          fileName: file.name, // 儲存檔案名稱
-          fileSize: fileSize, // 自動計算檔案大小
-          fileType: file.type, // 儲存檔案類型
+          fileUrl: url,
+          fileName: file.name,
+          fileSize: formatFileSize(file.size),
+          fileType: file.type,
         };
 
-        setFormData({
-          ...formData,
+        return {
+          ...prev,
           settings: {
-            ...formData.settings,
+            ...prevSettings,
             downloads,
           },
-        });
-      };
-      reader.readAsDataURL(file);
+        };
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "請重試";
+      alert(`檔案上傳失敗：${message}`);
+    } finally {
+      setUploadingDownloadIndex(null);
+      resetInput();
     }
   };
 
@@ -1987,11 +2032,17 @@ const SectionModal = ({
                             <FiFileText size={20} className={styles.fileIcon} />
                             <div className={styles.fileDetails}>
                               <span className={styles.fileName}>
-                                外部檔案網址
+                                {download.fileName || "已上傳的檔案"}
                               </span>
-                              <span className={styles.fileSize}>
-                                {download.fileUrl}
-                              </span>
+                              {download.fileSize ? (
+                                <span className={styles.fileSize}>
+                                  {download.fileSize}
+                                </span>
+                              ) : (
+                                <span className={styles.fileSize}>
+                                  {download.fileUrl}
+                                </span>
+                              )}
                             </div>
                           </div>
                           <button
@@ -2026,8 +2077,14 @@ const SectionModal = ({
                             className={styles.fileInput}
                             onChange={(e) => handleFileUpload(e, index)}
                             accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.txt,.jpg,.jpeg,.png,.gif"
+                            disabled={uploadingDownloadIndex === index}
                           />
-                          <FiUpload size={24} /> <span>選擇檔案上傳</span>
+                          <FiUpload size={24} />{" "}
+                          <span>
+                            {uploadingDownloadIndex === index
+                              ? "上傳中..."
+                              : "選擇檔案上傳"}
+                          </span>
                           <p className={styles.helpText}>
                             支援
                             PDF、Word、Excel、PowerPoint、壓縮檔、圖片等格式
