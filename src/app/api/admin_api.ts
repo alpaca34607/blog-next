@@ -231,7 +231,7 @@ export const API_GetNavigationById = async (id: string) => {
 export const API_CreateNavigation = async (data: {
   title: string;
   titleEn?: string;
-  url?: string;
+  url?: string | null;
   productCategory?: string;
   type?: "internal" | "external";
   isVisible?: boolean;
@@ -248,7 +248,7 @@ export const API_UpdateNavigation = async (
   data: {
     title?: string;
     titleEn?: string;
-    url?: string;
+    url?: string | null;
     productCategory?: string | null;
     type?: "internal" | "external";
     isVisible?: boolean;

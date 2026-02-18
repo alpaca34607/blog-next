@@ -187,9 +187,10 @@ const NavigationManager = () => {
       const hasChildren = !!formData.hasChildren;
 
       // internal：url 以 slug 產生（/xxx）；external：url 為完整網址
-      let url: string | undefined;
+      let url: string | null | undefined;
       if (hasChildren) {
-        url = undefined;
+        // 當勾選「有子分頁」時，明確傳送 null 來清空後端的 url
+        url = null;
       } else if (isExternal) {
         url = (formData.externalUrl || "").trim() || undefined;
       } else if (formData.pageId) {

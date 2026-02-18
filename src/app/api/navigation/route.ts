@@ -18,7 +18,7 @@ import {
 const navigationSchema = z.object({
   title: z.string().min(1, "標題不能為空"),
   titleEn: z.string().optional(),
-  url: z.string().optional(),
+  url: z.string().nullable().optional(),
   productCategory: z.string().optional(),
   type: z.enum(["internal", "external"]).default("internal"),
   isVisible: z.boolean().default(true),
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
     const flat = searchParams.get("flat") === "true";
     const params: QueryParams = {
       page: parseInt(searchParams.get("page") || "1"),
-      limit: parseInt(searchParams.get("limit") || "50"),
+      limit: parseInt(searchParams.get("limit") || "10"),
       search: searchParams.get("search") || undefined,
       sortBy: searchParams.get("sortBy") || "sortOrder",
       sortOrder: (searchParams.get("sortOrder") as "asc" | "desc") || "asc",

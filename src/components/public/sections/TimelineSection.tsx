@@ -191,16 +191,17 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
                       }`}
                     >
                       <div className={styles.contentInner}>
-                        <div className={styles.contentImage}>
+                        
                           {item.image && (
+                            <div className={styles.contentImage}>
                             <img
                               src={item.image}
                               alt={item.title}
                               width={100}
                               height={100}
                             />
+                            </div>
                           )}
-                        </div>
                         <div className={styles.contentText}>
                           {item.year && (
                             <span className={styles.year}>{item.year}</span>

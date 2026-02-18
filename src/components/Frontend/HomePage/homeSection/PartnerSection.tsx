@@ -31,7 +31,8 @@ const PartnerSection = () => {
     const group2Element = group2Ref.current;
     const moreElement = moreRef.current;
 
-    if (!group1Element || !group2Element || !moreElement) return;
+    // 僅檢查 group1、group2（more 區塊可能被註解）
+    if (!group1Element || !group2Element) return;
 
     // 使用 GSAP ScrollTrigger 實現淡入動畫（更早觸發，更快完成）
     scrollTriggerAnimations.fadeInOnScroll(group1Element, {
@@ -46,11 +47,13 @@ const PartnerSection = () => {
       once: true,
     });
 
-    scrollTriggerAnimations.fadeInOnScroll(moreElement, {
-      start: "top 95%",
-      end: "top 60%",
-      once: true,
-    });
+    if (moreElement) {
+      scrollTriggerAnimations.fadeInOnScroll(moreElement, {
+        start: "top 95%",
+        end: "top 60%",
+        once: true,
+      });
+    }
 
     return () => {
       // ScrollTrigger 會在組件卸載時自動清理

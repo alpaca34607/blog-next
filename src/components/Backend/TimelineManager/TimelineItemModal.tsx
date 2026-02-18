@@ -78,7 +78,7 @@ const TimelineItemModal = ({
   if (!open) return null;
 
   return (
-    <div className={styles.modalOverlay} onClick={onClose}>
+    <div className={styles.modalOverlay}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>
@@ -92,7 +92,7 @@ const TimelineItemModal = ({
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             <label className={styles.label}>
-              年份 <span className={styles.required}>*</span>
+              年份/步驟 <span className={styles.required}>*</span>
             </label>
             <input
               type="text"

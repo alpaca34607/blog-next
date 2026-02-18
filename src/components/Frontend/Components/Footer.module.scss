@@ -126,6 +126,9 @@
   &:hover {
     background-color: $accent-orange;
     color: $bg-color;
+    svg {
+      color: $bg-color;
+    }
   }
 
   svg {

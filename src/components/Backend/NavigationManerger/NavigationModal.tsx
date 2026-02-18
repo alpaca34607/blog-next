@@ -184,11 +184,16 @@ const NavigationModal = ({
                 setFormData({ ...formData, slug: e.target.value })
               }
               placeholder="例如：about"
-              disabled={!!formData.pageId}
+              disabled={!!formData.pageId || !!formData.hasChildren}
             />
             {formData.pageId && (
               <p className={styles.helpText}>
                 已選擇頁面，將自動使用該頁面的路由
+              </p>
+            )}
+            {formData.hasChildren && (
+              <p className={styles.helpText}>
+                已勾選有子分頁，不需要獨立的 URL 路徑
               </p>
             )}
           </div>
@@ -383,9 +388,15 @@ const NavigationModal = ({
                 <input
                   type="checkbox"
                   checked={!!formData.hasChildren}
-                  onChange={(e) =>
-                    setFormData({ ...formData, hasChildren: e.target.checked })
-                  }
+                  onChange={(e) => {
+                    const hasChildren = e.target.checked;
+                    setFormData({
+                      ...formData,
+                      hasChildren,
+                      // 當勾選有子分頁時，自動清空 slug
+                      slug: hasChildren ? "" : formData.slug,
+                    });
+                  }}
                 />
                 <span className={styles.slider}></span>
               </label>

@@ -23,7 +23,7 @@ async function resolveNavigationId(context: {
 const updateNavigationSchema = z.object({
   title: z.string().min(1, "標題不能為空").optional(),
   titleEn: z.string().optional(),
-  url: z.string().optional(),
+  url: z.string().nullable().optional(),
   productCategory: z.string().nullable().optional(),
   type: z.enum(["internal", "external"]).optional(),
   isVisible: z.boolean().optional(),

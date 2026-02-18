@@ -288,12 +288,13 @@ const Footer = () => {
             </div>
             <div className={styles.footerDivider} />
             <div className={styles.footerRecruitSocial}>
-              <span className={styles.footerRecruit}>人才招募</span>
+              <span className={styles.footerRecruit}>社群連結</span>
               <div className={styles.footerSocialIcons}>
                 <a
                   href={siteSettings?.socialLinks?.facebook || "#"}
                   className={styles.footerSocialIcon}
                   aria-label="Facebook"
+                  target="_blank"
                 >
                   <FaFacebookF />
                 </a>
@@ -301,6 +302,7 @@ const Footer = () => {
                   href={siteSettings?.socialLinks?.line || "#"}
                   className={styles.footerSocialIcon}
                   aria-label="LINE"
+                  target="_blank"
                 >
                   <SiLine />
                 </a>
@@ -308,6 +310,7 @@ const Footer = () => {
                   href={siteSettings?.socialLinks?.youtube || "#"}
                   className={styles.footerSocialIcon}
                   aria-label="YouTube"
+                  target="_blank"
                 >
                   <FaYoutube />
                 </a>
