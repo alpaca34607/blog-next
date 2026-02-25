@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import styles from "./TopUtils.module.scss";
 
 const TopUtils = ({ isMobile }: { isMobile: boolean }) => {
@@ -12,9 +12,10 @@ const TopUtils = ({ isMobile }: { isMobile: boolean }) => {
       <Link className={styles.topUtilsItem} href="/download">
         <span>下載專區</span>
       </Link>
-      <Link className={styles.topUtilsItem} href="/login">
+      {/* /login 為後台路由，不套用語系前綴 */}
+      <a className={styles.topUtilsItem} href="/login">
         <span>登入體驗</span>
-      </Link>
+      </a>
     </div>
   );
 };

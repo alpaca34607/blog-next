@@ -8,7 +8,6 @@ import type { PageSectionSettings } from "@/components/Backend/PageSectionSettin
 import styles from "./page.module.scss";
 import { API_GetConfig } from "@/app/api/public_api";
 
-// 預設設定（與 NewsManager 中的預設值保持一致）
 const getDefaultSettings = (): PageSectionSettings => ({
   hero: {
     title: "",
@@ -37,7 +36,6 @@ export default function NewsListPage() {
   useEffect(() => {
     setIsClient(true);
 
-    // 從 API 讀取設定（避免依賴 localStorage）
     const loadSettings = async () => {
       const res = await API_GetConfig("newsListPageSettings");
       const parsed = res?.success ? res.data : null;
@@ -59,7 +57,6 @@ export default function NewsListPage() {
 
     loadSettings().catch(() => {});
 
-    // 監聽設定更新事件
     const handleSettingsUpdate = () => {
       loadSettings().catch(() => {});
     };
@@ -77,7 +74,6 @@ export default function NewsListPage() {
     };
   }, []);
 
-  // 檢查是否需要渲染 HeroSection
   const shouldRenderHero =
     settings.hero.title ||
     settings.hero.subtitle ||
@@ -93,10 +89,10 @@ export default function NewsListPage() {
             settings: {
               ...settings.cardGrid.settings,
               dataSource: "news",
-              limit: 1000, // 顯示所有新聞（設定較大值以顯示全部）
+              limit: 1000,
               sortBy: "date",
-              enableCategoryFilter: true, // 啟用分類篩選
-              categories: ["技術文章", "媒體報導", "活動訊息"], // 分類列表
+              enableCategoryFilter: true,
+              categories: ["技術文章", "媒體報導", "活動訊息"],
             },
             title: settings.cardGrid.title,
             subtitle: settings.cardGrid.subtitle,

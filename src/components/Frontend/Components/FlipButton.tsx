@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 
 import { cn } from "@/utils/cn";
 import styles from "./FlipButton.module.scss";

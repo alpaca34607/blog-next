@@ -1,0 +1,515 @@
+@charset "UTF-8";
+/**
+ * Section 共用樣式（mixin）
+ * 目標：集中管理各 section 常見的 .container/.header/.title/.subtitle
+ */
+.navContainer {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: fit-content;
+}
+@media screen and (max-width: 1280px) {
+  .navContainer {
+    display: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navContainer {
+    display: none;
+  }
+}
+
+.mobileNavContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.mobileNavItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #2a2a2a;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  border-radius: 0;
+  min-height: 60px;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.mobileNavLink {
+  display: flex;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+  transition: 0.3s;
+  color: #2a2a2a;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+  text-decoration: none;
+  border-radius: 0;
+  min-height: 60px;
+  flex: 1;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: 0.3s;
+  padding: 0 16px;
+}
+.mobileNavLink:hover {
+  color: #faad3a;
+  padding-left: 20px;
+}
+
+.mobileSubmenuLink {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  color: #2a2a2a;
+  text-decoration: none;
+  font-size: 16px;
+  flex: 1;
+  transition: all 0.3s ease;
+}
+.mobileSubmenuLink:hover {
+  color: #faad3a;
+  padding-left: 25px;
+}
+
+.expandBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+.expandIcon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #2a2a2a;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+}
+.expandIcon.expanded {
+  transform: rotate(180deg);
+  background: transparent;
+}
+
+.navBar {
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  padding: 6px 20px;
+  border-radius: 0px;
+  transition: 0.3s;
+  position: relative;
+  list-style: none;
+  margin: 0;
+}
+@media screen and (max-width: 1280px) {
+  .navBar {
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    padding: 0;
+    align-items: stretch;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navBar {
+    flex-direction: column;
+    width: 100%;
+    gap: 0;
+    padding: 0;
+    align-items: stretch;
+  }
+}
+.navBar > li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media screen and (max-width: 1280px) {
+  .navBar > li {
+    width: 100%;
+    border-bottom: 1px solid rgba(171, 171, 171, 0.3);
+  }
+  .navBar > li:last-child {
+    border-bottom: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navBar > li {
+    width: 100%;
+    border-bottom: 1px solid rgba(171, 171, 171, 0.3);
+  }
+  .navBar > li:last-child {
+    border-bottom: none;
+  }
+}
+
+.navItemWrapper {
+  position: relative;
+  flex-shrink: 0;
+  width: fit-content;
+  height: fit-content;
+}
+@media screen and (max-width: 1280px) {
+  .navItemWrapper {
+    width: 100%;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navItemWrapper {
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .navItemWrapper :global(.flipButton) {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    border-radius: 0;
+  }
+  .navItemWrapper :global(.flipButton)::before, .navItemWrapper :global(.flipButton)::after {
+    display: none;
+  }
+  .navItemWrapper :global(.flipButton):hover, .navItemWrapper :global(.flipButton):active {
+    color: #faad3a;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navItemWrapper :global(.flipButton) {
+    width: 100%;
+    justify-content: flex-start;
+    padding: 16px 20px;
+    border: none;
+    background: transparent;
+    font-size: 16px;
+    border-radius: 0;
+  }
+  .navItemWrapper :global(.flipButton)::before, .navItemWrapper :global(.flipButton)::after {
+    display: none;
+  }
+  .navItemWrapper :global(.flipButton):hover, .navItemWrapper :global(.flipButton):active {
+    color: #faad3a;
+  }
+}
+.navDropdown,
+.navSubmenu {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  min-width: 100%;
+  width: max-content;
+  min-width: 200px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #ababab;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+  z-index: 1000;
+  backdrop-filter: blur(10px);
+}
+@media screen and (max-width: 1280px) {
+  .navDropdown,
+  .navSubmenu {
+    position: static;
+    width: 100%;
+    min-width: 100%;
+    border: none;
+    background: transparent;
+    padding-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+    backdrop-filter: none;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+  }
+  .navDropdown.expanded,
+  .navSubmenu.expanded {
+    background: transparent;
+    backdrop-filter: none;
+    max-height: 2000px;
+    opacity: 1;
+    visibility: visible;
+    margin-top: 8px;
+    border-top: 1px solid rgba(171, 171, 171, 0.3);
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navDropdown,
+  .navSubmenu {
+    position: static;
+    width: 100%;
+    min-width: 100%;
+    border: none;
+    background: transparent;
+    padding-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transform: none;
+    backdrop-filter: none;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+  }
+  .navDropdown.expanded,
+  .navSubmenu.expanded {
+    background: transparent;
+    backdrop-filter: none;
+    max-height: 2000px;
+    opacity: 1;
+    visibility: visible;
+    margin-top: 8px;
+    border-top: 1px solid rgba(171, 171, 171, 0.3);
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+  }
+}
+.navDropdown ul,
+.navSubmenu ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+@media screen and (max-width: 1280px) {
+  .navDropdown ul,
+  .navSubmenu ul {
+    background: transparent;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navDropdown ul,
+  .navSubmenu ul {
+    background: transparent;
+  }
+}
+.navDropdown li,
+.navSubmenu li {
+  position: relative;
+  margin: 0;
+  padding: 0;
+}
+@media screen and (max-width: 1280px) {
+  .navDropdown li,
+  .navSubmenu li {
+    background: transparent;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navDropdown li,
+  .navSubmenu li {
+    background: transparent;
+  }
+}
+.navDropdown a,
+.navSubmenu a {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 12px 20px;
+  color: #2a2a2a;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  border-bottom: 1px solid #ababab;
+  position: relative;
+  z-index: 1;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+@media screen and (max-width: 1280px) {
+  .navDropdown a,
+  .navSubmenu a {
+    padding: 16px 20px;
+    border-bottom: none;
+    white-space: normal;
+    color: #908bb4;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navDropdown a,
+  .navSubmenu a {
+    padding: 16px 20px;
+    border-bottom: none;
+    white-space: normal;
+    color: #908bb4;
+  }
+}
+.navDropdown li:first-child > a,
+.navSubmenu li:first-child > a {
+  padding-top: 12px;
+}
+.navDropdown li:last-child > a,
+.navSubmenu li:last-child > a {
+  border-bottom: none;
+  padding-bottom: 12px;
+}
+.navDropdown a:hover,
+.navSubmenu a:hover {
+  background: #faad3a;
+  color: #fcfcfc;
+  padding-left: 25px;
+}
+
+.navSubmenu {
+  top: -1px;
+  left: 100%;
+  z-index: 1001;
+}
+@media screen and (max-width: 1280px) {
+  .navSubmenu {
+    position: static;
+    margin-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .navSubmenu.expanded {
+    max-height: 1000px;
+    opacity: 1;
+    visibility: visible;
+    border-left: 1px solid rgba(171, 171, 171, 0.3);
+  }
+  .navSubmenu.expanded a {
+    color: #666666;
+  }
+  .navSubmenu.expanded:last-child {
+    margin-bottom: 16px;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navSubmenu {
+    position: static;
+    margin-left: 16px;
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    visibility: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  }
+  .navSubmenu.expanded {
+    max-height: 1000px;
+    opacity: 1;
+    visibility: visible;
+    border-left: 1px solid rgba(171, 171, 171, 0.3);
+  }
+  .navSubmenu.expanded a {
+    color: #666666;
+  }
+  .navSubmenu.expanded:last-child {
+    margin-bottom: 16px;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navItemWrapper:hover > .navDropdown,
+  .navItemWrapper:hover > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+@media (hover: none) {
+  .navItemWrapper:active > .navDropdown,
+  .navItemWrapper:focus-within > .navDropdown,
+  .navItemWrapper:active > .navSubmenu,
+  .navItemWrapper:focus-within > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navDropdown li:hover > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+@media (hover: none) {
+  .navDropdown li:active > .navSubmenu,
+  .navDropdown li:focus-within > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  .navItemWrapper:hover > .navDropdown,
+  .navItemWrapper:hover > .navSubmenu,
+  .navItemWrapper:active > .navDropdown,
+  .navItemWrapper:focus-within > .navDropdown,
+  .navItemWrapper:active > .navSubmenu,
+  .navItemWrapper:focus-within > .navSubmenu,
+  .navDropdown li:hover > .navSubmenu,
+  .navDropdown li:active > .navSubmenu,
+  .navDropdown li:focus-within > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navItemWrapper:hover > .navDropdown,
+  .navItemWrapper:hover > .navSubmenu,
+  .navItemWrapper:active > .navDropdown,
+  .navItemWrapper:focus-within > .navDropdown,
+  .navItemWrapper:active > .navSubmenu,
+  .navItemWrapper:focus-within > .navSubmenu,
+  .navDropdown li:hover > .navSubmenu,
+  .navDropdown li:active > .navSubmenu,
+  .navDropdown li:focus-within > .navSubmenu {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+}

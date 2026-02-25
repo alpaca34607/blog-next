@@ -1,0 +1,13 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "notFound": "This page does not exist or has not been published"
+  },
+  "news": {
+    "loading": "Loading...",
+    "backToList": "Back to list",
+    "relatedArticles": "Related Articles",
+    "breadcrumbHome": "Home",
+    "breadcrumbNews": "News"
+  }
+}

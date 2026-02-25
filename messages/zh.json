@@ -1,0 +1,13 @@
+{
+  "common": {
+    "loading": "內容載入中…",
+    "notFound": "此頁面不存在或尚未發布"
+  },
+  "news": {
+    "loading": "載入中...",
+    "backToList": "返回列表",
+    "relatedArticles": "相關文章",
+    "breadcrumbHome": "首頁",
+    "breadcrumbNews": "最新消息"
+  }
+}

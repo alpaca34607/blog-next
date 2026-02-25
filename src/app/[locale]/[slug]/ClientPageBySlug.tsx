@@ -16,6 +16,7 @@ import ProductSpecsSection from "@/components/public/sections/ProductSpecsSectio
 import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import { API_GetPageBySlug } from "@/app/api/public_api";
+import { useTranslations } from "next-intl";
 
 interface BasePage {
   id: string;
@@ -50,7 +51,6 @@ interface Section {
 }
 
 function normalizeSections(input: any[]): Section[] {
-  // 將後端可能回傳的 null 統一轉為 undefined，避免前端 props 型別不相容
   return input.map((s) => ({
     ...s,
     title: s?.title ?? undefined,
@@ -61,20 +61,18 @@ function normalizeSections(input: any[]): Section[] {
 }
 
 const ClientPageBySlug = () => {
-  // 在 client component 中使用 useParams 取得動態路由參數，避免直接存取 params Promise
-  const params = useParams<{ slug: string }>();
+  const params = useParams<{ locale: string; slug: string }>();
   const slug = params?.slug;
+  const t = useTranslations("common");
   const [isClient, setIsClient] = useState(false);
   const [page, setPage] = useState<BasePage | Product | undefined>(undefined);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 僅在客戶端啟用 localStorage 相關操作
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // 根據 slug 讀取頁面 / 產品與區塊資料（改為呼叫 API，避免依賴 localStorage）
   useEffect(() => {
     if (!isClient || !slug) return;
 
@@ -125,7 +123,6 @@ const ClientPageBySlug = () => {
     };
   }, [isClient, slug]);
 
-  // 後台更新時可透過自訂事件觸發前台重新抓取（避免依賴 localStorage）
   useEffect(() => {
     if (!isClient || !slug) return;
 
@@ -166,7 +163,6 @@ const ClientPageBySlug = () => {
           <HeroSection
             key={section.id}
             section={section}
-            // 只把 HeroSection 需要的欄位傳下去（避免型別不相容）
             page={
               page
                 ? {
@@ -210,11 +206,11 @@ const ClientPageBySlug = () => {
     <Layout>
       {!isClient ? (
         <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          內容載入中…
+          {t("loading")}
         </div>
       ) : loading ? (
         <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          內容載入中…
+          {t("loading")}
         </div>
       ) : !page ? (
         <div
@@ -227,7 +223,7 @@ const ClientPageBySlug = () => {
             textAlign: "center",
           }}
         >
-          此頁面不存在或尚未發布
+          {t("notFound")}
         </div>
       ) : (
         <>
@@ -245,7 +241,6 @@ const ClientPageBySlug = () => {
                 (heroImages && heroImages.length)
             );
 
-            // 若 sections 本身有 hero，也允許渲染（但 page 的 hero 欄位優先）
             const heroSectionFromApi = sections.find(
               (s) => s.sectionType === "hero"
             );
@@ -258,7 +253,6 @@ const ClientPageBySlug = () => {
                   <HeroSection
                     carouselSlideClassName="pageHero"
                     section={{
-                      // page 欄位優先（避免 section hero 為空字串/空值時誤判）
                       title: pageHeroTitle ?? heroSectionFromApi?.title ?? undefined,
                       subtitle:
                         pageHeroSubtitle ?? heroSectionFromApi?.subtitle ?? undefined,
@@ -271,7 +265,6 @@ const ClientPageBySlug = () => {
                           undefined,
                       },
                     }}
-                    // 只把 HeroSection 需要的欄位傳下去（避免型別不相容）
                     page={{
                       logo: "logo" in page ? (page as any).logo : undefined,
                       heroTitle: (page as any).heroTitle ?? undefined,
@@ -292,4 +285,3 @@ const ClientPageBySlug = () => {
 };
 
 export default ClientPageBySlug;
-

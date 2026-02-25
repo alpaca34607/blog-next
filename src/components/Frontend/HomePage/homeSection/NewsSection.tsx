@@ -1,7 +1,7 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
 import { newsData, type NewsArticle } from "@/data/homePageData";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import styles from "./NewsSection.module.scss";
 import Image from "next/image";
 import { API_GetNews } from "@/app/api/frontend_api";

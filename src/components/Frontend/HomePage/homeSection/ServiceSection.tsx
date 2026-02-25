@@ -10,6 +10,7 @@ import Image from "next/image";
 import { FaPlay } from "react-icons/fa";
 import { BsCursorFill } from "react-icons/bs";
 import { API_GetProducts } from "@/app/api/frontend_api";
+import { Link } from "@/navigation";
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
@@ -222,24 +223,44 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                       </button>
                     )}
                     {!service.videoUrl && (
-                      <a
-                        className={cn(styles.playbtn)}
-                        href={service.externalUrl ? service.externalUrl : `/${service.slug}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <BsCursorFill />
-                      </a>
+                      service.externalUrl ? (
+                        <a
+                          className={cn(styles.playbtn)}
+                          href={service.externalUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <BsCursorFill />
+                        </a>
+                      ) : (
+                        <Link
+                          className={cn(styles.playbtn)}
+                          href={`/${service.slug}`}
+                        >
+                          <BsCursorFill />
+                        </Link>
+                      )
                     )}
                   </div>
                   <div className={styles.serviceimgWrapper}>
                     <div className={styles.serviceimg}>
-                      <a
-                        href={service.externalUrl ? service.externalUrl : `/${service.slug}`}
-                        className={styles.servicepageLink}
-                      >
-                        深入了解{service.title}
-                      </a>
+                      {service.externalUrl ? (
+                        <a
+                          href={service.externalUrl}
+                          className={styles.servicepageLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          深入了解{service.title}
+                        </a>
+                      ) : (
+                        <Link
+                          href={`/${service.slug}`}
+                          className={styles.servicepageLink}
+                        >
+                          深入了解{service.title}
+                        </Link>
+                      )}
                       {(() => {
                         const introSrc =
                           normalizeImageSrc(service.introImage) ||

@@ -5,9 +5,9 @@ import { prisma } from "@/lib/prisma";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 }): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
 
   try {
     const [page, siteSettings] = await Promise.all([
@@ -47,16 +47,15 @@ export async function generateMetadata({
         title,
         description,
         type: "website",
-        locale: "zh_TW",
+        locale: locale === "en" ? "en_US" : "zh_TW",
         siteName: fallbackSiteName,
-        url: `/${slug}`,
+        url: `/${locale}/${slug}`,
       },
       alternates: {
-        canonical: `/${slug}`,
+        canonical: `/${locale}/${slug}`,
       },
     };
   } catch {
-    // 保守 fallback：避免 metadata 生成影響整頁 render
     return {
       title: "Blogcraft",
       description: "",

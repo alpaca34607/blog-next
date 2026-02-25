@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import FlipButton from "../FlipButton";
 import styles from "./Navigation.module.scss";
 import { FiChevronDown } from "react-icons/fi";
@@ -198,7 +198,7 @@ const Navigation = ({
                               </button>
                            
                           ) : (
-                            <a href={buildHref(child)}> {child.title}</a>
+                            <Link href={buildHref(child)}>{child.title}</Link>
                           )}
                           {hasProductSubmenu && (
                             <div
@@ -213,9 +213,9 @@ const Navigation = ({
                               <ul>
                                 {childProducts.map((product) => (
                                   <li key={product.id}>
-                                    <a href={`/${product.slug}`}>
+                                    <Link href={`/${product.slug}`}>
                                       {product.title}
-                                    </a>
+                                    </Link>
                                   </li>
                                 ))}
                               </ul>

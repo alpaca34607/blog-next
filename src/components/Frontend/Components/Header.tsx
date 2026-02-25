@@ -1,18 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Link from "next/link";
+import { useEffect, useState, useTransition } from "react";
+import { Link, useRouter, usePathname } from "@/navigation";
+import { useLocale } from "next-intl";
 import styles from "./Header.module.scss";
 import Navigation from "./Header/Navigation";
 import LanguageToggle from "./Header/LanguageToggle";
 import TopUtils from "./Header/TopUtils";
 import MobileMenu from "./Header/MobileMenu";
-import {
-  API_GetLanguagePreference,
-  API_SetLanguagePreference,
-  API_GetNavigationItem,
-  API_GetProducts,
-} from "@/app/api/public_api";
+import { API_GetNavigationItem, API_GetProducts } from "@/app/api/public_api";
 
 interface NavigationItem {
   id: string;
@@ -221,23 +217,16 @@ const convertOldSubmenuToProducts = (oldItems: OldNavItem[]): Product[] => {
 };
 
 const Header = () => {
-  const [lang, setLang] = useState("zh");
+  const lang = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
   const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
-
-    // 載入語系偏好（cookie）
-    const loadLanguage = async () => {
-      const res = await API_GetLanguagePreference();
-      if (cancelled) return;
-      if (res?.success && res.data?.lang) {
-        const next = res.data.lang;
-        if (next === "en" || next === "zh") setLang(next);
-      }
-    };
 
     // 載入導覽資料（API）
     const loadNavigation = async () => {
@@ -279,7 +268,7 @@ const Header = () => {
               isVisible: child.isVisible !== false,
               hasChildren: Array.isArray(child.children)
                 ? child.children.length > 0
-            : false,
+                : false,
               productCategory: child.productCategory ?? undefined,
             });
           });
@@ -287,7 +276,7 @@ const Header = () => {
 
         const visible = flattened.filter((i) => i.isVisible);
         setNavItems(
-          visible.length > 0 ? visible : convertOldNavToNew(oldNavItemsData)
+          visible.length > 0 ? visible : convertOldNavToNew(oldNavItemsData),
         );
         return;
       }
@@ -314,7 +303,7 @@ const Header = () => {
         setProducts(
           published.length > 0
             ? published
-            : convertOldSubmenuToProducts(oldNavItemsData)
+            : convertOldSubmenuToProducts(oldNavItemsData),
         );
         return;
       }
@@ -323,7 +312,6 @@ const Header = () => {
       setProducts(convertOldSubmenuToProducts(oldNavItemsData));
     };
 
-    loadLanguage();
     loadNavigation();
     loadProducts();
 
@@ -341,11 +329,12 @@ const Header = () => {
   }, []);
 
   const handleLangClick = (nextLang: string) => {
-    setLang(nextLang);
-    if (nextLang === "zh" || nextLang === "en") {
-      // 透過 API 寫入 cookie，避免依賴 localStorage
-      API_SetLanguagePreference(nextLang).catch(() => {});
-    }
+    if (isPending) return;
+    if (nextLang !== "zh" && nextLang !== "en") return;
+    // 切換語系：保持目前路徑，只替換 URL 中的語系前綴
+    startTransition(() => {
+      router.replace(pathname, { locale: nextLang });
+    });
   };
 
   return (

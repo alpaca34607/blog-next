@@ -2,7 +2,7 @@
 import React from "react";
 import { cn } from "@/utils/cn";
 import styles from "./ClipPathBtn.module.scss";
-import Link from "next/link";
+import { Link } from "@/navigation";
 
 interface ClipPathBtnProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {

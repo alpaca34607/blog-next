@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 import { useEffect, useState } from "react";
+import { Link } from "@/navigation";
 import {
   API_GetSiteSettings,
   API_GetNavigationItem,
@@ -339,7 +340,7 @@ const Footer = () => {
               <ul className={styles.footerList}>
                 {productList.map((product) => (
                   <li key={product.id}>
-                    <a href={`/${product.slug}`}>{product.title}</a>
+                    <Link href={`/${product.slug}`}>{product.title}</Link>
                   </li>
                 ))}
               </ul>
@@ -350,13 +351,21 @@ const Footer = () => {
             <div className={cn(styles.footerColumn, styles.footerColumnAbout)}>
               <h3 className={styles.footerColumnTitle}>關於我們</h3>
               <ul className={styles.footerList}>
-                {parentItems.map((item) => (
-                  <li key={item.id}>
-                    <a href={item.url || (item.slug ? `/${item.slug}` : "#")}>
-                      {item.title}
-                    </a>
-                  </li>
-                ))}
+                {parentItems.map((item) =>
+                  item.type === "external" && item.url ? (
+                    <li key={item.id}>
+                      <a href={item.url} target="_blank" rel="noopener noreferrer">
+                        {item.title}
+                      </a>
+                    </li>
+                  ) : (
+                    <li key={item.id}>
+                      <Link href={item.slug ? `/${item.slug}` : "/"}>
+                        {item.title}
+                      </Link>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           )}
@@ -367,7 +376,7 @@ const Footer = () => {
               <ul className={cn(styles.footerList, styles.footerListNews)}>
                 {newsList.map((news) => (
                   <li key={news.id}>
-                    <a href={`/news/${news.slug}`}>{news.title}</a>
+                    <Link href={`/news/${news.slug}`}>{news.title}</Link>
                   </li>
                 ))}
               </ul>

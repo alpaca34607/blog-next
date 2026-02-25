@@ -2,7 +2,7 @@
 import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { scrollTriggerAnimations } from "@/utils/gsapAnimations";
 import styles from "./ContactSection.module.scss";
 

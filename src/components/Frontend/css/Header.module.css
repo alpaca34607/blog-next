@@ -1,0 +1,136 @@
+@charset "UTF-8";
+/**
+ * Section 共用樣式（mixin）
+ * 目標：集中管理各 section 常見的 .container/.header/.title/.subtitle
+ */
+.wrapper {
+  position: fixed;
+  top: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  padding: 24px 40px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1280px) {
+  .wrapper {
+    padding: 20px 24px;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .wrapper {
+    padding: 20px 24px;
+  }
+}
+
+.brandLogo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 1;
+  font-family: "Inter", sans-serif;
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 1px;
+  color: #fff;
+  z-index: 101;
+}
+@media screen and (max-width: 1280px) {
+  .brandLogo {
+    flex: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .brandLogo {
+    flex: none;
+  }
+}
+.brandLogo span {
+  color: #faad3a;
+}
+.brandLogo img {
+  height: auto;
+  max-height: 50px;
+  width: auto;
+  display: block;
+}
+@media screen and (max-width: 1280px) {
+  .brandLogo img {
+    max-height: 40px;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .brandLogo img {
+    max-height: 40px;
+  }
+}
+
+.navRight {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+  font-size: 15px;
+  color: #908bb4;
+  padding: 8px 0;
+}
+@media screen and (max-width: 1280px) {
+  .navRight {
+    display: none;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .navRight {
+    display: none;
+  }
+}
+
+.hamburgerBtn {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid #2a2a2a;
+  cursor: pointer;
+  background: none;
+  gap: 6px;
+  padding: 0;
+  position: relative;
+  z-index: 101;
+  transition: all 0.3s ease;
+  clip-path: polygon(18px 0px, 100% 0px, 100% calc(100% - 18px), calc(100% - 18px) 100%, 0px 100%, 0px 18px);
+}
+@media screen and (max-width: 1280px) {
+  .hamburgerBtn {
+    display: flex;
+  }
+}
+@container mobile-preview (max-width: 1280px) {
+  .hamburgerBtn {
+    display: flex;
+  }
+}
+.hamburgerBtn span {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: #2a2a2a;
+  transition: all 0.3s ease;
+  transform-origin: center;
+}
+.hamburgerBtn:hover {
+  border-color: #faad3a;
+}
+.hamburgerBtn:hover span {
+  background: #faad3a;
+}
+.hamburgerBtn:active {
+  transform: scale(0.95);
+}
