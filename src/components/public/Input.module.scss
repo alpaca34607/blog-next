@@ -16,6 +16,40 @@
   color: $text-main;
 }
 
+// 密碼欄位外層包裝，讓眼睛按鈕可以絕對定位於輸入框右側
+.passwordWrapper {
+  position: relative;
+  width: 100%;
+
+  // 密碼輸入框右側留出空間給眼睛按鈕
+  .input {
+    padding-right: 40px;
+  }
+}
+
+// 眼睛顯示/隱藏切換按鈕
+.eyeButton {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  color: $text-muted;
+  font-size: 18px;
+  line-height: 1;
+  transition: color 0.2s;
+
+  &:hover {
+    color: darken($text-muted, 15%);
+  }
+}
+
 .input,
 .textarea {
   width: 100%;

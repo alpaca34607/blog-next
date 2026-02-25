@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import styles from "./Input.module.scss";
 
 export interface DefaultInputProps {
@@ -28,6 +29,13 @@ const DefaultInput: React.FC<DefaultInputProps> = ({
   textarea = false,
   options = [],
 }) => {
+  // 控制密碼顯示/隱藏狀態，僅在 type="password" 時使用
+  const [showPassword, setShowPassword] = React.useState(false);
+
+  const isPassword = type === "password";
+  // 實際套用的 input type
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
   return (
     <div className={styles.defaultInput}>
       <label className={styles.label} htmlFor={name}>
@@ -35,15 +43,29 @@ const DefaultInput: React.FC<DefaultInputProps> = ({
         {required && <span className={styles.required}>&#42;</span>}
       </label>
       {!textarea && type !== "select" && (
-        <input
-          className={styles.input}
-          value={value}
-          type={type}
-          name={name}
-          id={name}
-          onChange={onChangeFun}
-          placeholder={placeholder}
-        />
+        <div className={isPassword ? styles.passwordWrapper : undefined}>
+          <input
+            className={styles.input}
+            value={value}
+            type={inputType}
+            name={name}
+            id={name}
+            onChange={onChangeFun}
+            placeholder={placeholder}
+          />
+          {/* 密碼欄位才顯示眼睛切換按鈕 */}
+          {isPassword && (
+            <button
+              type="button"
+              className={styles.eyeButton}
+              onClick={() => setShowPassword((prev) => !prev)}
+              tabIndex={-1}
+              aria-label={showPassword ? "隱藏密碼" : "顯示密碼"}
+            >
+              {showPassword ? <FiEyeOff /> : <FiEye />}
+            </button>
+          )}
+        </div>
       )}
       {textarea && (
         <textarea
