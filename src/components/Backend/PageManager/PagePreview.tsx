@@ -352,7 +352,7 @@ const PagePreview = () => {
             </span>
           </button>
           <Link
-            href={`/${page.slug}`}
+            href={`/zh/${page.slug}`}
             target="_blank"
             className={styles.previewButton}
           >

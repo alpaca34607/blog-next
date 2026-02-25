@@ -175,7 +175,7 @@ const NewsPreview = () => {
         </Link>
         <div className={styles.headerActions}>
           <Link
-            href={`/news/${article.slug}`}
+            href={`/zh/news/${article.slug}`}
             target="_blank"
             className={styles.previewButton}
           >
