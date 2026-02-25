@@ -15,25 +15,52 @@
   height: 40px;
   overflow: hidden;
   backdrop-filter: blur(10px);
+
   @include rwd-xl {
     background: none;
     backdrop-filter: none;
   }
-}
 
-.langToggleSlider {
-  position: absolute;
-  top: 4px;
-  left: 4px;
-  width: calc(50% - 4px);
-  height: calc(100% - 8px);
-  background: $accent-orange;
-  border-radius: 20px;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 1;
+  // ─── 滑塊：用 ::before 偽元素實作 ───────────────────────────────────
+  &::before {
+    content: "";
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: calc(50% - 4px);
+    height: calc(100% - 8px);
+    background: $accent-orange;
+    border-radius: 20px;
+    // 預設位置：中文（左側）
+    transform: translateX(0);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1;
 
-  @include rwd-xl {
-    background: $text-main;
+    @include rwd-xl {
+      background: $text-main;
+    }
+  }
+
+  // EN 按鈕為 active（disabled）時，滑塊停在右側
+  &:has(.langToggleBtn:last-of-type.active)::before {
+    transform: translateX(100%);
+  }
+
+  // ─── Hover 預覽：hover 非 active 按鈕時，滑塊跟著移動 ───────────────
+  // 注意：active 按鈕已設 pointer-events: none，故 :hover 只會在非 active 按鈕觸發
+  // hover 規則放在 active 規則之後，同等優先級時後者勝出，達到預覽效果
+
+  &:has(.langToggleBtn:first-of-type:hover)::before {
+    transform: translateX(0);
+  }
+
+  &:has(.langToggleBtn:last-of-type:hover)::before {
+    transform: translateX(100%);
+  }
+
+  // hover 非 active 按鈕時，滑塊已移走，active 按鈕文字改為 $text-main
+  &:has(.langToggleBtn:not(.active):hover) .langToggleBtn.active {
+    color: $text-main;
   }
 }
 
@@ -57,30 +84,20 @@
   transition: color 0.3s ease;
   outline: none;
 
+  // 被選擇的語言按鈕文字顏色為 $bg-color（在橘色滑塊上）
   &.active {
     color: $bg-color;
+    cursor: default;
   }
 
-  &:hover {
-    color: $accent-orange;
-  }
-
-  &.active:hover {
+  // 未被選擇的按鈕 hover 時，滑塊已預覽移過來，文字同步改為 $bg-color
+  &:not(.active):hover {
     color: $bg-color;
   }
-}
 
-// Slider 位置由 data-lang 屬性驅動（active 狀態）
-.langToggleGroup[data-lang="en"] .langToggleSlider {
-  transform: translateX(100%);
-}
-
-// Hover 預覽：用 :has() 從父層往下控制 slider
-// :last-of-type 選到第二個 button（:last-child 會選到 slider div，故不能用）
-.langToggleGroup:has(.langToggleBtn:first-of-type:hover) .langToggleSlider {
-  transform: translateX(0%);
-}
-
-.langToggleGroup:has(.langToggleBtn:last-of-type:hover) .langToggleSlider {
-  transform: translateX(100%);
+  // 禁用狀態（active 語言）：不顯示點擊游標，完全禁止滑鼠事件（含 hover）
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+  }
 }

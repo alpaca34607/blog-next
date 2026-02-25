@@ -10,7 +10,6 @@ export default function middleware(request: NextRequest) {
   // 後台、API、文件路由直接放行，不套用語系前綴導向
   if (
     pathname.startsWith("/admin") ||
-    pathname.startsWith("/login") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/docs")
   ) {

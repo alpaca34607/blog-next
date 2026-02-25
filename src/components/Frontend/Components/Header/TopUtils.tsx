@@ -12,10 +12,10 @@ const TopUtils = ({ isMobile }: { isMobile: boolean }) => {
       <Link className={styles.topUtilsItem} href="/download">
         <span>下載專區</span>
       </Link>
-      {/* /login 為後台路由，不套用語系前綴 */}
-      <a className={styles.topUtilsItem} href="/login">
+      {/* 登入頁已支援 i18n，使用 locale-aware Link 產生路由 */}
+      <Link className={styles.topUtilsItem} href="/login">
         <span>登入體驗</span>
-      </a>
+      </Link>
     </div>
   );
 };
