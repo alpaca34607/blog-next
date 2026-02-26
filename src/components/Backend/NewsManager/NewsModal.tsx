@@ -4,19 +4,9 @@ import { FiX } from "react-icons/fi";
 import ImageUploader from "@/components/forms/ImageUploader";
 import RichTextEditor from "@/components/forms/RichTextEditor";
 import styles from "./NewsModal.module.scss";
+import type { NewsFormData } from "@/types/news";
 
-interface NewsArticle {
-  id?: string;
-  title: string;
-  slug: string;
-  category: string;
-  excerpt: string;
-  content: string;
-  featuredImage: string;
-  publishDate: string;
-  isPublished: boolean;
-  isFeatured: boolean;
-}
+type NewsArticle = NewsFormData;
 
 interface NewsModalProps {
   open: boolean;
@@ -26,7 +16,7 @@ interface NewsModalProps {
 }
 
 const CATEGORIES = ["技術文章", "媒體報導", "活動訊息"];
-
+const CATEGORIES_EN = ["Technical Article", "Media Report", "Event Information"];
 const NewsModal = ({
   open,
   onClose,
@@ -35,10 +25,14 @@ const NewsModal = ({
 }: NewsModalProps) => {
   const [formData, setFormData] = useState<Partial<NewsArticle>>({
     title: "",
+    titleEn: "",
     slug: "",
     category: "技術文章",
+    categoryEn: "Technical Article",
     excerpt: "",
+    excerptEn: "",
     content: "",
+    contentEn: "",
     featuredImage: "",
     publishDate: new Date().toISOString().split("T")[0],
     isPublished: false,
@@ -49,10 +43,14 @@ const NewsModal = ({
     if (editingNews) {
       setFormData({
         title: editingNews.title || "",
+        titleEn: editingNews.titleEn || "",
         slug: editingNews.slug || "",
         category: editingNews.category || "技術文章",
+        categoryEn: editingNews.categoryEn || "Technical Article",
         excerpt: editingNews.excerpt || "",
+        excerptEn: editingNews.excerptEn || "",
         content: editingNews.content || "",
+        contentEn: editingNews.contentEn || "",
         featuredImage: editingNews.featuredImage || "",
         publishDate:
           (editingNews.publishDate
@@ -64,10 +62,14 @@ const NewsModal = ({
     } else {
       setFormData({
         title: "",
+        titleEn: "",
         slug: "",
         category: "技術文章",
+        categoryEn: "Technical Article",
         excerpt: "",
+        excerptEn: "",
         content: "",
+        contentEn: "",
         featuredImage: "",
         publishDate: new Date().toISOString().split("T")[0],
         isPublished: false,
@@ -128,22 +130,19 @@ const NewsModal = ({
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  Slug <span className={styles.required}>*</span>
+                  標題（英文） <span className={styles.required}>*</span>
                 </label>
                 <input
                   type="text"
                   className={styles.input}
-                  value={formData.slug}
+                  value={formData.titleEn}
                   onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
+                    setFormData({ ...formData, titleEn: e.target.value })
                   }
-                  placeholder="url-friendly-slug"
+                  placeholder="新聞標題（英文）"
                   required
                 />
               </div>
-            </div>
-
-            <div className={styles.formGrid}>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
                   分類 <span className={styles.required}>*</span>
@@ -164,6 +163,25 @@ const NewsModal = ({
                 </select>
               </div>
               <div className={styles.formGroup}>
+                <label className={styles.label}>
+                  分類（英文） <span className={styles.required}>*</span>
+                </label>
+                <select
+                  className={styles.select}
+                  value={formData.categoryEn}
+                  onChange={(e) =>
+                    setFormData({ ...formData, categoryEn: e.target.value })
+                  }
+                  required
+                >
+                  {CATEGORIES_EN.map((cat) => (
+                    <option key={cat} value={cat}>
+                      {cat}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.formGroup}>
                 <label className={styles.label}>發布日期</label>
                 <input
                   type="date"
@@ -174,7 +192,23 @@ const NewsModal = ({
                   }
                 />
               </div>
+              <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Slug <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData({ ...formData, slug: e.target.value })
+                }
+                placeholder="url-friendly-slug"
+                required
+              />
             </div>
+            </div>
+         
 
             <div className={styles.formGroup}>
               <label className={styles.label}>摘要</label>
@@ -185,6 +219,18 @@ const NewsModal = ({
                   setFormData({ ...formData, excerpt: e.target.value })
                 }
                 placeholder="簡短摘要文字"
+                rows={2}
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>摘要（英文）</label>
+              <textarea
+                className={styles.textarea}
+                value={formData.excerptEn}
+                onChange={(e) =>
+                  setFormData({ ...formData, excerptEn: e.target.value })
+                }
+                placeholder="簡短摘要文字（英文）"
                 rows={2}
               />
             </div>
@@ -227,6 +273,16 @@ const NewsModal = ({
               value={formData.content || ""}
               onChange={(value) => setFormData({ ...formData, content: value })}
               placeholder="輸入新聞內容..."
+            />
+          </div>
+          <div className={styles.formSection}>
+            <h3 className={styles.sectionTitle}>內容（英文）</h3>
+            <RichTextEditor
+              value={formData.contentEn || ""}
+              onChange={(value) =>
+                setFormData({ ...formData, contentEn: value })
+              }
+              placeholder="輸入新聞內容（英文）..."
             />
           </div>
 

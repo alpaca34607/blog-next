@@ -19,7 +19,9 @@ export interface HeroSectionConfig {
 // CardGridSection 設定型別
 export interface CardGridSectionConfig {
   title?: string;
+  titleEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   settings?: {
     backgroundColor?: string;
     templateVariant?: "grid-3" | "grid-4" | "list";
@@ -148,6 +150,7 @@ const PageSectionSettingsForm = ({
       </h3>
 
       {/* CardGrid 標題 */}
+      <div className={formStyles.formGrid}>
       <div className={formStyles.formGroup}>
         <label className={formStyles.label}>標題</label>
         <input
@@ -162,8 +165,20 @@ const PageSectionSettingsForm = ({
           placeholder="卡片區塊標題（可選）"
         />
       </div>
-
-      {/* CardGrid 副標題 */}
+      <div className={formStyles.formGroup}>
+        <label className={formStyles.label}>標題（英文）</label>
+        <input
+          type="text"
+          className={formStyles.input}
+          value={formData.cardGrid.titleEn || ""}
+          onChange={(e) =>
+            updateFormData({
+              cardGrid: { ...formData.cardGrid, titleEn: e.target.value },
+            })
+          }
+          placeholder="卡片區塊標題（英文）（可選）"
+        />
+      </div>
       <div className={formStyles.formGroup}>
         <label className={formStyles.label}>副標題</label>
         <input
@@ -178,6 +193,23 @@ const PageSectionSettingsForm = ({
           placeholder="卡片區塊副標題（可選）"
         />
       </div>
+      <div className={formStyles.formGroup}>
+        <label className={formStyles.label}>副標題</label>
+        <input
+          type="text"
+          className={formStyles.input}
+          value={formData.cardGrid.subtitleEn || ""}
+          onChange={(e) =>
+            updateFormData({
+              cardGrid: { ...formData.cardGrid, subtitleEn: e.target.value },
+            })
+          }
+          placeholder="卡片區塊副標題（英文）（可選）"
+        />
+      </div>
+      </div>
+      {/* CardGrid 副標題 */}
+      
 
       {/* CardGrid 顯示樣式 */}
       <div className={formStyles.formGroup}>

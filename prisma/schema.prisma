@@ -118,10 +118,14 @@ model Section {
 model News {
   id            String    @id @default(cuid())
   title         String
+  titleEn       String?
   slug          String    @unique
   excerpt       String?
+  excerptEn     String?
   content       String    @db.LongText
+  contentEn     String?   @db.LongText
   category      String?
+  categoryEn    String?
   isPublished   Boolean   @default(false)
   isFeatured    Boolean   @default(false)
   featuredImage String?

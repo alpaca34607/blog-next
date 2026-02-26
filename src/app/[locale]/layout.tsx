@@ -18,7 +18,7 @@ export default async function LocaleLayout({
     notFound();
   }
 
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   return (
     // 必須明確傳入 locale，否則 useLocale() 在 Client Component 中無法取得正確語系

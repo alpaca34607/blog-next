@@ -18,7 +18,9 @@ interface PageSettingsModalProps {
 const getDefaultPageSettings = (): PageSectionSettings => ({
   hero: {
     title: "",
+    titleEn: "",
     subtitle: "",
+    subtitleEn: "",
     settings: {
       backgroundColor: "transparent",
       heroImages: [],
@@ -26,7 +28,9 @@ const getDefaultPageSettings = (): PageSectionSettings => ({
   },
   cardGrid: {
     title: "最新消息",
+    titleEn: "News",
     subtitle: "掌握最新動態與設計趨勢",
+    subtitleEn: " latest news and design trends",
     settings: {
       backgroundColor: "transparent",
       templateVariant: "grid-3",
