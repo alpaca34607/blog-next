@@ -9,27 +9,7 @@ import LanguageToggle from "./Header/LanguageToggle";
 import TopUtils from "./Header/TopUtils";
 import MobileMenu from "./Header/MobileMenu";
 import { API_GetNavigationItem, API_GetProducts } from "@/app/api/public_api";
-
-interface NavigationItem {
-  id: string;
-  title: string;
-  slug: string;
-  parentId?: string | null;
-  sortOrder: number;
-  type: "internal" | "external";
-  url?: string | null;
-  isVisible: boolean;
-  hasChildren?: boolean;
-  productCategory?: string;
-}
-
-interface Product {
-  id: string;
-  title: string;
-  slug: string;
-  category?: string | null;
-  isPublished: boolean;
-}
+import type { NavigationItem, Product } from "@/types/navigation";
 
 // 舊導航項目資料格式
 interface OldNavItem {
@@ -241,6 +221,7 @@ const Header = () => {
           flattened.push({
             id: parent.id,
             title: parent.title,
+            titleEn: parent.titleEn ?? undefined,
             slug: parent?.url ? String(parent.url).replace(/^\//, "") : "",
             parentId: parent.parentId ?? null,
             sortOrder: parent.sortOrder ?? 0,
@@ -260,6 +241,7 @@ const Header = () => {
             flattened.push({
               id: child.id,
               title: child.title,
+              titleEn: child.titleEn ?? undefined,
               slug: child?.url ? String(child.url).replace(/^\//, "") : "",
               parentId: child.parentId ?? parent.id ?? null,
               sortOrder: child.sortOrder ?? 0,

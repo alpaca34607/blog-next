@@ -1,31 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import FlipButton from "../FlipButton";
 import styles from "./Navigation.module.scss";
 import { FiChevronDown } from "react-icons/fi";
-
-interface NavigationItem {
-  id: string;
-  title: string;
-  slug: string;
-  parentId?: string | null;
-  sortOrder: number;
-  type: "internal" | "external";
-  url?: string | null;
-  isVisible: boolean;
-  hasChildren?: boolean;
-  productCategory?: string;
-}
-
-interface Product {
-  id: string;
-  title: string;
-  slug: string;
-  category?: string | null;
-  isPublished: boolean;
-}
+import type { NavigationItem, Product } from "@/types/navigation";
 
 interface NavigationProps {
   /** 導航項目列表 */
@@ -41,6 +22,11 @@ const Navigation = ({
   products,
   isMobile = false,
 }: NavigationProps) => {
+  const locale = useLocale();
+  // 依當前語系取得顯示標題
+  const getTitle = (item: NavigationItem) =>
+    locale === "en" && item.titleEn ? item.titleEn : item.title;
+
   // 移動端：追蹤哪些項目是展開的
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
 
@@ -102,7 +88,7 @@ const Navigation = ({
               {/* 桌面端：使用 FlipButton */}
               {!isMobile && (
                 <FlipButton
-                  text={parent.title}
+                  text={getTitle(parent)}
                   href={buildHref(parent)}
                   as="Link"
                 />
@@ -117,7 +103,7 @@ const Navigation = ({
                       aria-expanded={isExpanded}
                       aria-label={isExpanded ? "收合選單" : "展開選單"}
                     >
-                      {parent.title}
+                      {getTitle(parent)}
                       <div className={styles.expandBtn}>
                         <span
                           className={`${styles.expandIcon}
@@ -135,7 +121,7 @@ const Navigation = ({
                       href={buildHref(parent)}
                       className={styles.mobileNavLink}
                     >
-                      {parent.title}
+                      {getTitle(parent)}
                     </Link>
                   )}
                 </>
@@ -181,7 +167,7 @@ const Navigation = ({
                                 <div
                                 className={styles.mobileSubmenuLink}
                               >
-                                {child.title}
+                                {getTitle(child)}
                               </div>
                                 <span
                                   className={`${styles.expandIcon}
@@ -198,7 +184,7 @@ const Navigation = ({
                               </button>
                            
                           ) : (
-                            <Link href={buildHref(child)}>{child.title}</Link>
+                            <Link href={buildHref(child)}>{getTitle(child)}</Link>
                           )}
                           {hasProductSubmenu && (
                             <div

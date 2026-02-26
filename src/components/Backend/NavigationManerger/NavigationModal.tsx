@@ -6,6 +6,7 @@ import styles from "./NavigationModal.module.scss";
 interface ModalNavigationItem {
   id?: string;
   title: string;
+  titleEn: string;
   slug: string;
   parentId?: string;
   sortOrder?: number;
@@ -39,6 +40,7 @@ const NavigationModal = ({
 }: NavigationModalProps) => {
   const [formData, setFormData] = useState<Partial<ModalNavigationItem>>({
     title: "",
+    titleEn: "",
     slug: "",
     parentId: "",
     isExternal: false,
@@ -57,6 +59,7 @@ const NavigationModal = ({
     if (editingItem) {
       setFormData({
         title: editingItem.title || "",
+        titleEn: editingItem.titleEn || "",
         slug: editingItem.slug || "",
         parentId: editingItem.parentId || "",
         isExternal: editingItem.isExternal || false,
@@ -69,6 +72,7 @@ const NavigationModal = ({
     } else {
       setFormData({
         title: "",
+        titleEn: "",
         slug: "",
         parentId: "",
         isExternal: false,
@@ -168,7 +172,20 @@ const NavigationModal = ({
               required
             />
           </div>
-
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              英文名稱
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              value={formData.titleEn}
+              onChange={(e) =>
+                setFormData({ ...formData, titleEn: e.target.value })
+              }
+              placeholder="例如：About"
+            />
+          </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>
               Slug (URL路徑)
