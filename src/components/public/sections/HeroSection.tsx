@@ -46,19 +46,19 @@ const HeroSection = ({
 
   const titleZh = section.title ?? page?.heroTitle ?? undefined;
   const titleEn = section.titleEn ?? page?.heroTitleEn ?? undefined;
-  const subtitleZh = section.subtitle ?? page?.heroSubtitle ?? undefined;
   const subtitleEn = section.subtitleEn ?? page?.heroSubtitleEn ?? undefined;
-
+  const subtitleZh = section.subtitle ?? page?.heroSubtitle ?? undefined;
+  
   // 依語系選擇顯示文字
-  const title = isEn && titleEn ? titleEn : "";
-  const subtitle = isEn && subtitleEn ? subtitleEn : "";
+  const title = isEn ? (titleEn ?? "") : titleZh;
+  const subtitle = isEn ? (subtitleEn ?? "") : subtitleZh;
   // 檢查是否有輪播圖片
   const carouselImages =
     section.settings?.heroImages && section.settings.heroImages.length > 0
       ? section.settings.heroImages
       : page?.heroImages && page.heroImages.length > 0
-      ? page.heroImages
-      : null;
+        ? page.heroImages
+        : null;
 
   // 如果沒有輪播圖片，使用原本的單張圖片邏輯
   const bgImage = carouselImages
@@ -95,8 +95,8 @@ const HeroSection = ({
         carouselImages
           ? styles.hasCarousel
           : backgroundImageClass
-          ? styles.hasBgImage
-          : ""
+            ? styles.hasBgImage
+            : ""
       } ${contain ? styles.containInBanner : ""}`}
       style={
         carouselImages
