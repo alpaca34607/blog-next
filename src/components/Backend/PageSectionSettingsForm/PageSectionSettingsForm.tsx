@@ -7,7 +7,9 @@ import HeroSectionForm, { HeroSectionFormValue } from "./HeroSectionForm";
 // HeroSection 設定型別
 export interface HeroSectionConfig {
   title?: string;
+  titleEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   settings?: {
     backgroundColor?: string;
     heroImages?: string[];
@@ -106,7 +108,9 @@ const PageSectionSettingsForm = ({
       <HeroSectionForm
         value={{
           title: formData.hero.title,
+          titleEn: formData.hero.titleEn,
           subtitle: formData.hero.subtitle,
+          subtitleEn: formData.hero.subtitleEn,
           heroImages: formData.hero.settings?.heroImages,
           backgroundColor: formData.hero.settings?.backgroundColor,
         }}
@@ -115,7 +119,9 @@ const PageSectionSettingsForm = ({
             hero: {
               ...formData.hero,
               title: heroValue.title,
+              titleEn: heroValue.titleEn,
               subtitle: heroValue.subtitle,
+              subtitleEn: heroValue.subtitleEn,
               settings: {
                 ...formData.hero.settings,
                 backgroundColor: heroValue.backgroundColor,

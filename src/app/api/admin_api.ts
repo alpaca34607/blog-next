@@ -1,7 +1,7 @@
 import { tryFetch, type RequestOptions } from "@/app/api/api_client";
+import type { CreatePageData, UpdatePageData } from "@/types/page";
 
-// ----------------------------- 後台 API（可能需要權限） -----------------------------
-// 注意：本檔案「不強制」檢查 token 是否存在；是否被擋下以後端回傳為準（success:false）。
+// ----------------------------- 後台 API -----------------------------
 
 // ----------------------------- 管理用新聞API -----------------------------
 export const API_GetNewsAdmin = async (params?: {
@@ -143,46 +143,13 @@ export const API_PutConfig = async (key: string, value: any) => {
   return await tryFetch(path, requestOption);
 };
 
-export const API_CreatePage = async (data: {
-  title: string;
-  slug: string;
-  type?: "page" | "product";
-  content?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  isPublished?: boolean;
-  logo?: string;
-  videoUrl?: string;
-  introImage?: string;
-  isFeatured?: boolean;
-  externalUrl?: string;
-  category?: string;
-  sortOrder?: number;
-}) => {
+export const API_CreatePage = async (data: CreatePageData) => {
   const path = `/api/pages`;
   const requestOption: RequestOptions = { method: "POST", body: data };
   return await tryFetch(path, requestOption);
 };
 
-export const API_UpdatePage = async (
-  id: string,
-  data: {
-    title?: string;
-    slug?: string;
-    type?: "page" | "product";
-    content?: string;
-    metaTitle?: string;
-    metaDescription?: string;
-    isPublished?: boolean;
-    logo?: string;
-    videoUrl?: string;
-    introImage?: string;
-    isFeatured?: boolean;
-    externalUrl?: string;
-    category?: string;
-    sortOrder?: number;
-  }
-) => {
+export const API_UpdatePage = async (id: string, data: UpdatePageData) => {
   const path = `/api/pages/${id}`;
   const requestOption: RequestOptions = { method: "PUT", body: data };
   return await tryFetch(path, requestOption);

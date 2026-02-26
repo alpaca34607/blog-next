@@ -20,7 +20,9 @@ interface Section {
   id?: string;
   sectionType: string;
   title?: string;
+  titleEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   content?: string;
   sortOrder?: number;
   settings?: (SectionSettings & Record<string, any>) | Record<string, any>;
@@ -48,7 +50,9 @@ const SectionModal = ({
   const [formData, setFormData] = useState<Partial<Section>>({
     sectionType: "content_block",
     title: "",
+    titleEn: "",
     subtitle: "",
+    subtitleEn: "",
     content: "",
     settings: {
       templateVariant: "default",
@@ -87,7 +91,9 @@ const SectionModal = ({
       setFormData({
         sectionType: editingSection.sectionType || "content_block",
         title: editingSection.title || "",
+        titleEn: editingSection.titleEn || "",
         subtitle: editingSection.subtitle || "",
+        subtitleEn: editingSection.subtitleEn || "",
         content: editingSection.content || "",
         sortOrder: editingSection.sortOrder,
         settings: {
@@ -768,14 +774,18 @@ const SectionModal = ({
             <HeroSectionForm
               value={{
                 title: formData.title,
+                titleEn: formData.titleEn,
                 subtitle: formData.subtitle,
+                subtitleEn: formData.subtitleEn,
                 heroImages: (formData.settings as any)?.heroImages,
               }}
               onChange={(heroValue: HeroSectionFormValue) => {
                 setFormData({
                   ...formData,
                   title: heroValue.title,
+                  titleEn: heroValue.titleEn,
                   subtitle: heroValue.subtitle,
+                  subtitleEn: heroValue.subtitleEn,
                   settings: {
                     ...formData.settings,
                     heroImages: heroValue.heroImages,

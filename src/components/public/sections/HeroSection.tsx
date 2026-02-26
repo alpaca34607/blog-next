@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { useLocale } from "next-intl";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./HeroSection.module.scss";
 import { isRichTextEmpty } from "@/utils/common";
@@ -11,7 +12,9 @@ interface HeroSectionProps {
   contain?: boolean;
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     content?: string;
     settings?: {
       backgroundColor?: string;
@@ -24,7 +27,9 @@ interface HeroSectionProps {
   page?: {
     logo?: string;
     heroTitle?: string | null;
+    heroTitleEn?: string | null;
     heroSubtitle?: string | null;
+    heroSubtitleEn?: string | null;
     heroImages?: string[] | null;
   };
 }
@@ -36,9 +41,17 @@ const HeroSection = ({
   carouselSlideClassName,
   contain,
 }: HeroSectionProps) => {
-  const title = section.title ?? page?.heroTitle ?? undefined;
-  const subtitle = section.subtitle ?? page?.heroSubtitle ?? undefined;
+  const locale = useLocale();
+  const isEn = locale === "en";
 
+  const titleZh = section.title ?? page?.heroTitle ?? undefined;
+  const titleEn = section.titleEn ?? page?.heroTitleEn ?? undefined;
+  const subtitleZh = section.subtitle ?? page?.heroSubtitle ?? undefined;
+  const subtitleEn = section.subtitleEn ?? page?.heroSubtitleEn ?? undefined;
+
+  // 依語系選擇顯示文字
+  const title = isEn && titleEn ? titleEn : "";
+  const subtitle = isEn && subtitleEn ? subtitleEn : "";
   // 檢查是否有輪播圖片
   const carouselImages =
     section.settings?.heroImages && section.settings.heroImages.length > 0

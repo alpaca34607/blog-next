@@ -21,13 +21,16 @@ import { useTranslations } from "next-intl";
 interface BasePage {
   id: string;
   title: string;
+  titleEn?: string | null;
   slug: string;
   type: "page" | "product";
   content?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   heroTitle?: string | null;
+  heroTitleEn?: string | null;
   heroSubtitle?: string | null;
+  heroSubtitleEn?: string | null;
   heroImages?: string[] | null;
   isPublished: boolean;
 }
@@ -54,7 +57,9 @@ function normalizeSections(input: any[]): Section[] {
   return input.map((s) => ({
     ...s,
     title: s?.title ?? undefined,
+    titleEn: s?.titleEn ?? undefined,
     subtitle: s?.subtitle ?? undefined,
+    subtitleEn: s?.subtitleEn ?? undefined,
     content: s?.content ?? undefined,
     settings: s?.settings ?? undefined,
   }));
@@ -166,10 +171,12 @@ const ClientPageBySlug = () => {
             page={
               page
                 ? {
-                    logo: "logo" in page ? (page as any).logo : undefined,
-                    heroTitle: (page as any).heroTitle ?? undefined,
-                    heroSubtitle: (page as any).heroSubtitle ?? undefined,
-                    heroImages: (page as any).heroImages ?? undefined,
+                    logo: "logo" in page ? (page as Product).logo : undefined,
+                    heroTitle: page.heroTitle ?? undefined,
+                    heroTitleEn: page.heroTitleEn ?? undefined,
+                    heroSubtitle: page.heroSubtitle ?? undefined,
+                    heroSubtitleEn: page.heroSubtitleEn ?? undefined,
+                    heroImages: page.heroImages ?? undefined,
                   }
                 : undefined
             }
@@ -228,12 +235,9 @@ const ClientPageBySlug = () => {
       ) : (
         <>
           {(() => {
-            const pageHeroTitle = (page as any).heroTitle;
-            const pageHeroSubtitle = (page as any).heroSubtitle;
-            const heroImages = (page as any).heroImages as
-              | string[]
-              | null
-              | undefined;
+            const pageHeroTitle = page.heroTitle;
+            const pageHeroSubtitle = page.heroSubtitle;
+            const heroImages = page.heroImages;
 
             const hasPageHeroValues = Boolean(
               pageHeroTitle ||
@@ -254,8 +258,10 @@ const ClientPageBySlug = () => {
                     carouselSlideClassName="pageHero"
                     section={{
                       title: pageHeroTitle ?? heroSectionFromApi?.title ?? undefined,
+                      titleEn: page.heroTitleEn ?? heroSectionFromApi?.titleEn ?? undefined,
                       subtitle:
                         pageHeroSubtitle ?? heroSectionFromApi?.subtitle ?? undefined,
+                      subtitleEn: page.heroSubtitleEn ?? heroSectionFromApi?.subtitleEn ?? undefined,
                       content: heroSectionFromApi?.content ?? undefined,
                       settings: {
                         ...(heroSectionFromApi?.settings ?? {}),
@@ -266,10 +272,12 @@ const ClientPageBySlug = () => {
                       },
                     }}
                     page={{
-                      logo: "logo" in page ? (page as any).logo : undefined,
-                      heroTitle: (page as any).heroTitle ?? undefined,
-                      heroSubtitle: (page as any).heroSubtitle ?? undefined,
-                      heroImages: (page as any).heroImages ?? undefined,
+                      logo: "logo" in page ? (page as Product).logo : undefined,
+                      heroTitle: page.heroTitle ?? undefined,
+                      heroTitleEn: page.heroTitleEn ?? undefined,
+                      heroSubtitle: page.heroSubtitle ?? undefined,
+                      heroSubtitleEn: page.heroSubtitleEn ?? undefined,
+                      heroImages: page.heroImages ?? undefined,
                     }}
                   />
                 )}

@@ -64,27 +64,34 @@ model Navigation {
 }
 
 model Page {
-  id              String    @id @default(cuid())
-  title           String
-  slug            String    @unique
-  type            String    @default("page")
-  content         String?   @db.LongText
-  metaTitle       String?
-  metaDescription String?
-  isPublished     Boolean   @default(false)
-  logo            String?
-  externalUrl     String?
-  category        String?
-  sortOrder       Int       @default(0)
-  videoUrl        String?   @db.VarChar(2048)
-  introImage      String?   @db.VarChar(2048)
-  isFeatured      Boolean   @default(false)
-  heroTitle       String?
-  heroSubtitle    String?
-  heroImages      Json?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  sections        Section[]
+  id                 String    @id @default(cuid())
+  title              String
+  titleEn            String?
+  slug               String    @unique
+  type               String    @default("page")
+  content            String?   @db.LongText
+  metaTitle          String?   @db.VarChar(255)
+  metaTitleEn        String?   @db.VarChar(255)
+  metaDescription    String?   @db.Text
+  metaDescriptionEn  String?   @db.Text
+  isPublished        Boolean   @default(false)
+  logo               String?
+  externalUrl        String?
+  category           String?
+  categoryEn         String?
+  sortOrder          Int       @default(0)
+  videoUrl           String?   @db.VarChar(2048)
+  introImage         String?   @db.VarChar(2048)
+  introImageEn       String?   @db.VarChar(2048)
+  isFeatured         Boolean   @default(false)
+  heroTitle          String?
+  heroTitleEn        String?
+  heroSubtitle       String?
+  heroSubtitleEn     String?
+  heroImages         Json?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  sections           Section[]
 
   @@map("pages")
 }
@@ -94,7 +101,9 @@ model Section {
   pageId      String
   sectionType String
   title       String?
+  titleEn     String?
   subtitle    String?
+  subtitleEn  String?
   content     String?   @db.LongText
   sortOrder   Int      @default(0)
   settings    Json?

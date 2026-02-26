@@ -7,7 +7,9 @@ import ImageUploader from "@/components/forms/ImageUploader";
 
 export interface HeroSectionFormValue {
   title?: string; // 可以是 hero_title 或 title
+  titleEn?: string; // 英文標題
   subtitle?: string; // 可以是 hero_subtitle 或 subtitle
+  subtitleEn?: string; // 英文副標題
   heroImages?: string[]; // 圖片陣列
   backgroundColor?: string; // 背景顏色（可選）
 }
@@ -17,7 +19,9 @@ interface HeroSectionFormProps {
   onChange: (value: HeroSectionFormValue) => void;
   showBackgroundColor?: boolean; // 是否顯示背景顏色設定（預設為 false）
   titleLabel?: string; // 標題欄位標籤（預設為 "Hero 標題"）
+  titleEnLabel?: string; // 英文標題欄位標籤（預設為 "英文 Hero 標題"）
   subtitleLabel?: string; // 副標題欄位標籤（預設為 "Hero 副標題"）
+  subtitleEnLabel?: string; // 英文副標題欄位標籤（預設為 "英文 Hero 副標題"）
   imagesLabel?: string; // 圖片欄位標籤（預設為 "Hero 背景圖（可多張）"）
   sectionTitle?: string; // 區塊標題（預設為 "頁首區塊"）
 }
@@ -27,14 +31,16 @@ const HeroSectionForm = ({
   onChange,
   showBackgroundColor = false,
   titleLabel = "Hero 標題",
+  titleEnLabel = "英文 Hero 標題",
   subtitleLabel = "Hero 副標題",
+  subtitleEnLabel = "英文 Hero 副標題",
   imagesLabel = "Banner 圖片（可多張）",
   sectionTitle = "頁首區塊",
 }: HeroSectionFormProps) => {
   const [hasTransparentBg, setHasTransparentBg] = useState(false);
   const [previousBgColor, setPreviousBgColor] = useState("#ffffff");
 
-  // 初始化透明背景狀態
+  // 只在 mount 時初始化透明背景狀態，避免使用者操作顏色選擇器時 previousBgColor 被覆蓋
   useEffect(() => {
     if (showBackgroundColor) {
       const bgColor = value.backgroundColor || "#ffffff";
@@ -43,7 +49,8 @@ const HeroSectionForm = ({
       setHasTransparentBg(isTransparent);
       setPreviousBgColor(isTransparent ? "#ffffff" : bgColor);
     }
-  }, [value.backgroundColor, showBackgroundColor]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 移除圖片
   const removeImage = (index: number) => {
@@ -87,6 +94,7 @@ const HeroSectionForm = ({
       <h3 className={formStyles.sectionTitle}>{sectionTitle}</h3>
 
       {/* 標題 */}
+      <div className={formStyles.formGrid}>
       <div className={formStyles.formGroup}>
         <label className={formStyles.label}>{titleLabel}</label>
         <input
@@ -101,10 +109,22 @@ const HeroSectionForm = ({
           }
           placeholder="頁面頂部大標題"
         />
-        <p className={formStyles.helpText}>頁面頂部大標題</p>
       </div>
-
+      <div className={formStyles.formGroup}>
+        <label className={formStyles.label}>{titleEnLabel}</label>
+        <input
+          type="text"
+          className={formStyles.input}
+          value={value.titleEn || ""}
+          onChange={(e) =>
+            onChange({ ...value, titleEn: e.target.value })
+          }
+          placeholder="頁面頂部大標題 (英文)"
+        />
+      </div>
+      </div>
       {/* 副標題 */}
+      <div className={formStyles.formGrid}>
       <div className={formStyles.formGroup}>
         <label className={formStyles.label}>{subtitleLabel}</label>
         <input
@@ -119,7 +139,19 @@ const HeroSectionForm = ({
           }
           placeholder="頁面頂部副標題"
         />
-        <p className={formStyles.helpText}>頁面頂部副標題</p>
+      </div>
+      <div className={formStyles.formGroup}>
+        <label className={formStyles.label}>{subtitleEnLabel}</label>
+        <input
+          type="text"
+          className={formStyles.input}
+          value={value.subtitleEn || ""}
+          onChange={(e) =>
+            onChange({ ...value, subtitleEn: e.target.value })
+          }
+          placeholder="頁面頂部副標題 (英文)"
+        />
+      </div>
       </div>
 
       {/* Banner 圖片（可多張） */}

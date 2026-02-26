@@ -7,31 +7,7 @@ import {
   HeroSectionFormValue,
 } from "../PageSectionSettingsForm";
 import styles from "./PageModal.module.scss";
-
-interface BasePage {
-  id?: string;
-  title: string;
-  slug: string;
-  isPublished?: boolean;
-  metaTitle?: string;
-  metaDescription?: string;
-  heroTitle?: string;
-  heroSubtitle?: string;
-  heroImages?: string[];
-}
-
-interface Page extends BasePage {}
-
-interface Product extends BasePage {
-  logo?: string;
-  videoUrl?: string;
-  introImage?: string;
-  category?: string;
-  navOrder?: number;
-  isFeatured?: boolean;
-  externalUrl?: string;
-  sortOrder?: number;
-}
+import type { Page, Product } from "@/types/page";
 
 type PageType = "page" | "product";
 
@@ -52,17 +28,23 @@ const PageModal = ({
 }: PageModalProps) => {
   const [formData, setFormData] = useState<Partial<Page | Product>>({
     title: "",
+    titleEn: "",
     slug: "",
     metaTitle: "",
+    metaTitleEn: "",
     metaDescription: "",
+    metaDescriptionEn: "",
     heroTitle: "",
+    heroTitleEn: "",
     heroSubtitle: "",
+    heroSubtitleEn: "",
     heroImages: [],
     isPublished: false,
     ...(type === "product" && {
       logo: "",
       videoUrl: "",
       category: "",
+      categoryEn: "",
       sortOrder: 0,
     }),
   });
@@ -71,11 +53,16 @@ const PageModal = ({
     if (editingPage) {
       setFormData({
         title: editingPage.title || "",
+        titleEn: editingPage.titleEn || "",
         slug: editingPage.slug || "",
         metaTitle: (editingPage as any).metaTitle || "",
+        metaTitleEn: (editingPage as any).metaTitleEn || "",
         metaDescription: (editingPage as any).metaDescription || "",
+        metaDescriptionEn: (editingPage as any).metaDescriptionEn || "",
         heroTitle: (editingPage as any).heroTitle || "",
+        heroTitleEn: (editingPage as any).heroTitleEn || "",
         heroSubtitle: (editingPage as any).heroSubtitle || "",
+        heroSubtitleEn: (editingPage as any).heroSubtitleEn || "",
         heroImages: (editingPage as any).heroImages || [],
         isPublished: (editingPage as any).isPublished ?? false,
         ...(type === "product" && {
@@ -83,7 +70,9 @@ const PageModal = ({
           videoUrl: (editingPage as Product).videoUrl || "",
           externalUrl: (editingPage as Product).externalUrl || "",
           introImage: (editingPage as Product).introImage || "",
+          introImageEn: (editingPage as Product).introImageEn || "",
           category: (editingPage as Product).category || "",
+          categoryEn: (editingPage as Product).categoryEn || "",
           sortOrder: (editingPage as Product).sortOrder || 0,
           isFeatured: (editingPage as Product).isFeatured || false,
         }),
@@ -91,17 +80,25 @@ const PageModal = ({
     } else {
       setFormData({
         title: "",
+        titleEn: "",
         slug: "",
         metaTitle: "",
+        metaTitleEn: "",
         metaDescription: "",
+        metaDescriptionEn: "",
         heroTitle: "",
+        heroTitleEn: "",
         heroSubtitle: "",
+        heroSubtitleEn: "",
         heroImages: [],
         isPublished: false,
         ...(type === "product" && {
           logo: "",
           videoUrl: "",
+          introImage: "",
+          introImageEn: "",
           category: "",
+          categoryEn: "",
           sortOrder: 0,
           isFeatured: false,
         }),
@@ -136,9 +133,11 @@ const PageModal = ({
       ? "編輯產品"
       : "編輯頁面"
     : type === "product"
-    ? "新增產品"
-    : "新增頁面";
+      ? "新增產品"
+      : "新增頁面";
   const titleLabel = type === "product" ? "產品標題" : "頁面標題";
+  const titleEnLabel =
+    type === "product" ? "產品標題 (英文)" : "頁面標題 (英文)";
 
   return (
     <div className={styles.modalOverlay}>
@@ -172,81 +171,120 @@ const PageModal = ({
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  Slug (URL路徑) <span className={styles.required}>*</span>
+                  {titleEnLabel} <span className={styles.required}>*</span>
                 </label>
                 <input
                   type="text"
                   className={styles.input}
-                  value={formData.slug}
+                  value={formData.titleEn || ""}
                   onChange={(e) =>
-                    setFormData({ ...formData, slug: e.target.value })
+                    setFormData({ ...formData, titleEn: e.target.value })
                   }
-                  placeholder="例如：about-us"
+                  placeholder="例如：About Us"
                   required
                 />
               </div>
             </div>
-
-            {/* 產品專屬欄位 */}
-            {type === "product" && (
-              <>
-                <div className={styles.formGrid}>
-                  <div className={styles.formGroup}>
-                    <label className={styles.label}>產品分類</label>
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={(formData as Product).category || ""}
-                      onChange={(e) =>
-                        setFormData({ ...formData, category: e.target.value })
-                      }
-                      placeholder="例如：軟體、硬體"
-                    />
+            <div className={styles.formGroup}>
+              <label className={styles.label}>
+                Slug (URL路徑) <span className={styles.required}>*</span>
+              </label>
+              <input
+                type="text"
+                className={styles.input}
+                value={formData.slug}
+                onChange={(e) =>
+                  setFormData({ ...formData, slug: e.target.value })
+                }
+                placeholder="例如：about-us"
+                required
+              />
+            </div>
+            <div className={styles.formSection}>
+              {/* 產品專屬欄位 */}
+              <h3 className={styles.sectionTitle}>產品欄位</h3>
+              {type === "product" && (
+                <>
+                  <div className={styles.formGrid}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>
+                        產品分類 <span className={styles.required}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={(formData as Product).category || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, category: e.target.value })
+                        }
+                        placeholder="例如：軟體、硬體"
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>
+                        產品分類 (英文){" "}
+                        <span className={styles.required}>*</span>
+                      </label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={(formData as Product).categoryEn || ""}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            categoryEn: e.target.value,
+                          })
+                        }
+                        placeholder="例如：Software, Hardware"
+                        required
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>導覽選單排序</label>
+                      <input
+                        type="number"
+                        className={styles.input}
+                        value={(formData as Product).sortOrder || 0}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            sortOrder: parseInt(e.target.value) || 0,
+                          })
+                        }
+                        placeholder="0"
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>產品影片</label>
+                      <input
+                        type="url"
+                        className={styles.input}
+                        value={(formData as Product).videoUrl || ""}
+                        onChange={(e) =>
+                          setFormData({ ...formData, videoUrl: e.target.value })
+                        }
+                        placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+                      />
+                    </div>
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.label}>導覽選單排序</label>
+                    <label className={styles.label}>產品官網</label>
                     <input
-                      type="number"
+                      type="url"
                       className={styles.input}
-                      value={(formData as Product).sortOrder || 0}
+                      value={(formData as Product).externalUrl || ""}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
-                          sortOrder: parseInt(e.target.value) || 0,
+                          externalUrl: e.target.value,
                         })
                       }
-                      placeholder="0"
+                      placeholder="https://example.com"
                     />
                   </div>
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>產品影片</label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={(formData as Product).videoUrl || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, videoUrl: e.target.value })
-                    }
-                    placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>產品官網
-                  </label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={(formData as Product).externalUrl || ""}
-                    onChange={(e) =>
-                      setFormData({ ...formData, externalUrl: e.target.value })
-                    }
-                    placeholder="https://example.com"
-                  />
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
 
           {/* SEO 設定 */}
@@ -263,7 +301,6 @@ const PageModal = ({
                 }
                 placeholder="搜尋引擎顯示的標題"
               />
-              <p className={styles.helpText}>搜尋引擎顯示的標題</p>
             </div>
             <div className={styles.formGroup}>
               <label className={styles.label}>Meta 描述</label>
@@ -279,7 +316,32 @@ const PageModal = ({
                 placeholder="搜尋引擎顯示的描述文字"
                 rows={2}
               />
-              <p className={styles.helpText}>搜尋引擎顯示的描述文字</p>
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Meta 標題 (英文)</label>
+              <input
+                type="text"
+                className={styles.input}
+                value={formData.metaTitleEn || ""}
+                onChange={(e) =>
+                  setFormData({ ...formData, metaTitleEn: e.target.value })
+                }
+              />
+            </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>Meta 描述 (英文)</label>
+              <textarea
+                className={styles.textarea}
+                value={formData.metaDescriptionEn || ""}
+                onChange={(e) =>
+                  setFormData({
+                    ...formData,
+                    metaDescriptionEn: e.target.value,
+                  })
+                }
+                placeholder="搜尋引擎顯示的描述文字 (英文)"
+                rows={2}
+              />
             </div>
           </div>
 
@@ -287,14 +349,18 @@ const PageModal = ({
           <HeroSectionForm
             value={{
               title: (formData as any).heroTitle,
+              titleEn: (formData as any).heroTitleEn,
               subtitle: (formData as any).heroSubtitle,
+              subtitleEn: (formData as any).heroSubtitleEn,
               heroImages: (formData as any).heroImages,
             }}
             onChange={(heroValue: HeroSectionFormValue) => {
               setFormData({
                 ...formData,
                 heroTitle: heroValue.title,
+                heroTitleEn: heroValue.titleEn,
                 heroSubtitle: heroValue.subtitle,
+                heroSubtitleEn: heroValue.subtitleEn,
                 heroImages: heroValue.heroImages,
               });
             }}
@@ -335,33 +401,64 @@ const PageModal = ({
           {/* 產品 說明圖片（僅產品模式） */}
           {type === "product" && (
             <div className={styles.formSection}>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>產品 說明圖片</label>
-                <div className={styles.imageUploader}>
-                  {(formData as Product).introImage ? (
-                    <div className={styles.imagePreview}>
-                      <img
-                        src={(formData as Product).introImage}
-                        alt="Info images preview"
-                      />
-                      <button
-                        type="button"
-                        className={styles.removeImage}
-                        onClick={() =>
-                          setFormData({ ...formData, introImage: "" })
+              <div className={styles.formGrid}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>產品 說明圖片</label>
+                  <div className={styles.imageUploader}>
+                    {(formData as Product).introImage ? (
+                      <div className={styles.imagePreview}>
+                        <img
+                          src={(formData as Product).introImage}
+                          alt="Info images preview"
+                        />
+                        <button
+                          type="button"
+                          className={styles.removeImage}
+                          onClick={() =>
+                            setFormData({ ...formData, introImage: "" })
+                          }
+                        >
+                          <FiX size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <ImageUploader
+                        onUpload={(url) =>
+                          setFormData({ ...formData, introImage: url })
                         }
-                      >
-                        <FiX size={16} />
-                      </button>
-                    </div>
-                  ) : (
-                    <ImageUploader
-                      onUpload={(url) =>
-                        setFormData({ ...formData, introImage: url })
-                      }
-                      buttonLabel="上傳產品 說明圖片"
-                    />
-                  )}
+                        buttonLabel="上傳產品 說明圖片"
+                      />
+                    )}
+                  </div>
+                </div>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>產品 說明圖片 (英文)</label>
+                  <div className={styles.imageUploader}>
+                    {(formData as Product).introImageEn ? (
+                      <div className={styles.imagePreview}>
+                        <img
+                          src={(formData as Product).introImageEn}
+                          alt="Info images preview"
+                        />
+                        <button
+                          type="button"
+                          className={styles.removeImage}
+                          onClick={() =>
+                            setFormData({ ...formData, introImageEn: "" })
+                          }
+                        >
+                          <FiX size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <ImageUploader
+                        onUpload={(url) =>
+                          setFormData({ ...formData, introImageEn: url })
+                        }
+                        buttonLabel="上傳產品 說明圖片 (英文)"
+                      />
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
