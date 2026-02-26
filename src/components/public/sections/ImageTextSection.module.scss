@@ -123,11 +123,6 @@
   @include section-content;
 }
 
-.buttonLink {
-  display: inline-block;
-  text-decoration: none;
-}
-
 .button {
   @include section-button;
 }

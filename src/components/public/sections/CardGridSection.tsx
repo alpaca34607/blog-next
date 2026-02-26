@@ -21,7 +21,7 @@ import {
 
 from "@/utils/sectionStyles";
 import styles from "./CardGridSection.module.scss";
-import Link from "next/link";
+import { Link } from "@/navigation";
 
 import TabBar,
   {

@@ -1,4 +1,5 @@
 "use client";
+import { Link } from "@/navigation";
 import { FiArrowRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 // 和ImageTextSection.tsx共用css
@@ -141,12 +142,10 @@ const VideoTextSection = ({ section }: VideoTextSectionProps) => {
               />
             )}
             {buttonText && (
-              <a href={buttonLink} className={styles.buttonLink}>
-                <button className={styles.button}>
-                  {buttonText}
-                  <FiArrowRight size={18} className={styles.buttonIcon} />
-                </button>
-              </a>
+              <Link href={buttonLink} className={styles.button}>
+                {buttonText}
+                <FiArrowRight size={18} className={styles.buttonIcon} />
+              </Link>
             )}
           </div>
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import Link from "next/link";
+import { Link } from "@/navigation";
 import { FiArrowRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./CTASection.module.scss";
@@ -32,7 +32,7 @@ const CTASection = ({ section }: CTASectionProps) => {
     });
 
   const buttonText = section.settings?.buttonText || "前往瞭解";
-  const buttonLink = section.settings?.buttonLink || "#";
+  const buttonLink = section.settings?.buttonLink || "";
   const buttonColor = section.settings?.buttonColor || "#273840";
   const buttonTextColor = section.settings?.buttonTextColor || "#ffffff";
 
