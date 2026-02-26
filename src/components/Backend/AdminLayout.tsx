@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
+import { routing } from "@/routing";
 import {
   FiLayout,
   FiNavigation,
@@ -183,15 +185,18 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       </aside>
 
       {/* Main Content */}
-      <main
-        className={`${styles.mainContent} ${
-          sidebarOpen ? styles.mainContentExpanded : styles.mainContentCollapsed
-        }`}
-      >
-        <div className={styles.contentWrapper}>
-          {children}
-        </div>
-      </main>
+      {/* NextIntlClientProvider 提供預設語系，讓後台預覽頁面中的 section 元件（含 locale-aware Link）不會因缺少 intl context 而報錯 */}
+      <NextIntlClientProvider locale={routing.defaultLocale} messages={{}}>
+        <main
+          className={`${styles.mainContent} ${
+            sidebarOpen ? styles.mainContentExpanded : styles.mainContentCollapsed
+          }`}
+        >
+          <div className={styles.contentWrapper}>
+            {children}
+          </div>
+        </main>
+      </NextIntlClientProvider>
     </div>
   );
 };
