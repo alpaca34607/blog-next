@@ -13,10 +13,13 @@ import { API_GetNewsAdmin } from "@/app/api/admin_api";
 interface NewsArticle {
   id: string;
   title: string;
+  titleEn: string;
   slug: string;
   category?: string | null;
   excerpt?: string | null;
+  excerptEn?: string | null;
   content: string;
+  contentEn: string;
   featuredImage?: string | null;
   publishDate?: string | null;
   isPublished: boolean;
@@ -44,10 +47,13 @@ const NewsPreview = () => {
             (res.data as any[]).map((n: any) => ({
               id: n.id,
               title: n.title,
+              titleEn: n.titleEn,
               slug: n.slug,
               category: n.category ?? null,
               excerpt: n.excerpt ?? null,
+              excerptEn: n.excerptEn ?? null,
               content: n.content,
+              contentEn: n.contentEn,
               featuredImage: n.featuredImage ?? null,
               publishDate: n.publishDate ?? null,
               isPublished: !!n.isPublished,
@@ -80,10 +86,13 @@ const NewsPreview = () => {
             (res.data as any[]).map((n: any) => ({
               id: n.id,
               title: n.title,
+              titleEn: n.titleEn,
               slug: n.slug,
               category: n.category ?? null,
               excerpt: n.excerpt ?? null,
+              excerptEn: n.excerptEn ?? null,
               content: n.content,
+              contentEn: n.contentEn,
               featuredImage: n.featuredImage ?? null,
               publishDate: n.publishDate ?? null,
               isPublished: !!n.isPublished,
@@ -175,7 +184,7 @@ const NewsPreview = () => {
         </Link>
         <div className={styles.headerActions}>
           <Link
-            href={`/news/${article.slug}`}
+            href={`/zh/news/${article.slug}`}
             target="_blank"
             className={styles.previewButton}
           >

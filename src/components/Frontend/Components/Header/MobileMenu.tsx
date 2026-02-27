@@ -5,27 +5,7 @@ import Navigation from "./Navigation";
 import LanguageToggle from "./LanguageToggle";
 import TopUtils from "./TopUtils";
 import styles from "./MobileMenu.module.scss";
-
-interface NavigationItem {
-  id: string;
-  title: string;
-  slug: string;
-  parentId?: string | null;
-  sortOrder: number;
-  type: "internal" | "external";
-  url?: string | null;
-  isVisible: boolean;
-  hasChildren?: boolean;
-  productCategory?: string;
-}
-
-interface Product {
-  id: string;
-  title: string;
-  slug: string;
-  category?: string | null;
-  isPublished: boolean;
-}
+import type { NavigationItem, Product } from "@/types/navigation";
 
 interface MobileMenuProps {
   /** 是否顯示選單 */

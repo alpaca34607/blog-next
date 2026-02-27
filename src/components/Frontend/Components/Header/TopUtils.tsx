@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { Link } from "@/navigation";
 import styles from "./TopUtils.module.scss";
 
 const TopUtils = ({ isMobile }: { isMobile: boolean }) => {
@@ -12,6 +12,7 @@ const TopUtils = ({ isMobile }: { isMobile: boolean }) => {
       <Link className={styles.topUtilsItem} href="/download">
         <span>下載專區</span>
       </Link>
+      {/* 登入頁已支援 i18n，使用 locale-aware Link 產生路由 */}
       <Link className={styles.topUtilsItem} href="/login">
         <span>登入體驗</span>
       </Link>

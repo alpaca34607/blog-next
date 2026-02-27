@@ -16,17 +16,21 @@ import ProductSpecsSection from "@/components/public/sections/ProductSpecsSectio
 import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import { API_GetPageBySlug } from "@/app/api/public_api";
+import { useTranslations } from "next-intl";
 
 interface BasePage {
   id: string;
   title: string;
+  titleEn?: string | null;
   slug: string;
   type: "page" | "product";
   content?: string | null;
   metaTitle?: string | null;
   metaDescription?: string | null;
   heroTitle?: string | null;
+  heroTitleEn?: string | null;
   heroSubtitle?: string | null;
+  heroSubtitleEn?: string | null;
   heroImages?: string[] | null;
   isPublished: boolean;
 }
@@ -50,31 +54,30 @@ interface Section {
 }
 
 function normalizeSections(input: any[]): Section[] {
-  // 將後端可能回傳的 null 統一轉為 undefined，避免前端 props 型別不相容
   return input.map((s) => ({
     ...s,
     title: s?.title ?? undefined,
+    titleEn: s?.titleEn ?? undefined,
     subtitle: s?.subtitle ?? undefined,
+    subtitleEn: s?.subtitleEn ?? undefined,
     content: s?.content ?? undefined,
     settings: s?.settings ?? undefined,
   }));
 }
 
 const ClientPageBySlug = () => {
-  // 在 client component 中使用 useParams 取得動態路由參數，避免直接存取 params Promise
-  const params = useParams<{ slug: string }>();
+  const params = useParams<{ locale: string; slug: string }>();
   const slug = params?.slug;
+  const t = useTranslations("common");
   const [isClient, setIsClient] = useState(false);
   const [page, setPage] = useState<BasePage | Product | undefined>(undefined);
   const [sections, setSections] = useState<Section[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // 僅在客戶端啟用 localStorage 相關操作
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  // 根據 slug 讀取頁面 / 產品與區塊資料（改為呼叫 API，避免依賴 localStorage）
   useEffect(() => {
     if (!isClient || !slug) return;
 
@@ -125,7 +128,6 @@ const ClientPageBySlug = () => {
     };
   }, [isClient, slug]);
 
-  // 後台更新時可透過自訂事件觸發前台重新抓取（避免依賴 localStorage）
   useEffect(() => {
     if (!isClient || !slug) return;
 
@@ -166,14 +168,15 @@ const ClientPageBySlug = () => {
           <HeroSection
             key={section.id}
             section={section}
-            // 只把 HeroSection 需要的欄位傳下去（避免型別不相容）
             page={
               page
                 ? {
-                    logo: "logo" in page ? (page as any).logo : undefined,
-                    heroTitle: (page as any).heroTitle ?? undefined,
-                    heroSubtitle: (page as any).heroSubtitle ?? undefined,
-                    heroImages: (page as any).heroImages ?? undefined,
+                    logo: "logo" in page ? (page as Product).logo : undefined,
+                    heroTitle: page.heroTitle ?? undefined,
+                    heroTitleEn: page.heroTitleEn ?? undefined,
+                    heroSubtitle: page.heroSubtitle ?? undefined,
+                    heroSubtitleEn: page.heroSubtitleEn ?? undefined,
+                    heroImages: page.heroImages ?? undefined,
                   }
                 : undefined
             }
@@ -210,11 +213,11 @@ const ClientPageBySlug = () => {
     <Layout>
       {!isClient ? (
         <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          內容載入中…
+          {t("loading")}
         </div>
       ) : loading ? (
         <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          內容載入中…
+          {t("loading")}
         </div>
       ) : !page ? (
         <div
@@ -227,17 +230,14 @@ const ClientPageBySlug = () => {
             textAlign: "center",
           }}
         >
-          此頁面不存在或尚未發布
+          {t("notFound")}
         </div>
       ) : (
         <>
           {(() => {
-            const pageHeroTitle = (page as any).heroTitle;
-            const pageHeroSubtitle = (page as any).heroSubtitle;
-            const heroImages = (page as any).heroImages as
-              | string[]
-              | null
-              | undefined;
+            const pageHeroTitle = page.heroTitle;
+            const pageHeroSubtitle = page.heroSubtitle;
+            const heroImages = page.heroImages;
 
             const hasPageHeroValues = Boolean(
               pageHeroTitle ||
@@ -245,7 +245,6 @@ const ClientPageBySlug = () => {
                 (heroImages && heroImages.length)
             );
 
-            // 若 sections 本身有 hero，也允許渲染（但 page 的 hero 欄位優先）
             const heroSectionFromApi = sections.find(
               (s) => s.sectionType === "hero"
             );
@@ -258,10 +257,11 @@ const ClientPageBySlug = () => {
                   <HeroSection
                     carouselSlideClassName="pageHero"
                     section={{
-                      // page 欄位優先（避免 section hero 為空字串/空值時誤判）
                       title: pageHeroTitle ?? heroSectionFromApi?.title ?? undefined,
+                      titleEn: page.heroTitleEn ?? heroSectionFromApi?.titleEn ?? undefined,
                       subtitle:
                         pageHeroSubtitle ?? heroSectionFromApi?.subtitle ?? undefined,
+                      subtitleEn: page.heroSubtitleEn ?? heroSectionFromApi?.subtitleEn ?? undefined,
                       content: heroSectionFromApi?.content ?? undefined,
                       settings: {
                         ...(heroSectionFromApi?.settings ?? {}),
@@ -271,12 +271,13 @@ const ClientPageBySlug = () => {
                           undefined,
                       },
                     }}
-                    // 只把 HeroSection 需要的欄位傳下去（避免型別不相容）
                     page={{
-                      logo: "logo" in page ? (page as any).logo : undefined,
-                      heroTitle: (page as any).heroTitle ?? undefined,
-                      heroSubtitle: (page as any).heroSubtitle ?? undefined,
-                      heroImages: (page as any).heroImages ?? undefined,
+                      logo: "logo" in page ? (page as Product).logo : undefined,
+                      heroTitle: page.heroTitle ?? undefined,
+                      heroTitleEn: page.heroTitleEn ?? undefined,
+                      heroSubtitle: page.heroSubtitle ?? undefined,
+                      heroSubtitleEn: page.heroSubtitleEn ?? undefined,
+                      heroImages: page.heroImages ?? undefined,
                     }}
                   />
                 )}
@@ -292,4 +293,3 @@ const ClientPageBySlug = () => {
 };
 
 export default ClientPageBySlug;
-

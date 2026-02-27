@@ -20,7 +20,9 @@ interface Section {
   id?: string;
   sectionType: string;
   title?: string;
+  titleEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   content?: string;
   sortOrder?: number;
   settings?: (SectionSettings & Record<string, any>) | Record<string, any>;
@@ -48,7 +50,9 @@ const SectionModal = ({
   const [formData, setFormData] = useState<Partial<Section>>({
     sectionType: "content_block",
     title: "",
+    titleEn: "",
     subtitle: "",
+    subtitleEn: "",
     content: "",
     settings: {
       templateVariant: "default",
@@ -90,7 +94,9 @@ const SectionModal = ({
       setFormData({
         sectionType: editingSection.sectionType || "content_block",
         title: editingSection.title || "",
+        titleEn: editingSection.titleEn || "",
         subtitle: editingSection.subtitle || "",
+        subtitleEn: editingSection.subtitleEn || "",
         content: editingSection.content || "",
         sortOrder: editingSection.sortOrder,
         settings: {
@@ -291,7 +297,7 @@ const SectionModal = ({
   // 處理檔案上傳（改用 /api/upload，上傳至 S3 相容服務）
   const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
-    downloadIndex: number
+    downloadIndex: number,
   ) => {
     const inputEl = e.currentTarget;
     const file = inputEl.files?.[0];
@@ -402,7 +408,7 @@ const SectionModal = ({
   const updateFeatureItem = (
     index: number,
     field: "icon" | "iconImage" | "title" | "description",
-    value: string
+    value: string,
   ) => {
     // 使用 functional setState，避免同一事件內連續更新導致狀態被舊資料覆蓋
     setFormData((prev) => {
@@ -427,7 +433,7 @@ const SectionModal = ({
     index: number,
     updates: Partial<
       Record<"icon" | "iconImage" | "title" | "description", string>
-    >
+    >,
   ) => {
     setFormData((prev) => {
       const features = [...((prev.settings as any)?.features || [])];
@@ -481,7 +487,7 @@ const SectionModal = ({
   const updateSpecItem = (
     index: number,
     field: "name" | "value",
-    value: string
+    value: string,
   ) => {
     const specs = [...(formData.settings?.specs || [])];
 
@@ -543,11 +549,11 @@ const SectionModal = ({
   if (!open) return null;
 
   const selectedType = sectionTypes.find(
-    (t) => t.value === formData.sectionType
+    (t) => t.value === formData.sectionType,
   );
   const variants = getTemplateVariants(formData.sectionType || "");
   const selectedVariant = variants.find(
-    (v) => v.value === (formData.settings as any)?.templateVariant
+    (v) => v.value === (formData.settings as any)?.templateVariant,
   );
 
   return (
@@ -624,7 +630,7 @@ const SectionModal = ({
                   >
                     <span>
                       {tables.find(
-                        (t) => t.id === (formData.settings as any)?.tableId
+                        (t) => t.id === (formData.settings as any)?.tableId,
                       )?.name || "選擇表格"}
                     </span>
                     <span className={styles.chevron}>▼</span>
@@ -680,7 +686,7 @@ const SectionModal = ({
                   >
                     <span>
                       {timelines.find(
-                        (t) => t.id === (formData.settings as any)?.timelineId
+                        (t) => t.id === (formData.settings as any)?.timelineId,
                       )?.name || "選擇時間軸"}
                     </span>
                     <span className={styles.chevron}>▼</span>
@@ -813,14 +819,18 @@ const SectionModal = ({
             <HeroSectionForm
               value={{
                 title: formData.title,
+                titleEn: formData.titleEn,
                 subtitle: formData.subtitle,
+                subtitleEn: formData.subtitleEn,
                 heroImages: (formData.settings as any)?.heroImages,
               }}
               onChange={(heroValue: HeroSectionFormValue) => {
                 setFormData({
                   ...formData,
                   title: heroValue.title,
+                  titleEn: heroValue.titleEn,
                   subtitle: heroValue.subtitle,
+                  subtitleEn: heroValue.subtitleEn,
                   settings: {
                     ...formData.settings,
                     heroImages: heroValue.heroImages,
@@ -943,7 +953,7 @@ const SectionModal = ({
                           updateFeatureItem(
                             index,
                             "description",
-                            e.target.value
+                            e.target.value,
                           )
                         }
                         placeholder="功能說明"
@@ -951,7 +961,7 @@ const SectionModal = ({
                       />
                     </div>
                   </div>
-                )
+                ),
               )}
               <button
                 type="button"
@@ -1073,7 +1083,7 @@ const SectionModal = ({
                   <div className={styles.imagePreview}>
                     <iframe
                       src={convertYouTubeUrlToEmbed(
-                        ((formData.settings as any)?.video as string) || ""
+                        ((formData.settings as any)?.video as string) || "",
                       )}
                       style={{
                         position: "absolute",
@@ -1125,7 +1135,7 @@ const SectionModal = ({
                 </p>
                 {(formData.settings as any)?.video
                   ? !isValidYouTubeUrl(
-                      ((formData.settings as any)?.video as string) || ""
+                      ((formData.settings as any)?.video as string) || "",
                     ) && (
                       <p
                         className={styles.helpText}
@@ -1375,59 +1385,117 @@ const SectionModal = ({
                             <FiTrash2 size={16} />
                           </button>
                         </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>標題</label>
-                          <input
-                            type="text"
-                            className={styles.input}
-                            value={card.title || ""}
-                            onChange={(e) => {
-                              const cards = [
-                                ...(formData.settings?.cards || []),
-                              ];
+                        <div className={styles.formGrid}>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>標題</label>
+                            <input
+                              type="text"
+                              className={styles.input}
+                              value={card.title || ""}
+                              onChange={(e) => {
+                                const cards = [
+                                  ...(formData.settings?.cards || []),
+                                ];
 
-                              cards[index] = {
-                                ...cards[index],
-                                title: e.target.value,
-                              };
+                                cards[index] = {
+                                  ...cards[index],
+                                  title: e.target.value,
+                                };
 
-                              setFormData({
-                                ...formData,
-                                settings: {
-                                  ...formData.settings,
-                                  cards,
-                                },
-                              });
-                            }}
-                            placeholder="卡片標題"
-                          />
+                                setFormData({
+                                  ...formData,
+                                  settings: {
+                                    ...formData.settings,
+                                    cards,
+                                  },
+                                });
+                              }}
+                              placeholder="卡片標題"
+                            />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>標題（英文）</label>
+                            <input
+                              type="text"
+                              className={styles.input}
+                              value={card.titleEn || ""}
+                              onChange={(e) => {
+                                const cards = [
+                                  ...(formData.settings?.cards || []),
+                                ];
+
+                                cards[index] = {
+                                  ...cards[index],
+                                  titleEn: e.target.value,
+                                };
+
+                                setFormData({
+                                  ...formData,
+                                  settings: {
+                                    ...formData.settings,
+                                    cards,
+                                  },
+                                });
+                              }}
+                              placeholder="Card Title"
+                            />
+                          </div>
                         </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>摘要</label>
-                          <textarea
-                            className={styles.textarea}
-                            value={card.excerpt || ""}
-                            onChange={(e) => {
-                              const cards = [
-                                ...(formData.settings?.cards || []),
-                              ];
+                        <div className={styles.formGrid}>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>摘要</label>
+                            <textarea
+                              className={styles.textarea}
+                              value={card.excerpt || ""}
+                              onChange={(e) => {
+                                const cards = [
+                                  ...(formData.settings?.cards || []),
+                                ];
 
-                              cards[index] = {
-                                ...cards[index],
-                                excerpt: e.target.value,
-                              };
+                                cards[index] = {
+                                  ...cards[index],
+                                  excerpt: e.target.value,
+                                };
 
-                              setFormData({
-                                ...formData,
-                                settings: {
-                                  ...formData.settings,
-                                  cards,
-                                },
-                              });
-                            }}
-                            placeholder="卡片摘要"
-                            rows={2}
-                          />
+                                setFormData({
+                                  ...formData,
+                                  settings: {
+                                    ...formData.settings,
+                                    cards,
+                                  },
+                                });
+                              }}
+                              placeholder="卡片摘要"
+                              rows={2}
+                            />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>摘要（英文）</label>
+                            <textarea
+                              className={styles.textarea}
+                              value={card.excerptEn || ""}
+                              onChange={(e) => {
+                                const cards = [
+                                  ...(formData.settings?.cards || []),
+                                ];
+
+                                cards[index] = {
+                                  ...cards[index],
+                                  excerptEn: e.target.value,
+                                };
+
+                                setFormData({
+                                  ...formData,
+                                  settings: {
+                                    ...formData.settings,
+                                    cards,
+                                  },
+                                });
+                              }}
+                              placeholder="Card Excerpt"
+                              rows={2}
+                            />
+                          </div>
                         </div>
                         <div className={styles.formGrid}>
                           <div className={styles.formGroup}>
@@ -1571,7 +1639,7 @@ const SectionModal = ({
                           />
                         </div>
                       </div>
-                    )
+                    ),
                   )}
                   <button
                     type="button"
@@ -1587,7 +1655,9 @@ const SectionModal = ({
                             ...cards,
                             {
                               title: "",
+                              titleEn: "",
                               excerpt: "",
+                              excerptEn: "",
                               category: "",
                               publishDate: "",
                               featuredImage: "",
@@ -1679,7 +1749,7 @@ const SectionModal = ({
                           <FiX size={16} />
                         </button>
                       </div>
-                    )
+                    ),
                   )}
                 </div>
               )}
@@ -2165,7 +2235,7 @@ const SectionModal = ({
                       </div>
                     </div>
                   </div>
-                )
+                ),
               )}
               <button
                 type="button"
@@ -2236,7 +2306,7 @@ const SectionModal = ({
                             <FiX size={16} />
                           </button>
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                 ) : null}
@@ -2312,7 +2382,7 @@ const SectionModal = ({
                       </div>
                     </div>
                   </div>
-                )
+                ),
               )}
               <button
                 type="button"

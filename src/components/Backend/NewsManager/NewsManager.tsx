@@ -33,20 +33,9 @@ type ZodIssueLike = {
   message?: string;
 };
 
-interface NewsArticle {
-  id: string;
-  title: string;
-  slug: string;
-  category?: string;
-  excerpt?: string;
-  content: string;
-  featuredImage?: string;
-  publishDate?: string;
-  isPublished: boolean;
-  isFeatured: boolean;
-  createdAt?: string;
-  updatedAt?: string;
-}
+import type { NewsRecord, NewsFormData } from "@/types/news";
+
+type NewsArticle = NewsRecord;
 
 const CATEGORIES = ["技術文章", "媒體報導", "活動訊息"];
 const ITEMS_PER_PAGE = 9; // 每頁顯示 9 筆資料
@@ -201,10 +190,14 @@ const NewsManager = () => {
 
       const apiData = {
         title: formData.title,
+        titleEn: formData.titleEn,
         slug: formData.slug,
         excerpt: formData.excerpt,
+        excerptEn: formData.excerptEn,
         content: formData.content,
+        contentEn: formData.contentEn,
         category: formData.category,
+        categoryEn: formData.categoryEn,
         isPublished: formData.isPublished,
         isFeatured: formData.isFeatured,
         featuredImage: formData.featuredImage,

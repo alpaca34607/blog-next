@@ -23,36 +23,10 @@ import {
   API_UpdatePage,
   API_DeletePage,
 } from "@/app/api/admin_api";
+import type { PageRecord, ProductRecord } from "@/types/page";
 
-interface BasePage {
-  id: string;
-  title: string;
-  slug: string;
-  type?: "page" | "product";
-  content?: string;
-  metaTitle?: string;
-  metaDescription?: string;
-  // Hero 欄位（頁首輪播/主圖）
-  heroImages?: string[] | null;
-  isPublished: boolean;
-  logo?: string;
-  externalUrl?: string;
-  category?: string;
-  sortOrder?: number;
-  createdAt?: string;
-  updatedAt?: string;
-  _count?: {
-    sections: number;
-  };
-}
-
-interface Page extends BasePage {}
-
-interface Product extends BasePage {
-  videoUrl?: string;
-  introImage?: string;
-  isFeatured?: boolean;
-}
+type Page = PageRecord;
+type Product = ProductRecord;
 
 type PageType = "page" | "product";
 
@@ -142,23 +116,40 @@ const PageManager = ({
           )
         : undefined;
 
+      const heroTitleEn =
+        typeof (formData as any).heroTitleEn === "string" &&
+        (formData as any).heroTitleEn.trim().length > 0
+          ? (formData as any).heroTitleEn.trim()
+          : undefined;
+      const heroSubtitleEn =
+        typeof (formData as any).heroSubtitleEn === "string" &&
+        (formData as any).heroSubtitleEn.trim().length > 0
+          ? (formData as any).heroSubtitleEn.trim()
+          : undefined;
+
       const apiData = {
         title: formData.title || "",
+        titleEn: (formData as any).titleEn || undefined,
         slug: formData.slug || "",
         type: type,
         metaTitle: formData.metaTitle,
+        metaTitleEn: (formData as any).metaTitleEn || undefined,
         metaDescription: formData.metaDescription,
+        metaDescriptionEn: (formData as any).metaDescriptionEn || undefined,
         content: formData.content,
         heroTitle,
+        heroTitleEn,
         heroSubtitle,
+        heroSubtitleEn,
         heroImages,
         logo: (formData as Product).logo,
-        // 產品新增欄位：後端尚未落地前，先照規格送出以確保前端 payload 正確
         videoUrl: (formData as Product).videoUrl,
         introImage: (formData as Product).introImage,
+        introImageEn: (formData as Product).introImageEn,
         isFeatured: (formData as Product).isFeatured,
         externalUrl: (formData as Product).externalUrl,
         category: (formData as Product).category,
+        categoryEn: (formData as Product).categoryEn,
         sortOrder: (formData as Product).sortOrder || 0,
         isPublished: resolvedIsPublished,
       };

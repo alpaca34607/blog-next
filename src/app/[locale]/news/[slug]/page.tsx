@@ -1,20 +1,26 @@
 "use client";
+
 import { use, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/navigation";
+import { Link } from "@/navigation";
 import Image from "next/image";
-import Link from "next/link";
 import Layout from "@/components/Frontend/Layout";
 import { FiArrowLeft, FiCalendar, FiTag } from "react-icons/fi";
 import styles from "./page.module.scss";
 import { API_GetNewsWithParams } from "@/app/api/public_api";
+import { useTranslations, useLocale } from "next-intl";
 
 interface NewsArticle {
   id: string;
   title: string;
+  titleEn: string;
   slug: string;
   category?: string | null;
+  categoryEn?: string | null;
   excerpt?: string | null;
+  excerptEn?: string | null;
   content: string;
+  contentEn?: string | null;
   featuredImage?: string | null;
   publishDate?: string | null;
   isPublished: boolean;
@@ -23,6 +29,7 @@ interface NewsArticle {
 
 interface NewsPageProps {
   params: Promise<{
+    locale: string;
     slug: string;
   }>;
 }
@@ -30,6 +37,9 @@ interface NewsPageProps {
 export default function NewsPage({ params }: NewsPageProps) {
   const { slug } = use(params);
   const router = useRouter();
+  const t = useTranslations("news");
+  const locale = useLocale();
+  const isEn = locale === "en";
   const [article, setArticle] = useState<NewsArticle | null>(null);
   const [relatedNews, setRelatedNews] = useState<NewsArticle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -43,7 +53,7 @@ export default function NewsPage({ params }: NewsPageProps) {
 
         const res = await API_GetNewsWithParams({ slug });
         if (!res?.success) {
-          router.push("/404");
+          router.push("/news");
           return;
         }
 
@@ -51,10 +61,14 @@ export default function NewsPage({ params }: NewsPageProps) {
         const mapped: NewsArticle[] = items.map((n: any) => ({
           id: n.id,
           title: n.title,
+          titleEn: n.titleEn ?? null,
           slug: n.slug,
           category: n.category ?? null,
+          categoryEn: n.categoryEn ?? null,
           excerpt: n.excerpt ?? null,
+          excerptEn: n.excerptEn ?? null,
           content: n.content,
+          contentEn: n.contentEn ?? null,
           featuredImage: n.featuredImage ?? null,
           publishDate: n.publishDate ?? null,
           isPublished: !!n.isPublished,
@@ -63,14 +77,13 @@ export default function NewsPage({ params }: NewsPageProps) {
 
         const current = mapped[0];
         if (!current || !current.isPublished) {
-          router.push("/404");
+          router.push("/news");
           return;
         }
 
         if (cancelled) return;
         setArticle(current);
 
-        // 相關文章（同分類）
         if (!current.category) {
           setRelatedNews([]);
           return;
@@ -88,10 +101,14 @@ export default function NewsPage({ params }: NewsPageProps) {
         const relatedMapped: NewsArticle[] = relatedItems.map((n: any) => ({
           id: n.id,
           title: n.title,
+          titleEn: n.titleEn ?? null,
           slug: n.slug,
           category: n.category ?? null,
+          categoryEn: n.categoryEn ?? null,
           excerpt: n.excerpt ?? null,
+          excerptEn: n.excerptEn ?? null,
           content: n.content,
+          contentEn: n.contentEn ?? null,
           featuredImage: n.featuredImage ?? null,
           publishDate: n.publishDate ?? null,
           isPublished: !!n.isPublished,
@@ -103,14 +120,14 @@ export default function NewsPage({ params }: NewsPageProps) {
           .sort(
             (a, b) =>
               new Date(b.publishDate || 0).getTime() -
-              new Date(a.publishDate || 0).getTime()
+              new Date(a.publishDate || 0).getTime(),
           )
           .slice(0, 3);
 
         if (!cancelled) setRelatedNews(related);
       } catch (error) {
         console.error("載入新聞時發生錯誤:", error);
-        router.push("/404");
+        router.push("/news");
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -125,7 +142,7 @@ export default function NewsPage({ params }: NewsPageProps) {
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      return date.toLocaleDateString("zh-TW", {
+      return date.toLocaleDateString(isEn ? "en-US" : "zh-TW", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -138,7 +155,7 @@ export default function NewsPage({ params }: NewsPageProps) {
   if (loading) {
     return (
       <Layout>
-        <div className={styles.loading}>載入中...</div>
+        <div className={styles.loading}>{t("loading")}</div>
       </Layout>
     );
   }
@@ -153,22 +170,24 @@ export default function NewsPage({ params }: NewsPageProps) {
         {/* 麵包屑 */}
         <div className={styles.breadcrumb}>
           <Link href="/" className={styles.breadcrumbLink}>
-            首頁
+            {t("breadcrumbHome")}
           </Link>
           <span className={styles.breadcrumbSeparator}>/</span>
           <Link href="/news" className={styles.breadcrumbLink}>
-            最新消息
+            {t("breadcrumbNews")}
           </Link>
           <span className={styles.breadcrumbSeparator}>/</span>
-          <span className={styles.breadcrumbCurrent}>{article.title}</span>
+          <span className={styles.breadcrumbCurrent}>
+            {isEn ? article.titleEn || article.title : article.title}
+          </span>
         </div>
 
-        {/* 文章區塊*/}
+        {/* 文章區塊 */}
         <article className={styles.article}>
-          {/* 返回*/}
+          {/* 返回 */}
           <Link href="/news" className={styles.backButton}>
             <FiArrowLeft size={20} />
-            <span>返回列表</span>
+            <span>{t("backToList")}</span>
           </Link>
 
           {/* 文章標題區 */}
@@ -176,17 +195,18 @@ export default function NewsPage({ params }: NewsPageProps) {
             <div className={styles.meta}>
               <span className={styles.category}>
                 <FiTag size={16} />
-                {article.category}
+                {isEn
+                  ? article.categoryEn || article.category
+                  : article.category}
               </span>
               <span className={styles.date}>
                 <FiCalendar size={16} />
                 {formatDate(article.publishDate || "")}
               </span>
             </div>
-            <h1 className={styles.title}>{article.title}</h1>
-            {/* {article.excerpt && (
-              <p className={styles.excerpt}>{article.excerpt}</p>
-            )} */}
+            <h1 className={styles.title}>
+              {isEn ? article.titleEn || article.title : article.title}
+            </h1>
           </header>
 
           {/* 文章配圖 */}
@@ -205,14 +225,17 @@ export default function NewsPage({ params }: NewsPageProps) {
           {/* 文章內容 */}
           <div
             className={styles.content}
-            dangerouslySetInnerHTML={{ __html: article.content }}
+            dangerouslySetInnerHTML={{
+              __html:
+                isEn && article.contentEn ? article.contentEn : article.content,
+            }}
           />
         </article>
 
         {/* 關聯新聞 */}
         {relatedNews.length > 0 && (
           <section className={styles.relatedNews}>
-            <h2 className={styles.relatedTitle}>相關文章</h2>
+            <h2 className={styles.relatedTitle}>{t("relatedArticles")}</h2>
             <div className={styles.relatedGrid}>
               {relatedNews.map((news) => (
                 <Link
@@ -233,11 +256,15 @@ export default function NewsPage({ params }: NewsPageProps) {
                   )}
                   <div className={styles.relatedContent}>
                     <span className={styles.relatedCategory}>
-                      {news.category}
+                      {isEn ? news.categoryEn || news.category : news.category}
                     </span>
-                    <h3 className={styles.relatedCardTitle}>{news.title}</h3>
-                    {news.excerpt && (
-                      <p className={styles.relatedExcerpt}>{news.excerpt}</p>
+                    <h3 className={styles.relatedCardTitle}>
+                      {isEn ? news.titleEn || news.title : news.title}
+                    </h3>
+                    {(isEn ? news.excerptEn || news.excerpt : news.excerpt) && (
+                      <p className={styles.relatedExcerpt}>
+                        {isEn ? news.excerptEn || news.excerpt : news.excerpt}
+                      </p>
                     )}
                     <span className={styles.relatedDate}>
                       {formatDate(news.publishDate || "")}

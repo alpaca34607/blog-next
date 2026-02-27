@@ -83,7 +83,7 @@
   text-align: left;
   padding: 24px;
   transition: transform 0.3s;
-  gap: 16px;
+  gap: 8px;
 
   &:hover {
     transform: translateY(-4px);
@@ -192,7 +192,7 @@
 
   // grid-3: 較大的 icon (200px)
   .featuresGrid[data-variant="grid-2"] & {
-    height: 200px;
+    height: 400px;
 
     @include rwd-md {
       height: 200px;
@@ -241,7 +241,6 @@
   font-size: 20px;
   font-weight: 600;
   color: $text-main;
-  margin-bottom: 8px;
   line-height: 1.4;
 
   @include rwd-md {

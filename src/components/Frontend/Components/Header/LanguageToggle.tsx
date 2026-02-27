@@ -11,23 +11,34 @@ interface LanguageToggleProps {
 }
 
 const LanguageToggle = ({ lang, onLangChange }: LanguageToggleProps) => {
+  const isZhActive = lang === "zh";
+  const isEnActive = lang === "en";
+
+  const handleLangClick = (targetLang: string) => {
+    // 防止重複點擊當前語言，避免出現 /en/en 等重複路徑
+    if (targetLang === lang) return;
+    onLangChange(targetLang);
+  };
+
   return (
-    <div className={styles.langToggleGroup} data-lang={lang}>
+    //  ::before 偽元素滑塊，CSS :has() 自動跟隨 active 狀態與 hover 移動
+    <div className={styles.langToggleGroup}>
       <button
         type="button"
-        className={cn(styles.langToggleBtn, lang === "zh" && styles.active)}
-        onClick={() => onLangChange("zh")}
+        className={cn(styles.langToggleBtn, isZhActive && styles.active)}
+        onClick={() => handleLangClick("zh")}
+        disabled={isZhActive}
       >
         <span>中文</span>
       </button>
       <button
         type="button"
-        className={cn(styles.langToggleBtn, lang === "en" && styles.active)}
-        onClick={() => onLangChange("en")}
+        className={cn(styles.langToggleBtn, isEnActive && styles.active)}
+        onClick={() => handleLangClick("en")}
+        disabled={isEnActive}
       >
         <span>EN</span>
       </button>
-      <div className={styles.langToggleSlider} />
     </div>
   );
 };

@@ -5,6 +5,7 @@ import styles from "./page.module.scss";
 import DefaultInput from "@/components/public/Input";
 import { useRouter } from "next/navigation";
 import { setAuthToken } from "@/utils/common";
+
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
@@ -26,7 +27,7 @@ export default function Login() {
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        console.log('login failed: ', json?.error?.details || json?.details);
+        console.log("login failed: ", json?.error?.details || json?.details);
         const msg =
           json?.error?.message ||
           json?.message ||
@@ -60,7 +61,7 @@ export default function Login() {
             <img src="/images/background/banner.jpg" alt="login banner" />
           </div>
           <div className={styles.loginFormWrapper}>
-            <h1>CMS 客戶管理系統</h1>
+            <h1>CMS 後台管理系統</h1>
             <div className={styles.loginForm}>
               <DefaultInput
                 label="Email"
@@ -76,6 +77,7 @@ export default function Login() {
               <DefaultInput
                 label="密碼"
                 name="password"
+                type="password"
                 onChangeFun={(
                   e: React.ChangeEvent<
                     HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
@@ -104,3 +106,4 @@ export default function Login() {
     </Layout>
   );
 }
+
