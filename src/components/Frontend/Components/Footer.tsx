@@ -22,6 +22,7 @@ import {
 } from "@/app/api/public_api";
 import type { NavigationItem, Product } from "@/types/navigation";
 import type { NewsListItem } from "@/types/news";
+import { useTranslations } from "next-intl";
 
 
 
@@ -51,7 +52,7 @@ const Footer = () => {
   const [siteSettingsLoading, setSiteSettingsLoading] = useState(true);
   const [navigationLoading, setNavigationLoading] = useState(true);
   const [productsLoading, setProductsLoading] = useState(true);
-
+  const t = useTranslations("footer");
   // 載入網站設定
   useEffect(() => {
     const fetchSiteSettings = async () => {
@@ -276,7 +277,7 @@ const Footer = () => {
             </div>
             <div className={styles.footerDivider} />
             <div className={styles.footerRecruitSocial}>
-              <span className={styles.footerRecruit}>社群連結</span>
+              <span className={styles.footerRecruit}>{t("socialLinks")}</span>
               <div className={styles.footerSocialIcons}>
                 <a
                   href={siteSettings?.socialLinks?.facebook || "#"}
@@ -320,7 +321,7 @@ const Footer = () => {
             <div
               className={cn(styles.footerColumn, styles.footerColumnSolutions)}
             >
-              <h3 className={styles.footerColumnTitle}>服務項目</h3>
+              <h3 className={styles.footerColumnTitle}>{t("services")}</h3>
               <ul className={styles.footerList}>
                 {productList.map((product) => (
                   <li key={product.id}>
@@ -333,7 +334,7 @@ const Footer = () => {
 
           {parentItems.length > 0 && (
             <div className={cn(styles.footerColumn, styles.footerColumnAbout)}>
-              <h3 className={styles.footerColumnTitle}>關於我們</h3>
+              <h3 className={styles.footerColumnTitle}>{t("navigation")}</h3>
               <ul className={styles.footerList}>
                 {parentItems.map((item) =>
                   item.type === "external" && item.url ? (
@@ -356,7 +357,7 @@ const Footer = () => {
 
           {newsList.length > 0 && (
             <div className={cn(styles.footerColumn, styles.footerColumnNews)}>
-              <h3 className={styles.footerColumnTitle}>最新消息</h3>
+              <h3 className={styles.footerColumnTitle}>{t("newsList")}</h3>
               <ul className={cn(styles.footerList, styles.footerListNews)}>
                 {newsList.map((news) => (
                   <li key={news.id}>
@@ -392,7 +393,7 @@ const Footer = () => {
         <div className={styles.footerCopyright}>
           <p>
             {siteSettings?.copyright ||
-              "Copyright © 2025 Blogcraft Co., Ltd. All rights reserved."}
+              t("copyright")}
           </p>
         </div>
       </div>

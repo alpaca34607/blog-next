@@ -3,9 +3,10 @@ import { useEffect, useRef, useState } from "react";
 import { cn } from "@/utils/cn";
 import styles from "./IntroSection.module.scss";
 import ClipPathBtn from "../../Components/ClipPathBtn";
-import Link from "next/link";
-
+import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 const IntroSection = () => {
+  const t = useTranslations("homePage");
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isSticky, setIsSticky] = useState(false);
   const [opacity, setOpacity] = useState(0);
@@ -107,7 +108,7 @@ const IntroSection = () => {
                   isFadeOut && styles.fadeOut
                 )}
               >
-                輕鬆經營品牌內容
+                {t("introTitle")}
               </h2>
               <h3
                 className={cn(
@@ -116,9 +117,9 @@ const IntroSection = () => {
                   isFadeOut && styles.fadeOut
                 )}
               >
-                專為客戶打造部落格式形象網頁
+                {t("introSubtitle")}
                 <br />
-                直觀操作，長期更新的好選擇
+                {t("introSubtitle2")}
               </h3>
               <p
                 className={cn(
@@ -127,9 +128,9 @@ const IntroSection = () => {
                   isFadeOut && styles.fadeOut
                 )}
               >
-                圖文說明、文章列表、產品展示皆可快速建立
+                {t("introSubtitle3")}
                 <br />
-                更新內容不必改程式，管理介面直覺便利
+                {t("introSubtitle4")}
               </p>
             </div>
             <div className={cn(styles.ellipses, styles.ellipsesOuterThin)}>
@@ -147,15 +148,15 @@ const IntroSection = () => {
             >
               <li className={styles.socialIcon}>
                 <i className="fa-solid fa-cloud" style={{ fontSize: "20px" }} />
-                雲端後台，一站式管理
+                {t("introSpec1")}
               </li>
               <li className={styles.socialIcon}>
                 <i className="fa-solid fa-video" style={{ fontSize: "20px" }} />
-                模板套用，快速上線
+                {t("introSpec2")}
               </li>
               <li className={styles.socialIcon}>
                 <i className="fa-solid fa-brain" style={{ fontSize: "20px" }} />
-                文章與頁面，輕鬆編輯
+                {t("introSpec3")}
               </li>
             </ul>
             <p
@@ -174,7 +175,7 @@ const IntroSection = () => {
                 isFadeOut && styles.fadeOut
               )}
             >
-              <p className={styles.pageTitle}>About Us</p>
+              <p className={styles.pageTitle}>{t("introPageTitle")}</p>
               <div className={styles.timeline}>
                 <span className={styles.timelineUnit} />
                 <span className={cn(styles.timelineUnit, styles.active)} />
@@ -190,7 +191,7 @@ const IntroSection = () => {
                 )}
                 showArrow={true}
               >
-                關於我們
+                {t("introButton")}
               </ClipPathBtn>
           </div>
         </div>

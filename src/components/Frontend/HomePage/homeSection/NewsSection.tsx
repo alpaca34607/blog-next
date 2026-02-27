@@ -1,5 +1,6 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { newsData, type NewsArticle } from "@/data/homePageData";
 import { Link } from "@/navigation";
 import styles from "./NewsSection.module.scss";
@@ -7,6 +8,7 @@ import Image from "next/image";
 import { API_GetNews } from "@/app/api/frontend_api";
 
 const NewsSection = () => {
+  const t = useTranslations("homePage");
   const [newsList, setNewsList] = useState<NewsArticle[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -97,8 +99,8 @@ const NewsSection = () => {
       <div className={styles.newsBadge} />
       <section ref={sectionRef} className={styles.newsSection}>
         <div className={styles.title}>
-          <h2>NEWS</h2>
-          <p>最新消息</p>
+          <h2>{t("newsTitle")}</h2>
+          <p>{t("newsSubtitle")}</p>
         </div>
         <div className={styles.list} id="news-section__list">
           {(newsList.length > 0 ? newsList : newsData).map((item) => (
@@ -122,7 +124,7 @@ const NewsSection = () => {
                   <p>{item.excerpt}</p>
                 </div>
                 <Link href={`/news/${item.slug}`} className={styles.cardLink}>
-                  View More
+                  {t("newsViewMore")}
                 </Link>
               </div>
             </div>
@@ -162,7 +164,7 @@ const NewsSection = () => {
                 stroke="currentColor"
               />
             </svg>
-            <span>查看更多內容</span>
+            <span>{t("newsMoreContent")}</span>
             <svg
               className={styles.btnArrow}
               width="24"

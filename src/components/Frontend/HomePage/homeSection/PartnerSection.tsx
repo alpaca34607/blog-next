@@ -2,6 +2,7 @@
 import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { partnersData, successCasesData } from "@/data/homePageData";
 import { cn } from "@/utils/cn";
 import { scrollTriggerAnimations } from "@/utils/gsapAnimations";
@@ -16,6 +17,7 @@ if (typeof window !== "undefined") {
 }
 
 const PartnerSection = () => {
+  const t = useTranslations("homePage");
   const group1Ref = useRef<HTMLDivElement>(null);
   const group2Ref = useRef<HTMLDivElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
@@ -66,7 +68,7 @@ const PartnerSection = () => {
         {/* 合作品牌輪播 */}
         <div ref={group1Ref} className={styles.group}>
           <div className={styles.title}>
-            <h2>合作品牌</h2>
+            <h2>{t("partnerTitle")}</h2>
           </div>
           <div className={cn(styles.swiper, styles.partnerSwiper)}>
             <Swiper
@@ -125,7 +127,7 @@ const PartnerSection = () => {
         {/* 上線案例輪播 */}
         <div ref={group2Ref} className={styles.group}>
           <div className={styles.title}>
-            <h2>上線案例</h2>
+            <h2>{t("successCasesTitle")}</h2>
           </div>
           <div className={cn(styles.swiper, styles.successSwiper)}>
             <Swiper
