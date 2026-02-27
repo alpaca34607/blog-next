@@ -11,190 +11,89 @@ import MobileMenu from "./Header/MobileMenu";
 import { API_GetNavigationItem, API_GetProducts } from "@/app/api/public_api";
 import type { NavigationItem, Product } from "@/types/navigation";
 
-// 舊導航項目資料格式
-interface OldNavItem {
-  id: number;
-  text: string;
-  link: string;
-
-  dropdown?: Array<{
-    text: string;
-    link: string;
-
-    submenu?: Array<{
-      text: string;
-      link: string;
-    }>;
-  }>;
-}
-
-// 舊導航項目備用資料
-const oldNavItemsData: OldNavItem[] = [
+// API 無資料或失敗時的新格式備用資料（不依賴舊格式）
+const fallbackNavItems: NavigationItem[] = [
   {
-    id: 1,
-    text: "關於布創",
-    link: "#",
+    id: "about",
+    title: "關於我們",
+    titleEn: "About",
+    slug: "about",
+    parentId: null,
+    sortOrder: 0,
+    type: "internal",
+    url: null,
+    isVisible: true,
+    hasChildren: false,
+  },
+  {
+    id: "services",
+    title: "服務項目",
+    titleEn: "Services",
+    slug: "",
+    parentId: null,
+    sortOrder: 1,
+    type: "internal",
+    url: null,
+    isVisible: true,
+    hasChildren: true,
+  },
+  {
+    id: "library",
+    title: "範例展示",
+    titleEn: "Library",
+    slug: "",
+    parentId: null,
+    sortOrder: 2,
+    type: "internal",
+    url: null,
+    isVisible: true,
+    hasChildren: true,
+    productCategory: "模組化網站架構",
   },
 
   {
-    id: 2,
-    text: "服務項目",
-    link: "javascript:;",
-    dropdown: [
-      {
-        text: "模組化網站架構",
-        link: "javascript:;",
-        submenu: [
-          {
-            text: "部落格式形象網頁",
-            link: "#",
-          },
-
-          {
-            text: "通用網站模板",
-            link: "#",
-          },
-        ],
-      },
-
-      {
-        text: "客製化設計與開發",
-        link: "javascript:;",
-        submenu: [
-          {
-            text: "品牌形象網站設計",
-            link: "#",
-          },
-        ],
-      },
-    ],
-  },
-
-  {
-    id: 3,
-    text: "最新消息",
-    link: "/news",
-  },
-  {
-    id: 4,
-    text: "範例展示",
-    link: "#",
+    id: "news",
+    title: "最新消息",
+    titleEn: "News",
+    slug: "news",
+    parentId: null,
+    sortOrder: 3,
+    type: "internal",
+    url: null,
+    isVisible: true,
+    hasChildren: false,
   },
 ];
 
-// 將舊格式轉換為新格式（導覽項目）
-const convertOldNavToNew = (oldItems: OldNavItem[]): NavigationItem[] => {
-  const newItems: NavigationItem[] = [];
-  let orderCounter = 0;
-
-  oldItems.forEach((oldItem) => {
-    // 解析 link 判斷是否為外部連結
-    const isExternal =
-      oldItem.link.startsWith("http") || oldItem.link.startsWith("https");
-    const slug =
-      oldItem.link === "#" || oldItem.link === "javascript:;"
-        ? ""
-        : oldItem.link.replace(/^\/+/, "").replace(/^https?:\/\/[^\/]+/, "");
-
-    // 建立主項目
-    const parentItem: NavigationItem = {
-      id: oldItem.id.toString(),
-      title: oldItem.text,
-      slug: isExternal ? "" : slug,
-      sortOrder: orderCounter++,
-      type: isExternal ? "external" : "internal",
-      url: isExternal ? oldItem.link : undefined,
-      isVisible: true,
-      hasChildren: !!oldItem.dropdown && oldItem.dropdown.length > 0,
-    };
-
-    newItems.push(parentItem);
-
-    // 處理子項目（dropdown）
-    if (oldItem.dropdown && oldItem.dropdown.length > 0) {
-      let childOrderCounter = 0;
-
-      oldItem.dropdown.forEach((dropdownItem) => {
-        const isChildExternal =
-          dropdownItem.link.startsWith("http") ||
-          dropdownItem.link.startsWith("https");
-        const childSlug =
-          dropdownItem.link === "#" || dropdownItem.link === "javascript:;"
-            ? ""
-            : dropdownItem.link
-                .replace(/^\/+/, "")
-                .replace(/^https?:\/\/[^\/]+/, "");
-
-        const childItem: NavigationItem = {
-          id: `${oldItem.id}-${childOrderCounter}`,
-          title: dropdownItem.text,
-          slug: isChildExternal ? "" : childSlug,
-          parentId: parentItem.id,
-          sortOrder: childOrderCounter++,
-          type: isChildExternal ? "external" : "internal",
-          url: isChildExternal ? dropdownItem.link : undefined,
-          isVisible: true,
-          hasChildren:
-            !!dropdownItem.submenu && dropdownItem.submenu.length > 0,
-          // 設定 productCategory 為子項目名稱，用於匹配產品分類
-          productCategory: dropdownItem.text,
-        };
-
-        newItems.push(childItem);
-      });
-    }
-  });
-
-  return newItems;
-};
-
-// 將舊格式的 submenu 轉換為產品資料
-const convertOldSubmenuToProducts = (oldItems: OldNavItem[]): Product[] => {
-  const products: Product[] = [];
-  let productIdCounter = 1000; // 從 1000 開始避免與真實產品 ID 衝突
-
-  oldItems.forEach((oldItem) => {
-    if (oldItem.dropdown && oldItem.dropdown.length > 0) {
-      oldItem.dropdown.forEach((dropdownItem) => {
-        if (dropdownItem.submenu && dropdownItem.submenu.length > 0) {
-          dropdownItem.submenu.forEach((submenuItem) => {
-            // 從外部連結提取 slug
-            let slug = "";
-
-            if (submenuItem.link.startsWith("http")) {
-              // 從 URL 提取路徑作為 slug
-              try {
-                const url = new URL(submenuItem.link);
-
-                slug =
-                  url.pathname.replace(/^\//, "") ||
-                  `product-${productIdCounter}`;
-              } catch {
-                slug = `product-${productIdCounter}`;
-              }
-            } else {
-              slug =
-                submenuItem.link.replace(/^\/+/, "") ||
-                `product-${productIdCounter}`;
-            }
-
-            const product: Product = {
-              id: (productIdCounter++).toString(),
-              title: submenuItem.text,
-              slug: slug,
-              category: dropdownItem.text, // 使用 dropdown 項目的名稱作為分類
-              isPublished: true,
-            };
-
-            products.push(product);
-          });
-        }
-      });
-    }
-  });
-
-  return products;
-};
+const fallbackProducts: Product[] = [
+  {
+    id: "fallback-product-1",
+    title: "品牌部落格形象模板",
+    titleEn: "Blog Template",
+    slug: "blog-template",
+    category: "網頁建構方案,",
+    categoryEn: "Web Solutions",
+    isPublished: true,
+  },
+  {
+    id: "fallback-product-2",
+    title: "風格化介面設計",
+    titleEn: "Web Design",
+    slug: "web-design",
+    category: "網頁建構方案,",
+    categoryEn: "Web Solutions",
+    isPublished: true,
+  },
+  {
+    id: "fallback-product-3",
+    title: "客製化網站開發",
+    titleEn: "Custom Development",
+    slug: "development",
+    category: "網頁建構方案,",
+    categoryEn: "Web Solutions",
+    isPublished: true,
+  },
+];
 
 const Header = () => {
   const lang = useLocale();
@@ -257,14 +156,12 @@ const Header = () => {
         });
 
         const visible = flattened.filter((i) => i.isVisible);
-        setNavItems(
-          visible.length > 0 ? visible : convertOldNavToNew(oldNavItemsData),
-        );
+        setNavItems(visible.length > 0 ? visible : fallbackNavItems);
         return;
       }
 
-      // API 失敗時使用備用資料
-      setNavItems(convertOldNavToNew(oldNavItemsData));
+      // API 失敗時不使用舊格式備援資料
+      setNavItems(fallbackNavItems);
     };
 
     // 載入產品資料（API）
@@ -277,21 +174,19 @@ const Header = () => {
         const mapped: Product[] = items.map((p: any) => ({
           id: p.id,
           title: p.title,
+          titleEn: p.titleEn ?? null,
           slug: p.slug,
           category: p.category ?? null,
+          categoryEn: p.categoryEn ?? null,
           isPublished: !!p.isPublished,
         }));
         const published = mapped.filter((p) => p.isPublished);
-        setProducts(
-          published.length > 0
-            ? published
-            : convertOldSubmenuToProducts(oldNavItemsData),
-        );
+        setProducts(published.length > 0 ? published : fallbackProducts);
         return;
       }
 
-      // API 失敗時使用備用資料
-      setProducts(convertOldSubmenuToProducts(oldNavItemsData));
+      // API 失敗時不使用舊格式備援資料
+      setProducts(fallbackProducts);
     };
 
     loadNavigation();
