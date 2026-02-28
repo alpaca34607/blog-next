@@ -9,6 +9,7 @@ import { heroAnimations } from "@/utils/gsapAnimations";
 import styles from "./Hero.module.scss";
 import { accentOrange } from "@/styles/theme";
 import { useTranslations, useLocale } from "next-intl";
+import {Link} from "@/navigation";
 
 
 // 註冊 ScrollTrigger 插件
@@ -285,7 +286,7 @@ const marqueeTexts = [
                 {t("heroSubtitle")}
               </p>
               <div className={styles.ctaGroup}>
-                <button className={styles.shinyCta}>{t("heroButton")}</button>
+                <Link href="/contact" className={styles.shinyCta}>{t("heroButton")}</Link>
               </div>
             </div>
           </div>
