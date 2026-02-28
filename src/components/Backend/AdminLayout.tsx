@@ -84,7 +84,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     clearAuthToken();
     clearDemoToken();
     setMobileOpen(false);
-    router.replace("/login");
+    // 後台無 locale，導向前台登入頁時須加上語言前綴
+    router.replace(`/${routing.defaultLocale}/login`);
   };
 
   useEffect(() => {
@@ -237,7 +238,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         {isDemoMode && demoId && (
           <div className={styles.demoSection}>
             <a
-              href={`/?UUID=${demoId}`}
+              href={`/${routing.defaultLocale}?UUID=${demoId}`}
               target="_blank"
               rel="noopener noreferrer"
               className={`${styles.demoLink} ${

@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import AdminLayout from "@/components/Backend/AdminLayout";
 import { accentOrange } from "@/styles/theme";
 import { clearAuthToken } from "@/utils/common";
+import { routing } from "@/routing";
 
 type AdminPermissionDeniedDetail = {
   code?: string;
@@ -44,13 +45,13 @@ export default function PermissionDeniedPage() {
       });
 
       if (result.isConfirmed) {
-        // 登出：清除前端保存的 token，並導回登入頁
+        // 登出：清除前端保存的 token，並導回登入頁（須帶語言前綴）
         clearAuthToken();
-        router.replace("/login");
+        router.replace(`/${routing.defaultLocale}/login`);
         return;
       }
 
-      router.replace("/");
+      router.replace(`/${routing.defaultLocale}/`);
     })();
   }, [hasShown, router]);
 
