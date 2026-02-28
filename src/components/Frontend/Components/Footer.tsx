@@ -12,6 +12,7 @@ import {
 } from "react-icons/fa";
 import { SiLine } from "react-icons/si";
 import { useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
 import {
   API_GetSiteSettings,
@@ -19,6 +20,11 @@ import {
   API_GetProducts,
   API_GetNews,
 } from "@/app/api/public_api";
+import type { NavigationItem, Product } from "@/types/navigation";
+import type { NewsListItem } from "@/types/news";
+import { useTranslations } from "next-intl";
+
+
 
 const Footer = () => {
   interface SiteSettings {
@@ -38,44 +44,15 @@ const Footer = () => {
     copyright?: string;
     additionalLinks?: { title: string; url: string }[];
   }
-  interface NavigationItem {
-    id: string;
-    title: string;
-    slug: string; // 轉成前台路由用的 slug（從 url 推導）
-    parentId?: string | null;
-    sortOrder: number;
-    type: "internal" | "external";
-    url?: string | null;
-    isVisible: boolean;
-    hasChildren?: boolean;
-  }
-  interface Product {
-    id: string;
-    title: string;
-    slug: string;
-    category?: string | null;
-    isPublished: boolean;
-  }
-  interface NewsArticle {
-    id: string;
-    title: string;
-    slug: string;
-    category?: string | null;
-    excerpt?: string | null;
-    content: string;
-    featuredImage?: string | null;
-    publishDate?: string | null;
-    isPublished: boolean;
-    isFeatured: boolean;
-  }
+
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [NavigationItem, setNavigationItem] = useState<NavigationItem[]>([]);
   const [productList, setProductList] = useState<Product[]>([]);
-  const [newsList, setNewsList] = useState<NewsArticle[]>([]);
+  const [newsList, setNewsList] = useState<NewsListItem[]>([]);
   const [siteSettingsLoading, setSiteSettingsLoading] = useState(true);
   const [navigationLoading, setNavigationLoading] = useState(true);
   const [productsLoading, setProductsLoading] = useState(true);
-
+  const t = useTranslations("footer");
   // 載入網站設定
   useEffect(() => {
     const fetchSiteSettings = async () => {
@@ -129,6 +106,7 @@ const Footer = () => {
           const mapped: NavigationItem[] = items.map((item: any) => ({
             id: item.id,
             title: item.title,
+            titleEn: item.titleEn ?? null,
             slug: item?.url ? String(item.url).replace(/^\//, "") : "",
             parentId: item.parentId ?? null,
             sortOrder: item.sortOrder ?? 0,
@@ -177,14 +155,16 @@ const Footer = () => {
           const items: any[] = Array.isArray(response.data)
             ? response.data
             : [];
-          const mapped: Product[] = items.map((p: any) => ({
-            id: p.id,
-            title: p.title,
-            slug: p.slug,
-            category: p.category ?? null,
-            isPublished: !!p.isPublished,
+          const mapped: Product[] = items.map((product: any) => ({
+            id: product.id,
+            title: product.title,
+            titleEn: product.titleEn ?? null,
+            slug: product.slug,
+            category: product.category ?? null,
+            categoryEn: product.categoryEn ?? null,
+            isPublished: !!product.isPublished,
           }));
-          setProductList(mapped.filter((p) => p.isPublished));
+          setProductList(mapped.filter((product) => product.isPublished));
         } else {
           console.error(
             "取得產品列表失敗:",
@@ -200,7 +180,6 @@ const Footer = () => {
 
     // 監聽產品資料更新事件
     const handleProductsUpdated = () => {
-      // 改為直接重新呼叫 API，避免依賴 localStorage
       fetchProducts().catch(() => {});
     };
 
@@ -222,20 +201,21 @@ const Footer = () => {
           const items: any[] = Array.isArray(response.data)
             ? response.data
             : [];
-          const mapped: NewsArticle[] = items.map((n: any) => ({
-            id: n.id,
-            title: n.title,
-            slug: n.slug,
-            category: n.category ?? null,
-            excerpt: n.excerpt ?? null,
-            content: n.content,
-            featuredImage: n.featuredImage ?? null,
-            publishDate: n.publishDate ?? null,
-            isPublished: !!n.isPublished,
-            isFeatured: !!n.isFeatured,
+          const mapped: NewsListItem[] = items.map((news: any) => ({
+            id: news.id,
+            title: news.title,
+            titleEn: news.titleEn ?? null,
+            slug: news.slug,
+            category: news.category ?? null,
+            categoryEn: news.categoryEn ?? null,
+            excerpt: news.excerpt ?? null,
+            excerptEn: news.excerptEn ?? null,
+            publishDate: news.publishDate ?? null,
+            featuredImage: news.featuredImage ?? null,
+            isPublished: !!news.isPublished,
+            isFeatured: !!news.isFeatured,
           }));
-          const publishedNews = mapped.filter((n) => n.isPublished).slice(0, 3);
-          setNewsList(publishedNews);
+          setNewsList(mapped);
         } else {
           console.error(
             "取得新聞列表失敗:",
@@ -266,6 +246,14 @@ const Footer = () => {
     (a, b) => a.sortOrder - b.sortOrder
   );
 
+  const locale = useLocale();
+  const getNavTitle = (item: NavigationItem) =>
+    locale === "en" && item.titleEn ? item.titleEn : item.title;
+  const getProductTitle = (item: Product) =>
+    locale === "en" && item.titleEn ? item.titleEn : item.title;
+  const getNewsTitle = (item: NewsListItem) =>
+    locale === "en" && item.titleEn ? item.titleEn : item.title;
+  
   return (
     <footer className={styles.siteFooter}>
       <div className={styles.footerContainer}>
@@ -289,7 +277,7 @@ const Footer = () => {
             </div>
             <div className={styles.footerDivider} />
             <div className={styles.footerRecruitSocial}>
-              <span className={styles.footerRecruit}>社群連結</span>
+              <span className={styles.footerRecruit}>{t("socialLinks")}</span>
               <div className={styles.footerSocialIcons}>
                 <a
                   href={siteSettings?.socialLinks?.facebook || "#"}
@@ -327,20 +315,17 @@ const Footer = () => {
                   ))}
                 </div>
               )}
-            {/* <div className={styles.footerAdditionalLinks}>
-              <a>資通安全政策</a>
-            </div> */}
           </div>
 
           {productList.length > 0 && (
             <div
               className={cn(styles.footerColumn, styles.footerColumnSolutions)}
             >
-              <h3 className={styles.footerColumnTitle}>創新解決方案</h3>
+              <h3 className={styles.footerColumnTitle}>{t("services")}</h3>
               <ul className={styles.footerList}>
                 {productList.map((product) => (
                   <li key={product.id}>
-                    <Link href={`/${product.slug}`}>{product.title}</Link>
+                    <Link href={`/${product.slug}`}>{getProductTitle(product)}</Link>
                   </li>
                 ))}
               </ul>
@@ -349,19 +334,19 @@ const Footer = () => {
 
           {parentItems.length > 0 && (
             <div className={cn(styles.footerColumn, styles.footerColumnAbout)}>
-              <h3 className={styles.footerColumnTitle}>關於我們</h3>
+              <h3 className={styles.footerColumnTitle}>{t("navigation")}</h3>
               <ul className={styles.footerList}>
                 {parentItems.map((item) =>
                   item.type === "external" && item.url ? (
                     <li key={item.id}>
                       <a href={item.url} target="_blank" rel="noopener noreferrer">
-                        {item.title}
+                        {getNavTitle(item)}
                       </a>
                     </li>
                   ) : (
                     <li key={item.id}>
                       <Link href={item.slug ? `/${item.slug}` : "/"}>
-                        {item.title}
+                        {getNavTitle(item)}
                       </Link>
                     </li>
                   )
@@ -372,11 +357,11 @@ const Footer = () => {
 
           {newsList.length > 0 && (
             <div className={cn(styles.footerColumn, styles.footerColumnNews)}>
-              <h3 className={styles.footerColumnTitle}>最新消息</h3>
+              <h3 className={styles.footerColumnTitle}>{t("newsList")}</h3>
               <ul className={cn(styles.footerList, styles.footerListNews)}>
                 {newsList.map((news) => (
                   <li key={news.id}>
-                    <Link href={`/news/${news.slug}`}>{news.title}</Link>
+                    <Link href={`/news/${news.slug}`}>{getNewsTitle(news)}</Link>
                   </li>
                 ))}
               </ul>
@@ -408,7 +393,7 @@ const Footer = () => {
         <div className={styles.footerCopyright}>
           <p>
             {siteSettings?.copyright ||
-              "Copyright © 2025 Blogcraft Co., Ltd. All rights reserved."}
+              t("copyright")}
           </p>
         </div>
       </div>

@@ -8,26 +8,15 @@ import { cn } from "@/utils/cn";
 import { heroAnimations } from "@/utils/gsapAnimations";
 import styles from "./Hero.module.scss";
 import { accentOrange } from "@/styles/theme";
+import { useTranslations, useLocale } from "next-intl";
+
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-// Marquee data
-const marqueeTexts = [
-  {
-    id: 1,
-    text: "模板快速上線 · 版面一致好維護",
-    color: accentOrange,
-  },
 
-  {
-    id: 2,
-    text: "後台輕鬆管理 · 內容更新像寫部落格",
-    color: "",
-  },
-];
 
 declare global {
   interface Window {
@@ -44,6 +33,23 @@ const Hero = () => {
   const bottomTaglineRef = useRef<HTMLDivElement>(null);
   const heroSectionRef = useRef<HTMLElement>(null);
 
+  const t = useTranslations("homePage");
+  const locale = useLocale();
+  const isEn = locale === "en";
+// Marquee data
+const marqueeTexts = [
+  {
+    id: 1,
+    text: t("marqueeItem1"),
+    color: accentOrange,
+  },
+
+  {
+    id: 2,
+    text: t("marqueeItem2"),
+    color: "",
+  },
+];
   // 動態載入 particles.js
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -269,17 +275,17 @@ const Hero = () => {
           <div ref={leftContentRef} className={styles.leftContent}>
             <div className={styles.heroContent}>
               <h1 className={styles.heroTitle}>
-                Built For
+                {t("heroTitle")}
                 <span className={styles.heroTitleEm}>Your Brand Story!</span>
               </h1>
               <h2 className={styles.heroSubtitleEn}>
-                Simple · Clean · Template-ready
+                {t("herotitleEn")}
               </h2>
               <p className={styles.heroSubtitleCn}>
-                輕鬆打造專屬於您的形象網頁
+                {t("heroSubtitle")}
               </p>
               <div className={styles.ctaGroup}>
-                <button className={styles.shinyCta}>立即諮詢</button>
+                <button className={styles.shinyCta}>{t("heroButton")}</button>
               </div>
             </div>
           </div>

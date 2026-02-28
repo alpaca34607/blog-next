@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { useTranslations } from "next-intl";
 import { cn } from "@/utils/cn";
 import styles from "./VideoModal.module.scss";
 
@@ -10,6 +11,7 @@ interface VideoModalProps {
 }
 
 const VideoModal = ({ isOpen, videoUrl, onClose }: VideoModalProps) => {
+  const t = useTranslations("common");
   useEffect(() => {
     if (isOpen) {
       document.body.classList.add(styles.modalOpen);
@@ -53,7 +55,7 @@ const VideoModal = ({ isOpen, videoUrl, onClose }: VideoModalProps) => {
     >
       <div className={styles.overlay} />
       <div className={styles.container} onClick={(e) => e.stopPropagation()}>
-        <button className={styles.close} onClick={onClose} aria-label="關閉">
+        <button className={styles.close} onClick={onClose} aria-label={t("close")}>
           <i className="fa-solid fa-times" />
         </button>
         <div className={styles.content}>

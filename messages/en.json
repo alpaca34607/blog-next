@@ -1,7 +1,54 @@
 {
   "common": {
     "loading": "Loading…",
-    "notFound": "This page does not exist or has not been published"
+    "notFound": "This page does not exist or has not been published",
+    "close": "Close"
+  },
+  "homePage": {
+    "heroTitle": "Built For",
+    "heroTitleEm": "Your Brand Story!",
+    "herotitleEn": "Simple · Clean · Ready-to-Launch",
+    "heroSubtitle": "Effortlessly bring your brand online",
+    "heroButton": "Get in Touch",
+    "marqueeItem1": "Launch Fast with Consistent Templates",
+    "marqueeItem2": "Easy Backend · Update Like Blogging",
+    "introSpec1": "All-in-One Cloud Dashboard",
+    "introSpec2": "Template-Based Quick Launch",
+    "introSpec3": "Flexible Page & Post Editing",
+    "introTitle": "Grow Your Brand with Ease",
+    "introSubtitle": "Blog-Style Brand Websites",
+    "introSubtitle2": "Built for Ongoing Updates",
+    "introSubtitle3": "Create Text, Posts, and Showcases in Minutes",
+    "introSubtitle4": "Update Content Without Touching Code",
+    "introButton": "About Us",
+    "introPageTitle": "About Us",
+    "contactTitle": "Start Your",
+    "contactTitleEm": "Blog-style Brand Site",
+    "contactDesc": "Launch with templates, manage pages and posts in the dashboard. Keep a consistent layout with minimal upkeep so your content grows with you.",
+    "contactBtn": "CONTACT US",
+    "serviceTitle": "SERVICES",
+    "serviceByline": "for Blog-style Brand Sites",
+    "serviceDescription": "Blog-first structure with simple templates and modular blocks. Publish, categorize, and maintain your site from the dashboard—updates become part of your routine.",
+    "serviceLink": "View our services",
+    "learnMore": "Learn more about",
+    "newsTitle": "NEWS",
+    "newsSubtitle": "Latest",
+    "newsViewMore": "View More",
+    "newsMoreContent": "Grab latest",
+    "partnerTitle": "Partner Brands",
+    "successCasesTitle": "Live Cases"
+  },
+  "topUtils": {
+    "contact": "Contact Us",
+    "download": "Download",
+    "login": "Login Demo"
+  },
+  "footer": {
+    "socialLinks": "Social Links",
+    "services": "Services",
+    "navigation": "About Us",
+    "newsList": "Latest News",
+    "copyright": "This website is for demonstration purposes only . Copyright © 2026 Blogcraft Co., Ltd. All rights reserved."
   },
   "news": {
     "loading": "Loading...",
