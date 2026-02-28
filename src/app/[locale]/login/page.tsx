@@ -4,13 +4,14 @@ import Layout from "@/components/Frontend/Layout";
 import styles from "./page.module.scss";
 import DefaultInput from "@/components/public/Input";
 import { useRouter } from "next/navigation";
-import { setAuthToken } from "@/utils/common";
+import { setAuthToken, setDemoToken, setDemoId, clearAuthToken } from "@/utils/common";
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [isDemoLoading, setIsDemoLoading] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
 
   const handleLogin = async () => {
@@ -50,6 +51,42 @@ export default function Login() {
       setError("登入時發生錯誤，請稍後再試");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleDemoStart = async () => {
+    try {
+      setIsDemoLoading(true);
+      setError(null);
+
+      const res = await fetch("/api/demo/start", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const json = await res.json().catch(() => null);
+
+      if (!res.ok) {
+        const msg = json?.error?.message || json?.message || "無法啟動 DEMO，請稍後再試";
+        setError(msg);
+        return;
+      }
+
+      const { demoId, token } = json?.data || {};
+      if (!token || !demoId) {
+        setError("DEMO 啟動失敗：伺服器未回傳正確資料");
+        return;
+      }
+
+      clearAuthToken();
+      setDemoToken(token);
+      setDemoId(demoId);
+      router.push("/admin/dashboard");
+    } catch (e) {
+      console.error("DEMO 啟動錯誤:", e);
+      setError("DEMO 啟動失敗，請稍後再試");
+    } finally {
+      setIsDemoLoading(false);
     }
   };
 
@@ -94,9 +131,17 @@ export default function Login() {
                   className={styles.submitButton}
                   onClick={handleLogin}
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isDemoLoading}
                 >
                   {isSubmitting ? "登入中..." : "登入"}
+                </button>
+                <button
+                  className={styles.demoButton}
+                  onClick={handleDemoStart}
+                  type="button"
+                  disabled={isSubmitting || isDemoLoading}
+                >
+                  {isDemoLoading ? "啟動中..." : "訪客體驗 Demo"}
                 </button>
               </div>
             </div>

@@ -13,6 +13,7 @@ import TabBar, { TabItem } from "@/components/public/TabBar";
 
 import { API_GetNewsWithParams, API_GetProducts } from "@/app/api/public_api";
 import { useLocale } from "next-intl";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 // 預設中文分類→英文對應表（用於 categoryEn 尚未填入的舊資料）
 const DEFAULT_CATEGORY_EN_MAP: Record<string, string> = {
@@ -87,6 +88,7 @@ interface ProductItem {
 
 const CardGridSection = ({ section }: CardGridSectionProps) => {
   const locale = useLocale();
+  const demoUuid = useDemoUuid();
   const isEn = locale === "en";
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
@@ -113,7 +115,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
 
     const fetchData = async () => {
       if (dataSource === "news") {
-        const res = await API_GetNewsWithParams();
+        const res = await API_GetNewsWithParams({ demoUuid });
 
         if (res?.success) {
           const items: any[] = Array.isArray(res.data) ? res.data : [];
@@ -144,7 +146,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
       }
 
       if (dataSource === "products") {
-        const res = await API_GetProducts();
+        const res = await API_GetProducts(demoUuid);
 
         if (res?.success) {
           const items: any[] = Array.isArray(res.data) ? res.data : [];
@@ -175,7 +177,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
       setNewsArticles([]);
       setProducts([]);
     });
-  }, [dataSource]);
+  }, [dataSource, demoUuid]);
 
   // 獲取所有可用的分類
   const getAvailableCategories = (): string[] => {

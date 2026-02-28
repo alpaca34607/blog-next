@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -48,10 +50,11 @@ const updatePageSchema = z.object({
 });
 
 // GET /api/pages/[id] - 獲取單個頁面
-async function getPageById(request: NextRequest, pageId: string) {
+async function getPageById(req: AuthenticatedRequest, pageId: string) {
   try {
-    const page = await prisma.page.findUnique({
-      where: { id: pageId },
+    const ws = getWorkspaceFilter(req);
+    const page = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: {
         id: true,
         title: true,
@@ -115,24 +118,25 @@ async function getPageById(request: NextRequest, pageId: string) {
 }
 
 // PUT /api/pages/[id] - 更新頁面
-async function updatePage(request: NextRequest, pageId: string) {
+async function updatePage(req: AuthenticatedRequest, pageId: string) {
   try {
-    const body = await request.json();
+    const body = await req.json();
     const validatedData = updatePageSchema.parse(body);
+    const ws = getWorkspaceFilter(req);
 
-    // 檢查頁面是否存在
-    const existingPage = await prisma.page.findUnique({
-      where: { id: pageId },
+    // 檢查頁面是否存在且屬於當前工作區
+    const existingPage = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
     });
 
     if (!existingPage) {
       return errorResponse("NOT_FOUND", "頁面不存在", 404);
     }
 
-    // 如果更新 slug，檢查是否重複
+    // 如果更新 slug，檢查是否重複（同一工作區內）
     if (validatedData.slug && validatedData.slug !== existingPage.slug) {
       const slugExists = await prisma.page.findUnique({
-        where: { slug: validatedData.slug },
+        where: { slug_demoWorkspaceId: { slug: validatedData.slug, demoWorkspaceId: ws.demoWorkspaceId } },
       });
 
       if (slugExists) {
@@ -202,11 +206,12 @@ async function updatePage(request: NextRequest, pageId: string) {
 }
 
 // DELETE /api/pages/[id] - 刪除頁面
-async function deletePage(request: NextRequest, pageId: string) {
+async function deletePage(req: AuthenticatedRequest, pageId: string) {
   try {
-    // 檢查頁面是否存在
-    const existingPage = await prisma.page.findUnique({
-      where: { id: pageId },
+    const ws = getWorkspaceFilter(req);
+    // 檢查頁面是否存在且屬於當前工作區
+    const existingPage = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
     });
 
     if (!existingPage) {
@@ -229,7 +234,7 @@ export async function GET(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => getPageById(req, pageId));
+  return withAuthOrDemo(request, (req) => getPageById(req, pageId));
 }
 
 export async function PUT(
@@ -238,7 +243,7 @@ export async function PUT(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => updatePage(req, pageId));
+  return withAuthOrDemo(request, (req) => updatePage(req, pageId));
 }
 
 export async function DELETE(
@@ -247,5 +252,5 @@ export async function DELETE(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => deletePage(req, pageId));
+  return withAuthOrDemo(request, (req) => deletePage(req, pageId));
 }

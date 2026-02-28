@@ -24,6 +24,7 @@ import {
   API_DeletePage,
 } from "@/app/api/admin_api";
 import type { PageRecord, ProductRecord } from "@/types/page";
+import { getDemoToken, getAuthToken } from "@/utils/common";
 
 type Page = PageRecord;
 type Product = ProductRecord;
@@ -247,6 +248,14 @@ const PageManager = ({
     }
   };
 
+  // DEMO 訪客模式：mount 後才設定，避免 hydration 錯誤
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  useEffect(() => {
+    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
+  }, []);
+  const isItemReadOnly = (item: Page | Product) =>
+    isDemoMode && (item as any).demoWorkspaceId === "";
+
   const displayTitle = title || (type === "product" ? "產品管理" : "頁面管理");
   const displaySubtitle =
     subtitle ||
@@ -313,7 +322,12 @@ const PageManager = ({
       ) : (
         <div className={styles.pagesGrid}>
           {items.map((item) => (
-            <div key={item.id} className={styles.pageCard}>
+            <div
+              key={item.id}
+              className={`${styles.pageCard} ${
+                isItemReadOnly(item) ? styles.pageCardReadOnly : ""
+              }`}
+            >
               {/* Hero Image */}
               <div className={styles.heroImageContainer}>
                 {item.heroImages && item.heroImages.length > 0 ? (
@@ -336,55 +350,71 @@ const PageManager = ({
                     <h3 className={styles.pageTitle}>{item.title}</h3>
                     <p className={styles.pageSlug}>/{item.slug}</p>
                   </div>
-                  <span
-                    className={`${styles.statusBadge} ${
-                      item.isPublished
-                        ? styles.statusPublished
-                        : styles.statusDraft
-                    }`}
-                  >
-                    {item.isPublished ? "已發布" : "草稿"}
-                  </span>
+                  <div className={styles.badgesRow}>
+                    {isItemReadOnly(item) && (
+                      <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
+                        正式
+                      </span>
+                    )}
+                    <span
+                      className={`${styles.statusBadge} ${
+                        item.isPublished
+                          ? styles.statusPublished
+                          : styles.statusDraft
+                      }`}
+                    >
+                      {item.isPublished ? "已發布" : "草稿"}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Action Buttons */}
                 <div className={styles.cardActions}>
-                  <Link
-                    href={`/admin/PageManager/${item.id}/blocks`}
-                    className={styles.editBlocksButton}
-                  >
-                    <FiLayout size={14} />
-                    <span>編輯區塊</span>
-                  </Link>
+                  {!isItemReadOnly(item) && (
+                    <Link
+                      href={`/admin/PageManager/${item.id}/blocks`}
+                      className={styles.editBlocksButton}
+                    >
+                      <FiLayout size={14} />
+                      <span>編輯區塊</span>
+                    </Link>
+                  )}
                   <div className={styles.actionButtons}>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => handleOpenModal(item)}
-                    >
-                      <FiEdit size={14} />
-                    </button>
-                    <button
-                      className={styles.actionButton}
-                      onClick={() => togglePublish(item)}
-                    >
-                      {item.isPublished ? (
-                        <FiEye size={14} className={styles.eyeIcon} />
-                      ) : (
-                        <FiEyeOff size={14} />
-                      )}
-                    </button>
+                    {!isItemReadOnly(item) && (
+                      <>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => handleOpenModal(item)}
+                        >
+                          <FiEdit size={14} />
+                        </button>
+                        <button
+                          className={styles.actionButton}
+                          onClick={() => togglePublish(item)}
+                        >
+                          {item.isPublished ? (
+                            <FiEye size={14} className={styles.eyeIcon} />
+                          ) : (
+                            <FiEyeOff size={14} />
+                          )}
+                        </button>
+                      </>
+                    )}
                     <Link
                       href={`/admin/PageManager/preview?slug=${item.slug}`}
                       className={styles.actionButton}
+                      title="預覽"
                     >
                       <MdOpenInNew size={14} />
                     </Link>
-                    <button
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={() => handleDelete(item.id)}
-                    >
-                      <FiTrash2 size={14} />
-                    </button>
+                    {!isItemReadOnly(item) && (
+                      <button
+                        className={`${styles.actionButton} ${styles.deleteButton}`}
+                        onClick={() => handleDelete(item.id)}
+                      >
+                        <FiTrash2 size={14} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

@@ -1,12 +1,20 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withAuth } from '@/lib/auth-middleware'
-import { successResponse, handleApiError } from '@/lib/api-response'
+import { withAuthOrDemo } from '@/lib/auth-middleware'
+import { getWorkspaceFilter } from '@/lib/demo-utils'
+import type { AuthenticatedRequest } from '@/lib/auth-middleware'
+import { successResponse, errorResponse, handleApiError } from '@/lib/api-response'
 
 // GET /api/dashboard/stats - 獲取儀表板統計資料
-async function getDashboardStats(request: NextRequest) {
+async function getDashboardStats(req: AuthenticatedRequest) {
   try {
-    // 並行獲取所有統計資料
+    const ws = getWorkspaceFilter(req)
+    const pageNewsWhere = { demoWorkspaceId: ws.demoWorkspaceId }
+
+    // DEMO 模式：僅統計 pages/news；正式：含 tables/timelines
+    const tablesCount = ws.demoWorkspaceId ? Promise.resolve(0) : prisma.table.count()
+    const timelinesCount = ws.demoWorkspaceId ? Promise.resolve(0) : prisma.timeline.count()
+
     const [
       totalPages,
       totalNews,
@@ -16,26 +24,19 @@ async function getDashboardStats(request: NextRequest) {
       publishedNews,
       publishedPages
     ] = await Promise.all([
-      // 總頁面數
-      prisma.page.count(),
-      // 總新聞數
-      prisma.news.count(),
-      // 產品頁面數 (type = 'product')
-      prisma.page.count({ where: { type: 'product' } }),
-      // 總表格數
-      prisma.table.count(),
-      // 總時間軸數
-      prisma.timeline.count(),
-      // 已發布新聞數
-      prisma.news.count({ where: { isPublished: true } }),
-      // 已發布頁面數
-      prisma.page.count({ where: { isPublished: true } })
+      prisma.page.count({ where: pageNewsWhere }),
+      prisma.news.count({ where: pageNewsWhere }),
+      prisma.page.count({ where: { ...pageNewsWhere, type: 'product' } }),
+      tablesCount,
+      timelinesCount,
+      prisma.news.count({ where: { ...pageNewsWhere, isPublished: true } }),
+      prisma.page.count({ where: { ...pageNewsWhere, isPublished: true } })
     ])
 
     // 獲取最新新聞 (最近5篇已發布的)
     const latestNews = await prisma.news.findMany({
-      where: { isPublished: true },
-      orderBy: { publishDate: 'desc' },
+      where: { ...pageNewsWhere, isPublished: true },
+      orderBy: [{ publishDate: 'desc' }, { id: 'desc' }],
       take: 5,
       select: {
         id: true,
@@ -66,9 +67,19 @@ async function getDashboardStats(request: NextRequest) {
     }
 
     return successResponse(stats)
-  } catch (error) {
+  } catch (error: any) {
+    console.error('[dashboard/stats] error:', error)
+    // 開發時回傳詳細錯誤以便除錯
+    if (process.env.NODE_ENV === 'development') {
+      return errorResponse(
+        'INTERNAL_ERROR',
+        error?.message || '伺服器錯誤',
+        500,
+        { code: error?.code, meta: error?.meta }
+      )
+    }
     return handleApiError(error)
   }
 }
 
-export const GET = (request: NextRequest) => withAuth(request, getDashboardStats)
+export const GET = (request: NextRequest) => withAuthOrDemo(request, getDashboardStats)

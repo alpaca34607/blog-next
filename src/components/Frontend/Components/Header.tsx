@@ -10,6 +10,7 @@ import TopUtils from "./Header/TopUtils";
 import MobileMenu from "./Header/MobileMenu";
 import { API_GetNavigationItem, API_GetProducts } from "@/app/api/public_api";
 import type { NavigationItem, Product } from "@/types/navigation";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 // API 無資料或失敗時的新格式備用資料（不依賴舊格式）
 const fallbackNavItems: NavigationItem[] = [
@@ -99,6 +100,7 @@ const Header = () => {
   const lang = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const demoUuid = useDemoUuid();
   const [isPending, startTransition] = useTransition();
   const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
@@ -109,7 +111,7 @@ const Header = () => {
 
     // 載入導覽資料（API）
     const loadNavigation = async () => {
-      const res = await API_GetNavigationItem();
+      const res = await API_GetNavigationItem(demoUuid);
       if (cancelled) return;
 
       if (res?.success) {
@@ -166,7 +168,7 @@ const Header = () => {
 
     // 載入產品資料（API）
     const loadProducts = async () => {
-      const res = await API_GetProducts();
+      const res = await API_GetProducts(demoUuid);
       if (cancelled) return;
 
       if (res?.success) {
@@ -203,7 +205,7 @@ const Header = () => {
       window.removeEventListener("navigationUpdated", handleNavigationUpdated);
       window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   const handleLangClick = (nextLang: string) => {
     if (isPending) return;

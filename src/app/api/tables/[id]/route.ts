@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@/lib/auth-middleware";
-import { getUserFromToken } from "@/lib/auth";
+import { getUserFromToken, verifyDemoToken } from "@/lib/auth";
 import {
   successResponse,
   errorResponse,
@@ -24,20 +24,21 @@ const updateTableSchema = z.object({
     .optional(),
 });
 
-// GET /api/tables/[id] - 獲取單個表格
+// GET /api/tables/[id] - 獲取單個表格（管理員或 DEMO 回傳完整資料；匿名僅可見 row）
 async function getTableById(request: NextRequest, id: string) {
   try {
     if (!id) {
       return errorResponse("VALIDATION_ERROR", "缺少表格 ID", 400);
     }
 
-    // 匿名請求僅回傳可見 row；若帶有有效 token 則回傳完整資料（管理用）
     const authHeader = request.headers.get("authorization");
     const token =
       authHeader && authHeader.startsWith("Bearer ")
         ? authHeader.substring(7)
         : null;
     const user = token ? await getUserFromToken(token) : null;
+    const demoPayload = token && !user ? verifyDemoToken(token) : null;
+    const isAdminOrDemo = !!user || !!demoPayload?.demoId;
 
     const table = await prisma.table.findUnique({
       where: { id },
@@ -50,7 +51,7 @@ async function getTableById(request: NextRequest, id: string) {
         updatedAt: true,
         rows: {
           orderBy: { sortOrder: "asc" },
-          ...(user ? {} : { where: { isVisible: true } }),
+          ...(isAdminOrDemo ? {} : { where: { isVisible: true } }),
           select: {
             id: true,
             data: true,

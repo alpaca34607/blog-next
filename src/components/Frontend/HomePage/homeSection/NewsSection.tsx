@@ -6,9 +6,11 @@ import { Link } from "@/navigation";
 import styles from "./NewsSection.module.scss";
 import Image from "next/image";
 import { API_GetNews } from "@/app/api/frontend_api";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 const NewsSection = () => {
   const t = useTranslations("homePage");
+  const demoUuid = useDemoUuid();
   const [newsList, setNewsList] = useState<NewsArticle[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -50,7 +52,7 @@ const NewsSection = () => {
     // 從API獲取新聞資料
     const fetchNews = async () => {
       try {
-        const response = await API_GetNews();
+        const response = await API_GetNews(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -92,7 +94,7 @@ const NewsSection = () => {
     return () => {
       window.removeEventListener("newsUpdated", handleNewsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   return (
     <div id="news-section-wrapper" className={styles.newsSectionWrapper}>

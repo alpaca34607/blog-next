@@ -32,6 +32,7 @@ import {
   API_UpdateSiteSettings,
 } from "@/app/api/admin_api";
 import DefaultInput from "@/components/public/Input";
+import { getDemoToken, getAuthToken } from "@/utils/common";
 
 interface SiteSettings {
   siteName: string;
@@ -192,6 +193,11 @@ export default function SiteSettingsManager() {
     }
   };
 
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  useEffect(() => {
+    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
+  }, []);
+
   useEffect(() => {
     setIsClient(true);
     loadSettings();
@@ -238,18 +244,20 @@ export default function SiteSettingsManager() {
                 className={isLoading ? styles.spinning : ""}
               />
             </button>
-            <button
-              onClick={saveSettings}
-              disabled={isSaving}
-              className={styles.saveButton}
-            >
-              {isSaving ? (
-                <FiLoader className={styles.spinner} size={16} />
-              ) : (
-                <FiSave size={16} />
-              )}
-              儲存設定
-            </button>
+            {!isDemoMode && (
+              <button
+                onClick={saveSettings}
+                disabled={isSaving}
+                className={styles.saveButton}
+              >
+                {isSaving ? (
+                  <FiLoader className={styles.spinner} size={16} />
+                ) : (
+                  <FiSave size={16} />
+                )}
+                儲存設定
+              </button>
+            )}
           </div>
         </div>
 
@@ -266,8 +274,28 @@ export default function SiteSettingsManager() {
           </div>
         )}
 
-        {/* Content Grid */}
-        <div className={styles.contentGrid}>
+        <div className={adminStyles.demoReadOnlyOverlayWrap}>
+          {isDemoMode && (
+            <div
+              className={adminStyles.demoReadOnlyOverlay}
+              onClick={() =>
+                Swal.fire({
+                  toast: true,
+                  position: "top-end",
+                  icon: "info",
+                  title: "此頁面僅供檢視，無法儲存",
+                  showConfirmButton: false,
+                  timer: 2500,
+                  timerProgressBar: true,
+                })
+              }
+              role="button"
+              tabIndex={0}
+              aria-label="此頁面僅供檢視"
+            />
+          )}
+          {/* Content Grid */}
+          <div className={styles.contentGrid}>
           {/* Basic Info Card */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
@@ -721,6 +749,7 @@ export default function SiteSettingsManager() {
               </button>
             </div>
           </div>
+        </div>
         </div>
       </div>
     </AdminLayout>

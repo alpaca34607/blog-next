@@ -28,6 +28,7 @@ import {
   API_UpdateTableRow,
   API_DeleteTableRow,
 } from "@/app/api/admin_api";
+import { getDemoToken, getAuthToken } from "@/utils/common";
 
 interface CustomTable {
   id: string;
@@ -61,6 +62,23 @@ const TableManager = () => {
   const [isLoadingTables, setIsLoadingTables] = useState(false);
   const [isLoadingRows, setIsLoadingRows] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  useEffect(() => {
+    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
+  }, []);
+
+  const showDemoReadOnlyToast = () => {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "info",
+      title: "此頁面僅供檢視，無法儲存",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+    });
+  };
 
   const showApiErrorSwal = (apiError?: any, fallbackTitle = "操作失敗") => {
     const title =
@@ -426,6 +444,16 @@ const TableManager = () => {
           </button>
         </div>
       </div>
+      <div className={adminStyles.demoReadOnlyOverlayWrap}>
+        {isDemoMode && (
+          <div
+            className={adminStyles.demoReadOnlyOverlay}
+            onClick={showDemoReadOnlyToast}
+            role="button"
+            tabIndex={0}
+            aria-label="此頁面僅供檢視"
+          />
+        )}
       <div className={styles.contentGrid}>
         {/* Table List */}
         <div className={styles.tableList}>
@@ -600,6 +628,7 @@ const TableManager = () => {
             </div>
           )}
         </div>
+      </div>
       </div>
       {/* Table Modal */}
       <TableModal

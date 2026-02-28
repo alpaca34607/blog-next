@@ -65,22 +65,36 @@
   gap: 10px;
 }
 
-.submitButton {
-  width: 100%;
+.submitButton,
+.demoButton {
+  flex: 1;
   padding: 10px 12px;
   border: none;
   border-radius: 6px;
   font-size: 16px;
-  color: $white;
-  background-color: $text-main;
   transition: all 0.2s;
   cursor: pointer;
-  &:first-child {
-    background-color: $text-muted;
-  }
+}
+
+.submitButton {
+  color: $white;
+  background-color: $text-main;
   &:hover {
     color: $text-main;
     background-color: $accent-orange;
+  }
+}
+
+.demoButton {
+  color: $text-main;
+  background-color: $text-muted;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  &:hover {
+    background-color: darken($text-muted, 5%);
+  }
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }
 

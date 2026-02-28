@@ -52,6 +52,8 @@ export type NewsListItem = NewsData & {
 // API 回傳的完整新聞記錄（id 必填，含時間）
 export interface NewsRecord extends NewsData {
   id: string;
+  /** 空字串為正式資料；DEMO 模式下正式資料為唯讀 */
+  demoWorkspaceId?: string;
   title: string;
   titleEn: string | null;
   slug: string;

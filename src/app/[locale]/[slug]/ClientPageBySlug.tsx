@@ -17,6 +17,7 @@ import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import { API_GetPageBySlug } from "@/app/api/public_api";
 import { useTranslations } from "next-intl";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 interface BasePage {
   id: string;
@@ -68,6 +69,7 @@ function normalizeSections(input: any[]): Section[] {
 const ClientPageBySlug = () => {
   const params = useParams<{ locale: string; slug: string }>();
   const slug = params?.slug;
+  const demoUuid = useDemoUuid();
   const t = useTranslations("common");
   const [isClient, setIsClient] = useState(false);
   const [page, setPage] = useState<BasePage | Product | undefined>(undefined);
@@ -85,7 +87,7 @@ const ClientPageBySlug = () => {
     const load = async () => {
       try {
         setLoading(true);
-        const res = await API_GetPageBySlug(slug);
+        const res = await API_GetPageBySlug(slug, demoUuid);
         if (!res?.success || !res.data?.page) {
           setPage(undefined);
           setSections([]);
@@ -126,13 +128,13 @@ const ClientPageBySlug = () => {
     return () => {
       cancelled = true;
     };
-  }, [isClient, slug]);
+  }, [isClient, slug, demoUuid]);
 
   useEffect(() => {
     if (!isClient || !slug) return;
 
     const reload = () => {
-      API_GetPageBySlug(slug)
+      API_GetPageBySlug(slug, demoUuid)
         .then((res) => {
           if (res?.success && res.data?.page) {
             const nextPage = res.data.page as BasePage | Product;
@@ -159,7 +161,7 @@ const ClientPageBySlug = () => {
       window.removeEventListener("productsUpdated", reload);
       window.removeEventListener("sectionsUpdated", reload);
     };
-  }, [isClient, slug]);
+  }, [isClient, slug, demoUuid]);
 
   const renderSection = (section: Section) => {
     switch (section.sectionType) {

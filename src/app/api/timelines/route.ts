@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withAuth } from '@/lib/auth-middleware'
+import { withAuth, withAuthOrDemo } from '@/lib/auth-middleware'
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response'
 import { buildWhereClause, buildOrderBy, getPaginationParams, createPaginationResult } from '@/lib/query-utils'
 import { z } from 'zod'
@@ -10,7 +10,7 @@ const createTimelineSchema = z.object({
   description: z.string().optional()
 })
 
-// GET /api/timelines - 獲取時間軸列表（管理用，支援分頁、搜尋、排序）
+// GET /api/timelines - 獲取時間軸列表（管理用；DEMO 唯讀可見）
 async function getTimelines(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
@@ -83,5 +83,5 @@ async function createTimeline(request: NextRequest) {
   }
 }
 
-export const GET = (request: NextRequest) => withAuth(request, getTimelines)
+export const GET = (request: NextRequest) => withAuthOrDemo(request, getTimelines)
 export const POST = (request: NextRequest) => withAuth(request, createTimeline)

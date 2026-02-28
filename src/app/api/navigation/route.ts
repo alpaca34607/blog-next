@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter, getWorkspaceFilterForList } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -26,10 +28,11 @@ const navigationSchema = z.object({
   parentId: z.string().optional(),
 });
 
-// GET /api/navigation - 獲取導航選單（公開）
+// GET /api/navigation - 獲取導航選單（管理用，需認證）
 export async function GET(request: NextRequest) {
+  return withAuthOrDemo(request, async (req) => {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const flat = searchParams.get("flat") === "true";
     const params: QueryParams = {
       page: parseInt(searchParams.get("page") || "1"),
@@ -43,10 +46,13 @@ export async function GET(request: NextRequest) {
     };
 
     const { page, limit, skip } = getPaginationParams(params);
-    const where = buildWhereClause(params.search, params.filter, [
-      "title",
-      "titleEn",
-    ]);
+    const where = {
+      ...buildWhereClause(params.search, params.filter, [
+        "title",
+        "titleEn",
+      ]),
+      ...getWorkspaceFilterForList(req),
+    };
     // 導航列排序需要穩定：sortOrder 相同時再以 createdAt 排序
     const orderBy = [
       ...(buildOrderBy(params.sortBy, params.sortOrder) || []),
@@ -65,6 +71,7 @@ export async function GET(request: NextRequest) {
         take: limit,
         select: {
           id: true,
+          demoWorkspaceId: true,
           title: true,
           titleEn: true,
           url: true,
@@ -82,6 +89,7 @@ export async function GET(request: NextRequest) {
                   orderBy: [{ sortOrder: "asc" as const }, { createdAt: "asc" as const }],
                   select: {
                     id: true,
+                    demoWorkspaceId: true,
                     title: true,
                     titleEn: true,
                     url: true,
@@ -106,17 +114,19 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return handleApiError(error);
   }
+  });
 }
 
 // POST /api/navigation - 創建導航項目（需要認證）
 export async function POST(request: NextRequest) {
-  return withAuth(request, async (req) => {
+  return withAuthOrDemo(request, async (req) => {
     try {
       const body = await request.json();
       const data = navigationSchema.parse(body);
+      const { demoWorkspaceId } = getWorkspaceFilter(req);
 
       const item = await prisma.navigation.create({
-        data,
+        data: { ...data, demoWorkspaceId },
         include: {
           children: true,
         },
