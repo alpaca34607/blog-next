@@ -27,6 +27,9 @@ import {
   API_GetPagesAdmin,
   API_GetPageSectionsAdmin,
 } from "@/app/api/admin_api";
+import { useDemoMode } from "@/hooks/useDemoMode";
+import { getDemoId } from "@/utils/common";
+
 
 interface Page {
   id: string;
@@ -67,6 +70,9 @@ const PagePreview = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { isDemoMode } = useDemoMode();
+  const [demoId, setDemoId] = useState<string | undefined>(undefined);
+  useEffect(() => { setDemoId(getDemoId()); }, []);
   const [isMobileView, setIsMobileView] = useState(false);
 
   useEffect(() => {
@@ -352,7 +358,7 @@ const PagePreview = () => {
             </span>
           </button>
           <Link
-            href={`/zh/${page.slug}`}
+            href={ isDemoMode && demoId ? `/zh/${page.slug}?UUID=${demoId}` : `/zh/${page.slug}`}
             target="_blank"
             className={styles.previewButton}
           >

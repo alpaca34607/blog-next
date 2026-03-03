@@ -74,6 +74,7 @@
   font-size: 16px;
   transition: all 0.2s;
   cursor: pointer;
+  margin-top: 20px;
 }
 
 .submitButton {
@@ -86,11 +87,12 @@
 }
 
 .demoButton {
-  color: $text-main;
-  background-color: $text-muted;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: $text-muted;
+  border: 1px solid $text-muted;
+  background-color: transparent;
   &:hover {
-    background-color: darken($text-muted, 5%);
+    background-color: $text-muted;
+    color: $bg-color;
   }
   &:disabled {
     opacity: 0.6;
@@ -98,3 +100,18 @@
   }
 }
 
+.demoInfo {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 5px;
+  font-size: 14px;
+  color: $text-muted;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+}

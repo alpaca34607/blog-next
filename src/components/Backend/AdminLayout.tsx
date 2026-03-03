@@ -24,7 +24,8 @@ import {
 import Swal from "sweetalert2";
 import styles from "./AdminLayout.module.scss";
 import { accentOrange } from "@/styles/theme";
-import { clearAuthToken, clearDemoToken, getAuthToken, getDemoToken, getDemoId } from "@/utils/common";
+import { clearAuthToken, clearDemoToken, getDemoId } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -46,16 +47,15 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     useState(false);
 
   // DEMO 訪客模式：僅在 client mount 後才判斷，避免 SSR 與 client 不一致導致 hydration 錯誤
-  const [isDemoMode, setIsDemoMode] = useState(false);
+  const { isDemoMode } = useDemoMode();
   const [demoId, setDemoId] = useState<string | undefined>(undefined);
   useEffect(() => {
-    const hasDemo = !!getDemoToken().token && !getAuthToken().token;
-    setIsDemoMode(hasDemo);
     setDemoId(getDemoId());
   }, []);
 
   // DEMO 可編輯的頁面（其餘為唯讀展示）
   const demoEditablePages = [
+    "/admin/dashboard",
     "/admin/NavigationManager",
     "/admin/PageManager",
     "/admin/NewsManager",
@@ -110,9 +110,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         (event as CustomEvent<AdminPermissionDeniedDetail>)?.detail || {};
 
       // DEMO 訪客：僅顯示 SweetAlert、不導向登入或首頁，確認後關閉即可
-      const isDemo =
-        !!getDemoToken().token && !getAuthToken().token;
-      if (isDemo) {
+      if (isDemoMode) {
         setMobileOpen(false);
         Swal.fire({
           icon: "warning",

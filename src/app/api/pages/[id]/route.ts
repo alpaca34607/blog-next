@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuthOrDemo } from "@/lib/auth-middleware";
-import { getWorkspaceFilter } from "@/lib/demo-utils";
+import { getWorkspaceFilter, getWorkspaceFilterForList } from "@/lib/demo-utils";
 import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
@@ -52,11 +52,13 @@ const updatePageSchema = z.object({
 // GET /api/pages/[id] - 獲取單個頁面
 async function getPageById(req: AuthenticatedRequest, pageId: string) {
   try {
-    const ws = getWorkspaceFilter(req);
+    // 讀取時允許 demo 訪客存取系統資料（唯讀瀏覽）
+    const ws = getWorkspaceFilterForList(req);
     const page = await prisma.page.findFirst({
       where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: {
         id: true,
+        demoWorkspaceId: true,
         title: true,
         titleEn: true,
         slug: true,

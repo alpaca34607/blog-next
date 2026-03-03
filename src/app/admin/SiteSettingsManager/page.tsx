@@ -32,7 +32,7 @@ import {
   API_UpdateSiteSettings,
 } from "@/app/api/admin_api";
 import DefaultInput from "@/components/public/Input";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface SiteSettings {
   siteName: string;
@@ -193,10 +193,7 @@ export default function SiteSettingsManager() {
     }
   };
 
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  useEffect(() => {
-    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
-  }, []);
+  const { isDemoMode } = useDemoMode();
 
   useEffect(() => {
     setIsClient(true);

@@ -25,7 +25,7 @@ import {
   API_UpdateNews,
   API_DeleteNews,
 } from "@/app/api/admin_api";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import styles from "./NewsManager.module.scss";
 import adminStyles from "@/styles/AdminPagePublic.module.scss";
 
@@ -283,12 +283,7 @@ const NewsManager = () => {
   };
 
   // DEMO 模式下，正式資料（demoWorkspaceId === ""）為唯讀
-  const isDemoMode =
-    typeof window !== "undefined" &&
-    !!getDemoToken().token &&
-    !getAuthToken().token;
-  const isItemReadOnly = (article: NewsArticle) =>
-    isDemoMode && (article as any).demoWorkspaceId === "";
+  const { isDemoMode, isItemReadOnly } = useDemoMode();
 
   const toggleFeatured = async (article: NewsArticle) => {
     try {

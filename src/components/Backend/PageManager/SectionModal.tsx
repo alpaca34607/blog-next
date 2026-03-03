@@ -302,7 +302,6 @@ const SectionModal = ({
       // 計算檔案大小
       const fileSize = formatFileSize(file.size);
 
-      // 將檔案轉換為 base64（臨時方案，之後可替換為實際的檔案上傳 API）
       const reader = new FileReader();
 
       reader.onloadend = () => {

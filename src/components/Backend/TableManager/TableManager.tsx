@@ -28,7 +28,7 @@ import {
   API_UpdateTableRow,
   API_DeleteTableRow,
 } from "@/app/api/admin_api";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface CustomTable {
   id: string;
@@ -63,10 +63,7 @@ const TableManager = () => {
   const [isLoadingRows, setIsLoadingRows] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  useEffect(() => {
-    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
-  }, []);
+  const { isDemoMode } = useDemoMode();
 
   const showDemoReadOnlyToast = () => {
     Swal.fire({

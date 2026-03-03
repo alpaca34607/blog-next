@@ -18,13 +18,12 @@ import adminStyles from "@/styles/AdminPagePublic.module.scss";
 import { MdOpenInNew } from "react-icons/md";
 import {
   API_GetPagesAdmin,
-  API_GetPageById,
   API_CreatePage,
   API_UpdatePage,
   API_DeletePage,
 } from "@/app/api/admin_api";
 import type { PageRecord, ProductRecord } from "@/types/page";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 type Page = PageRecord;
 type Product = ProductRecord;
@@ -248,14 +247,10 @@ const PageManager = ({
     }
   };
 
-  // DEMO 訪客模式：mount 後才設定，避免 hydration 錯誤
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  useEffect(() => {
-    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
-  }, []);
-  const isItemReadOnly = (item: Page | Product) =>
-    isDemoMode && (item as any).demoWorkspaceId === "";
+  // DEMO 訪客模式
+  const { isDemoMode, isItemReadOnly } = useDemoMode();
 
+  // 依新增/編輯頁面類型顯示標題
   const displayTitle = title || (type === "product" ? "產品管理" : "頁面管理");
   const displaySubtitle =
     subtitle ||
@@ -353,7 +348,12 @@ const PageManager = ({
                   <div className={styles.badgesRow}>
                     {isItemReadOnly(item) && (
                       <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
-                        正式
+                        系統資料
+                      </span>
+                    )}
+                    {isDemoMode && !isItemReadOnly(item) && (
+                      <span className={styles.readOnlyBadge} title="DEMO 資料">
+                        DEMO 資料
                       </span>
                     )}
                     <span
@@ -370,15 +370,15 @@ const PageManager = ({
 
                 {/* Action Buttons */}
                 <div className={styles.cardActions}>
-                  {!isItemReadOnly(item) && (
+                 
                     <Link
                       href={`/admin/PageManager/${item.id}/blocks`}
                       className={styles.editBlocksButton}
                     >
                       <FiLayout size={14} />
-                      <span>編輯區塊</span>
+                      <span> {isItemReadOnly(item) ? "僅供檢視" : "編輯區塊"}</span>
                     </Link>
-                  )}
+               
                   <div className={styles.actionButtons}>
                     {!isItemReadOnly(item) && (
                       <>

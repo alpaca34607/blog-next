@@ -34,7 +34,7 @@ import {
   API_DeleteTimelineItem,
 } from "@/app/api/admin_api";
 import Swal from "sweetalert2";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface Timeline {
   id: string;
@@ -146,10 +146,7 @@ const TimelineManager = () => {
   const [timelines, setTimelines] = useState<Timeline[]>([]);
   const [items, setItems] = useState<TimelineItem[]>([]);
 
-  const [isDemoMode, setIsDemoMode] = useState(false);
-  useEffect(() => {
-    setIsDemoMode(!!getDemoToken().token && !getAuthToken().token);
-  }, []);
+  const { isDemoMode } = useDemoMode();
 
   const showDemoReadOnlyToast = () => {
     Swal.fire({

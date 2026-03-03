@@ -210,16 +210,18 @@ const Header = () => {
   const handleLangClick = (nextLang: string) => {
     if (isPending) return;
     if (nextLang !== "zh" && nextLang !== "en") return;
-    // 切換語系：保持目前路徑，只替換 URL 中的語系前綴
+    // 切換語系：保持目前路徑與查詢參數，只替換語系前綴
+    // DEMO 模式下需保留 ?UUID=xxx，否則切換後 demo 資料會消失
     startTransition(() => {
-      router.replace(pathname, { locale: nextLang });
+      const href = demoUuid ? `${pathname}?UUID=${demoUuid}` : pathname;
+      router.replace(href, { locale: nextLang });
     });
   };
 
   return (
     <>
       <header className={styles.wrapper}>
-        <Link href="/" className={styles.brandLogo}>
+        <Link href={demoUuid ? `/?UUID=${demoUuid}` : "/"} className={styles.brandLogo}>
           <img src="/images/logo.png" alt="BLOGCRAFT Logo" />
         </Link>
         <Navigation navItems={navItems} products={products} />

@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuthOrDemo } from "@/lib/auth-middleware";
-import { getWorkspaceFilter } from "@/lib/demo-utils";
+import { getWorkspaceFilter, getWorkspaceFilterForList } from "@/lib/demo-utils";
 import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
@@ -50,8 +50,9 @@ const updateSectionsSchema = z.array(
 // GET /api/pages/[id]/sections - 獲取頁面區塊列表
 async function getPageSections(req: AuthenticatedRequest, pageId: string) {
   try {
-    const ws = getWorkspaceFilter(req);
-    // 檢查頁面是否存在且屬於當前工作區
+    // 讀取時允許 demo 訪客存取系統資料（唯讀瀏覽）
+    const ws = getWorkspaceFilterForList(req);
+    // 檢查頁面是否存在且屬於當前工作區（含系統資料）
     const page = await prisma.page.findFirst({
       where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: { id: true },

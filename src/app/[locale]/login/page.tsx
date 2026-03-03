@@ -5,6 +5,7 @@ import styles from "./page.module.scss";
 import DefaultInput from "@/components/public/Input";
 import { useRouter } from "next/navigation";
 import { setAuthToken, setDemoToken, setDemoId, clearAuthToken } from "@/utils/common";
+import { FiInfo } from "react-icons/fi";
 
 export default function Login() {
   const router = useRouter();
@@ -98,7 +99,7 @@ export default function Login() {
             <img src="/images/background/banner.jpg" alt="login banner" />
           </div>
           <div className={styles.loginFormWrapper}>
-            <h1>CMS 後台管理系統</h1>
+            <h1>CMS 後台管理系統</h1>          
             <div className={styles.loginForm}>
               <DefaultInput
                 label="Email"
@@ -143,6 +144,9 @@ export default function Login() {
                 >
                   {isDemoLoading ? "啟動中..." : "訪客體驗 Demo"}
                 </button>
+              </div>
+              <div className={styles.demoInfo}>
+                <FiInfo size={16} /> <p>Demo模式下不需帳號密碼，可直接體驗完整功能，並不影響正式資料，體驗結束一天後，測試資料將會清除</p>
               </div>
             </div>
           </div>

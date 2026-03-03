@@ -20,7 +20,7 @@ import {
   API_DeleteNavigation,
   API_GetPagesAdmin,
 } from "@/app/api/admin_api";
-import { getDemoToken, getAuthToken } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import {
   closestCenter,
   DndContext,
@@ -310,12 +310,7 @@ const NavigationManager = () => {
   };
 
   // DEMO 模式下，正式資料（demoWorkspaceId === ""）為唯讀
-  const isDemoMode =
-    typeof window !== "undefined" &&
-    !!getDemoToken().token &&
-    !getAuthToken().token;
-  const isItemReadOnly = (item: NavigationItem) =>
-    isDemoMode && (item.demoWorkspaceId ?? "") === "";
+  const { isDemoMode, isItemReadOnly } = useDemoMode();
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
@@ -399,7 +394,12 @@ const NavigationManager = () => {
             <span className={styles.nameCellContent}>
               {readonly && (
                 <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
-                  正式
+                 系統資料
+                </span>
+              )}
+              {isDemoMode && !readonly && (
+                <span className={styles.readOnlyBadge} title="DEMO 資料">
+                  DEMO 資料
                 </span>
               )}
               {item.title}
@@ -461,7 +461,12 @@ const NavigationManager = () => {
             <td className={`${styles.tableCell} ${styles.nameCell}`}>
               <span className={styles.childName}>
                 {childReadonly && (
-                  <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">正式</span>
+                  <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">系統資料</span>
+                )}
+                {isDemoMode && !childReadonly && (
+                  <span className={styles.readOnlyBadge} title="DEMO 資料">
+                    DEMO 資料
+                  </span>
                 )}
                 <span>↳</span>
                 {child.title}
@@ -576,6 +581,7 @@ const NavigationManager = () => {
       ) : navItems.length === 0 ? (
         <div className={styles.emptyState}>尚無導航項目，點擊上方按鈕新增</div>
       ) : (
+        // DndContext 偵測拖放事件/拖曳排序
         // 注意：DndContext 會插入隱藏的 <div>（可及性），不可放在 <table> 內，否則會造成 hydration error
         <DndContext
           sensors={sensors}
@@ -626,6 +632,7 @@ const NavigationManager = () => {
           ? {
               id: editingItem.id,
               title: editingItem.title,
+              titleEn: editingItem.titleEn || "",
               slug: editingSlug,
               parentId: editingItem.parentId,
               sortOrder: editingItem.sortOrder,

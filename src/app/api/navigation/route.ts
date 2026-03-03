@@ -21,7 +21,7 @@ const navigationSchema = z.object({
   title: z.string().min(1, "標題不能為空"),
   titleEn: z.string().optional(),
   url: z.string().nullable().optional(),
-  productCategory: z.string().optional(),
+  productCategory: z.string().nullable().optional(),
   type: z.enum(["internal", "external"]).default("internal"),
   isVisible: z.boolean().default(true),
   sortOrder: z.number().default(0),
