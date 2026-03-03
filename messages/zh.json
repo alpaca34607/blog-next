@@ -56,5 +56,23 @@
     "relatedArticles": "相關文章",
     "breadcrumbHome": "首頁",
     "breadcrumbNews": "最新消息"
+  },
+  "login": {
+    "loginTitle": "CMS 後台管理系統",
+    "emailLabel": "Email",
+    "emailPlaceholder": "請輸入 Email",
+    "passwordLabel": "密碼",
+    "passwordPlaceholder": "請輸入密碼",
+    "loginButton": "登入",
+    "loginLoading": "登入中...",
+    "loginFailed": "登入失敗，請確認帳號密碼是否正確",
+    "loginNoToken": "登入失敗：伺服器未回傳 token",
+    "loginError": "登入時發生錯誤，請稍後再試",
+    "demoButton": "訪客體驗 Demo",
+    "demoLoading": "啟動中...",
+    "demoInfo": "Demo模式下不需帳號密碼，可觀看本站架構並體驗頁面管理功能，並不影響正式資料。體驗結束一天後，測試資料將會清除。",
+    "demoStartFailed": "無法啟動 DEMO，請稍後再試",
+    "demoNoData": "DEMO 啟動失敗：伺服器未回傳正確資料",
+    "demoError": "DEMO 啟動失敗，請稍後再試"
   }
 }

@@ -56,5 +56,23 @@
     "relatedArticles": "Related Articles",
     "breadcrumbHome": "Home",
     "breadcrumbNews": "News"
+  },
+  "login": {
+    "loginTitle": "CMS Backend Management System",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your Email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "Enter your password",
+    "loginButton": "Login",
+    "loginLoading": "Logging in...",
+    "loginFailed": "Login failed, please check your credentials",
+    "loginNoToken": "Login failed: no token returned from server",
+    "loginError": "An error occurred during login, please try again",
+    "demoButton": "Try Demo",
+    "demoLoading": "Starting...",
+    "demoInfo": "Demo mode requires no account or password. Explore the site structure and page management features without affecting production data. Test data will be cleared after one day.",
+    "demoStartFailed": "Unable to start Demo, please try again",
+    "demoNoData": "Demo failed to start: invalid data returned from server",
+    "demoError": "Demo failed to start, please try again"
   }
 }
