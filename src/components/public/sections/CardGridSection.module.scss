@@ -8,6 +8,10 @@
 
   &.hasBgImage {
     @extend .hasBgImage;
+    min-height: 600px;
+    .container{
+      min-height: 600px;
+    }
   }
 }
 

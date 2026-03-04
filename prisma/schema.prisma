@@ -112,6 +112,7 @@ model Section {
   subtitle    String?
   subtitleEn  String?
   content     String?   @db.LongText
+  contentEn   String?   @db.LongText
   sortOrder   Int      @default(0)
   settings    Json?
   createdAt   DateTime @default(now())

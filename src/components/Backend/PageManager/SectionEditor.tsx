@@ -302,8 +302,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
           id: s.id,
           sectionType: s.sectionType,
           title: s.title ?? undefined,
+          titleEn: s.titleEn ?? undefined,
           subtitle: s.subtitle ?? undefined,
+          subtitleEn: s.subtitleEn ?? undefined,
           content: s.content ?? undefined,
+          contentEn: s.contentEn ?? undefined,
           sortOrder: typeof s.sortOrder === "number" ? s.sortOrder : idx,
           settings: s.settings || {},
         };
@@ -365,8 +368,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
               ...section,
               sectionType: (formData as any).sectionType || section.sectionType,
               title: formData.title ?? section.title,
+              titleEn: (formData as any).titleEn ?? (section as any).titleEn,
               subtitle: formData.subtitle ?? section.subtitle,
+              subtitleEn: (formData as any).subtitleEn ?? (section as any).subtitleEn,
               content: formData.content ?? section.content,
+              contentEn: (formData as any).contentEn ?? (section as any).contentEn,
               settings: settings,
             };
 
@@ -392,8 +398,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
           id: Date.now().toString(),
           sectionType: (formData as any).sectionType || "content_block",
           title: formData.title || "",
+          titleEn: (formData as any).titleEn,
           subtitle: formData.subtitle,
+          subtitleEn: (formData as any).subtitleEn,
           content: formData.content,
+          contentEn: (formData as any).contentEn,
           sortOrder: sections.length,
           settings: settings,
         };

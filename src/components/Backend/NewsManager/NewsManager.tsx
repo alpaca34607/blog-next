@@ -430,7 +430,7 @@ const NewsManager = () => {
                       <div className={styles.badges}>
                         {isItemReadOnly(article) && (
                           <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
-                            正式
+                            系統資料
                           </span>
                         )}
                         <span className={styles.categoryBadge}>

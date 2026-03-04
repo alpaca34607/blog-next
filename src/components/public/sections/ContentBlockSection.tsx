@@ -2,12 +2,16 @@
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./ContentBlockSection.module.scss";
 import { isRichTextEmpty } from "@/utils/common";
+import { useLocale } from "next-intl";
 
 interface ContentBlockSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     content?: string;
+    contentEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -16,6 +20,11 @@ interface ContentBlockSectionProps {
 }
 
 const ContentBlockSection = ({ section }: ContentBlockSectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
+  const content = (isEn ? section.contentEn : section.content) || section.content;
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -31,19 +40,19 @@ const ContentBlockSection = ({ section }: ContentBlockSectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && (
+        {title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
 
-        {section.content && !isRichTextEmpty(section.content) && (
+        {content && !isRichTextEmpty(content) && (
           <div
             className={styles.content}
-            dangerouslySetInnerHTML={{ __html: section.content }}
+            dangerouslySetInnerHTML={{ __html: content }}
           />
         )}
       </div>

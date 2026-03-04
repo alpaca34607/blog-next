@@ -11,10 +11,14 @@ import {
   BgSettings,
   HeroSectionForm,
   HeroSectionFormValue,
+  ButtonSettingsForm,
 } from "../PageSectionSettingsForm";
 import { SectionSettings } from "@/types/section";
 import styles from "./SectionModal.module.scss";
 import { API_GetTablesAdmin, API_GetTimelinesAdmin } from "@/app/api/admin_api";
+import { tryFetch } from "@/app/api/api_client";
+import Swal from "sweetalert2";
+import { accentOrange } from "@/styles/theme";
 
 interface Section {
   id?: string;
@@ -24,6 +28,7 @@ interface Section {
   subtitle?: string;
   subtitleEn?: string;
   content?: string;
+  contentEn?: string;
   sortOrder?: number;
   settings?: (SectionSettings & Record<string, any>) | Record<string, any>;
 }
@@ -54,6 +59,7 @@ const SectionModal = ({
     subtitle: "",
     subtitleEn: "",
     content: "",
+    contentEn: "",
     settings: {
       templateVariant: "default",
       backgroundColor: "#ffffff",
@@ -95,6 +101,7 @@ const SectionModal = ({
         subtitle: editingSection.subtitle || "",
         subtitleEn: editingSection.subtitleEn || "",
         content: editingSection.content || "",
+        contentEn: editingSection.contentEn || "",
         sortOrder: editingSection.sortOrder,
         settings: {
           ...currentSettings,
@@ -112,8 +119,11 @@ const SectionModal = ({
       setFormData({
         sectionType: "content_block",
         title: "",
+        titleEn: "",
         subtitle: "",
+        subtitleEn: "",
         content: "",
+        contentEn: "",
         settings: {
           templateVariant: "default",
           backgroundColor: "#ffffff",
@@ -291,39 +301,68 @@ const SectionModal = ({
     return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + " " + sizes[i];
   };
 
-  // 處理檔案上傳
-  const handleFileUpload = (
+  // 處理檔案上傳（上傳至 S3）
+  const handleFileUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     downloadIndex: number,
   ) => {
     const file = e.target.files?.[0];
+    if (!file) return;
 
-    if (file) {
-      // 計算檔案大小
-      const fileSize = formatFileSize(file.size);
+    const fileSize = formatFileSize(file.size);
 
-      const reader = new FileReader();
+    try {
+      Swal.fire({
+        title: "檔案上傳中...",
+        text: "請稍候",
+        allowOutsideClick: false,
+        allowEscapeKey: false,
+        didOpen: () => Swal.showLoading(),
+      });
 
-      reader.onloadend = () => {
-        const downloads = [...(formData.settings?.downloads || [])];
+      const uploadData = new FormData();
+      uploadData.append("file", file);
 
-        downloads[downloadIndex] = {
-          ...downloads[downloadIndex],
-          fileUrl: reader.result as string, // 儲存 base64 資料
-          fileName: file.name, // 儲存檔案名稱
-          fileSize: fileSize, // 自動計算檔案大小
-          fileType: file.type, // 儲存檔案類型
-        };
+      const res = await tryFetch<{ filename: string; url: string; size: number; mimeType: string }>(
+        "/api/upload",
+        { method: "POST", body: uploadData, withAuth: true },
+      );
 
-        setFormData({
-          ...formData,
-          settings: {
-            ...formData.settings,
-            downloads,
-          },
-        });
+      Swal.close();
+
+      if (!res.success) {
+        throw new Error((res.error as any)?.message || "上傳失敗");
+      }
+
+      const fileUrl = (res.data as any)?.url;
+      if (!fileUrl) throw new Error("上傳回應格式不正確");
+
+      const downloads = [...(formData.settings?.downloads || [])];
+
+      downloads[downloadIndex] = {
+        ...downloads[downloadIndex],
+        fileUrl,
+        fileName: file.name,
+        fileSize,
+        fileType: file.type,
       };
-      reader.readAsDataURL(file);
+
+      setFormData({
+        ...formData,
+        settings: {
+          ...formData.settings,
+          downloads,
+        },
+      });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "請重試";
+      Swal.fire({
+        icon: "error",
+        title: "檔案上傳失敗",
+        text: message,
+        confirmButtonText: "確定",
+        confirmButtonColor: accentOrange,
+      });
     }
   };
 
@@ -738,6 +777,7 @@ const SectionModal = ({
             </div>
           </div>
           {/* 區塊標題與副標題 */}
+          <div className={styles.formGrid}>
           <div className={styles.formGroup}>
             <label className={styles.label}>區塊標題</label>
             <input
@@ -754,6 +794,21 @@ const SectionModal = ({
             />
           </div>
           <div className={styles.formGroup}>
+            <label className={styles.label}>區塊標題（英文）</label>
+            <input
+              type="text"
+              className={styles.input}
+              value={formData.titleEn || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  titleEn: e.target.value,
+                })
+              }
+              placeholder="例如：About Us"
+            />
+          </div>
+          <div className={styles.formGroup}>
             <label className={styles.label}>區塊副標題</label>
             <input
               type="text"
@@ -767,6 +822,22 @@ const SectionModal = ({
               }
               placeholder="區塊副標題（可選）"
             />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>區塊副標題（英文）</label>
+            <input
+              type="text"
+              className={styles.input}
+              value={formData.subtitleEn || ""}
+              onChange={(e) =>
+                setFormData({
+                  ...formData,
+                  subtitleEn: e.target.value,
+                })
+              }
+              placeholder="例如：About Us"
+            />
+          </div>
           </div>
           {/* Banner 橫幅設定 */}
           {formData.sectionType === "hero" && (
@@ -974,6 +1045,7 @@ const SectionModal = ({
                   </ImageUploader>
                 )}
               </div>
+              
               <div className={styles.formGroup}>
                 <label className={styles.label}>說明文字</label>
                 <RichTextEditor
@@ -987,44 +1059,31 @@ const SectionModal = ({
                   placeholder="輸入說明文字..."
                 />
               </div>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕文字</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonText || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonText: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：了解更多"
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕連結</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonLink || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonLink: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：/about"
-                  />
-                </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>說明文字（英文）</label>
+                <RichTextEditor
+                  value={formData.contentEn || ""}
+                  onChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      contentEn: value,
+                    })
+                  }
+                  placeholder="輸入說明文字（英文）..."
+                />
               </div>
+              <ButtonSettingsForm
+                value={{
+                  buttonText: (formData.settings as any)?.buttonText,
+                  buttonLink: (formData.settings as any)?.buttonLink,
+                }}
+                onChange={(values) =>
+                  setFormData({
+                    ...formData,
+                    settings: { ...formData.settings, ...values },
+                  })
+                }
+              />
             </div>
           )}
           {/* 影片說明設定 */}
@@ -1113,44 +1172,31 @@ const SectionModal = ({
                   placeholder="輸入說明文字..."
                 />
               </div>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕文字</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonText || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonText: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：了解更多"
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕連結</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonLink || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonLink: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：/about"
-                  />
-                </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>說明文字（英文）</label>
+                <RichTextEditor
+                  value={formData.contentEn || ""}
+                  onChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      contentEn: value,
+                    })
+                  }
+                  placeholder="輸入說明文字..."
+                />
               </div>
+              <ButtonSettingsForm
+                value={{
+                  buttonText: (formData.settings as any)?.buttonText,
+                  buttonLink: (formData.settings as any)?.buttonLink,
+                }}
+                onChange={(values) =>
+                  setFormData({
+                    ...formData,
+                    settings: { ...formData.settings, ...values },
+                  })
+                }
+              />
             </div>
           )}
           {/* 卡片區塊設定 */}
@@ -1711,6 +1757,7 @@ const SectionModal = ({
           )}
           {/* 內容區塊專用 */}
           {formData.sectionType === "content_block" && (
+            <div className={styles.formSection}>
             <div className={styles.formGroup}>
               <label className={styles.label}>內容</label>
               <RichTextEditor
@@ -1724,6 +1771,21 @@ const SectionModal = ({
                 placeholder="輸入內容..."
               />
             </div>
+            <div className={styles.formGroup}>
+              <label className={styles.label}>內容（英文）</label>
+              <RichTextEditor
+                value={formData.contentEn || ""}
+                onChange={(value) =>
+                  setFormData({
+                    ...formData,
+                    contentEn: value,
+                  })
+                }
+                placeholder="輸入內容（英文）..."
+              />
+            </div>
+            </div>
+            
           )}
           {/* CTA 區塊專用設定 */}
           {formData.sectionType === "cta" && (
@@ -1748,123 +1810,38 @@ const SectionModal = ({
                   可使用文字編輯器設定呼籲內容的格式
                 </p>
               </div>
-              <h3 className={styles.sectionTitle}>按鈕設定</h3>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕文字</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonText || "前往瞭解"}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonText: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：前往瞭解"
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕連結</label>
-                  <input
-                    type="text"
-                    className={styles.input}
-                    value={(formData.settings as any)?.buttonLink || ""}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        settings: {
-                          ...formData.settings,
-                          buttonLink: e.target.value,
-                        },
-                      })
-                    }
-                    placeholder="例如：/contact 或 https://example.com"
-                  />
-                </div>
+              <div className={styles.formGroup}>
+                <label className={styles.label}>內容說明（英文）</label>
+                <RichTextEditor
+                  value={(formData.settings as any)?.ctaContentEn || ""}
+                  onChange={(value) =>
+                    setFormData({
+                      ...formData,
+                      settings: {
+                        ...formData.settings,
+                        ctaContentEn: value,
+                      },
+                    })
+                  }
+                  placeholder="輸入呼籲內容說明（英文）..."
+                />
               </div>
-              <div className={styles.formGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>按鈕顏色</label>
-                  <div className={styles.colorInputGroup}>
-                    <input
-                      type="color"
-                      value={
-                        (formData.settings as any)?.buttonColor || "#273840"
-                      }
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          settings: {
-                            ...formData.settings,
-                            buttonColor: e.target.value,
-                          },
-                        })
-                      }
-                      className={styles.colorPicker}
-                    />
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={
-                        (formData.settings as any)?.buttonColor || "#273840"
-                      }
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          settings: {
-                            ...formData.settings,
-                            buttonColor: e.target.value,
-                          },
-                        })
-                      }
-                      placeholder="#273840"
-                    />
-                  </div>
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>文字顏色</label>
-                  <div className={styles.colorInputGroup}>
-                    <input
-                      type="color"
-                      value={
-                        (formData.settings as any)?.buttonTextColor || "#ffffff"
-                      }
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          settings: {
-                            ...formData.settings,
-                            buttonTextColor: e.target.value,
-                          },
-                        })
-                      }
-                      className={styles.colorPicker}
-                    />
-                    <input
-                      type="text"
-                      className={styles.input}
-                      value={
-                        (formData.settings as any)?.buttonTextColor || "#ffffff"
-                      }
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          settings: {
-                            ...formData.settings,
-                            buttonTextColor: e.target.value,
-                          },
-                        })
-                      }
-                      placeholder="#ffffff"
-                    />
-                  </div>
-                </div>
-              </div>
+              <ButtonSettingsForm
+                value={{
+                  buttonText: (formData.settings as any)?.buttonText,
+                  buttonTextEn: (formData.settings as any)?.buttonTextEn,
+                  buttonLink: (formData.settings as any)?.buttonLink,
+                  buttonColor: (formData.settings as any)?.buttonColor,
+                  buttonTextColor: (formData.settings as any)?.buttonTextColor,
+                }}
+                onChange={(values) =>
+                  setFormData({
+                    ...formData,
+                    settings: { ...formData.settings, ...values },
+                  })
+                }
+                showColorSettings
+              />
               <div className={styles.formGroup}>
                 <label className={styles.label}></label>
                 <div className={styles.switchGroup}>
@@ -2005,14 +1982,13 @@ const SectionModal = ({
                     </div>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>檔案上傳</label>
-                      {download.fileUrl &&
-                      download.fileUrl.startsWith("data:") ? (
+                      {download.fileUrl && download.fileName ? (
                         <div className={styles.filePreview}>
                           <div className={styles.fileInfo}>
                             <FiFileText size={20} className={styles.fileIcon} />
                             <div className={styles.fileDetails}>
                               <span className={styles.fileName}>
-                                {download.fileName || "已上傳的檔案"}
+                                {download.fileName}
                               </span>
                               {download.fileSize && (
                                 <span className={styles.fileSize}>
@@ -2049,8 +2025,7 @@ const SectionModal = ({
                             <FiX size={16} />
                           </button>
                         </div>
-                      ) : download.fileUrl &&
-                        !download.fileUrl.startsWith("data:") ? (
+                      ) : download.fileUrl && !download.fileName ? (
                         <div className={styles.filePreview}>
                           <div className={styles.fileInfo}>
                             <FiFileText size={20} className={styles.fileIcon} />
@@ -2133,7 +2108,7 @@ const SectionModal = ({
                           readOnly={
                             !!download.fileUrl &&
                             !!download.fileSize &&
-                            download.fileUrl.startsWith("data:")
+                            !!download.fileName
                           }
                         />
                         <p className={styles.helpText}>
@@ -2146,8 +2121,7 @@ const SectionModal = ({
                           type="text"
                           className={styles.input}
                           value={
-                            download.fileUrl &&
-                            !download.fileUrl.startsWith("data:")
+                            download.fileUrl && !download.fileName
                               ? download.fileUrl
                               : ""
                           }
