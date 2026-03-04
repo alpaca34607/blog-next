@@ -181,6 +181,45 @@
 
 .navItemText {
   white-space: nowrap;
+  flex: 1;
+}
+
+// DEMO 唯讀項目：視覺上較淡，帶鎖頭提示
+.navItemReadOnly {
+  opacity: 0.85;
+
+  .navItemLock {
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+}
+
+// DEMO 前往前台
+.demoSection {
+  padding: 0 16px 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.demoLink {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  color: $accent-orange;
+  text-decoration: none;
+  transition: all 0.2s;
+  font-weight: 500;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: lighten($accent-orange, 10%);
+  }
+}
+
+.demoLinkExpanded {
+  justify-content: flex-start;
 }
 
 // Logout Section
@@ -304,4 +343,24 @@
   padding: 10px 14px;
   border-radius: 10px;
   font-weight: 700;
+}
+
+.adminLayoutWithDemoFooter .contentWrapper {
+  padding-bottom: 48px;
+}
+
+// DEMO 模式：底部固定說明橫幅
+.demoFooter {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  padding: 10px 20px;
+  background: $bg-lightgray;
+  border-top: 1px solid rgba(107, 114, 128, 0.25);
+  font-size: 14px;
+  color: #4b5563;
+  text-align: center;
+  line-height: 1.5;
 }

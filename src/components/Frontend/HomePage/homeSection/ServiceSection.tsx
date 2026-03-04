@@ -12,6 +12,7 @@ import { FaPlay } from "react-icons/fa";
 import { BsCursorFill } from "react-icons/bs";
 import { API_GetProducts } from "@/app/api/frontend_api";
 import { Link } from "@/navigation";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
@@ -24,6 +25,7 @@ interface ServiceSectionProps {
 
 const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
   const t = useTranslations("homePage");
+  const demoUuid = useDemoUuid();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [servicesList, setServicesList] = useState<Product[]>([]);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -41,7 +43,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
 
     const fetchProducts = async () => {
       try {
-        const response = await API_GetProducts();
+        const response = await API_GetProducts(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -88,7 +90,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
     return () => {
       window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   useEffect(() => {
     const leftElement = leftRef.current;

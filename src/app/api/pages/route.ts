@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter, getWorkspaceFilterForList } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -42,9 +44,9 @@ const createPageSchema = z.object({
 });
 
 // GET /api/pages - 獲取頁面列表（管理用，支援分頁、搜尋、排序）
-async function getPages(request: NextRequest) {
+async function getPages(req: AuthenticatedRequest) {
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "10");
     const search = searchParams.get("search") || undefined;
@@ -70,12 +72,15 @@ async function getPages(request: NextRequest) {
       limit: currentLimit,
     } = getPaginationParams({ page, limit });
 
-    const where = buildWhereClause(search, filter, [
-      "title",
-      "content",
-      "metaTitle",
-      "metaDescription",
-    ]);
+    const where = {
+      ...buildWhereClause(search, filter, [
+        "title",
+        "content",
+        "metaTitle",
+        "metaDescription",
+      ]),
+      ...getWorkspaceFilterForList(req),
+    };
     const orderBy = buildOrderBy(sortBy, sortOrder);
 
     const [pages, total] = await Promise.all([
@@ -86,6 +91,7 @@ async function getPages(request: NextRequest) {
         take: currentLimit,
         select: {
           id: true,
+          demoWorkspaceId: true,
           title: true,
           titleEn: true,
           slug: true,
@@ -131,14 +137,15 @@ async function getPages(request: NextRequest) {
 }
 
 // POST /api/pages - 創建頁面
-async function createPage(request: NextRequest) {
+async function createPage(req: AuthenticatedRequest) {
   try {
-    const body = await request.json();
+    const body = await req.json();
     const validatedData = createPageSchema.parse(body);
+    const { demoWorkspaceId } = getWorkspaceFilter(req);
 
-    // 檢查 slug 是否重複
+    // 檢查 slug 是否重複（同一工作區內）
     const existingPage = await prisma.page.findUnique({
-      where: { slug: validatedData.slug },
+      where: { slug_demoWorkspaceId: { slug: validatedData.slug, demoWorkspaceId } },
     });
 
     if (existingPage) {
@@ -146,7 +153,7 @@ async function createPage(request: NextRequest) {
     }
 
     const page = await prisma.page.create({
-      data: validatedData,
+      data: { ...validatedData, demoWorkspaceId },
       select: {
         id: true,
         title: true,
@@ -189,5 +196,5 @@ async function createPage(request: NextRequest) {
   }
 }
 
-export const GET = (request: NextRequest) => withAuth(request, getPages);
-export const POST = (request: NextRequest) => withAuth(request, createPage);
+export const GET = (request: NextRequest) => withAuthOrDemo(request, getPages);
+export const POST = (request: NextRequest) => withAuthOrDemo(request, createPage);

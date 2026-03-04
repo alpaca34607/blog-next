@@ -20,6 +20,7 @@ import {
   API_DeleteNavigation,
   API_GetPagesAdmin,
 } from "@/app/api/admin_api";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import {
   closestCenter,
   DndContext,
@@ -38,6 +39,8 @@ import { CSS } from "@dnd-kit/utilities";
 
 interface NavigationItem {
   id: string;
+  /** 空字串為正式資料；DEMO 模式下正式資料為唯讀 */
+  demoWorkspaceId?: string;
   title: string;
   titleEn?: string;
   url?: string;
@@ -306,6 +309,9 @@ const NavigationManager = () => {
     }
   };
 
+  // DEMO 模式下，正式資料（demoWorkspaceId === ""）為唯讀
+  const { isDemoMode, isItemReadOnly } = useDemoMode();
+
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
   const parentIds = useMemo(() => navItems.map((n) => n.id), [navItems]);
@@ -314,6 +320,10 @@ const NavigationManager = () => {
     const { active, over } = event;
     if (!over) return;
     if (String(active.id) === String(over.id)) return;
+
+    const activeItem = navItems.find((i) => i.id === String(active.id));
+    const overItem = navItems.find((i) => i.id === String(over.id));
+    if (!activeItem || !overItem || isItemReadOnly(activeItem) || isItemReadOnly(overItem)) return;
 
     const oldIndex = navItems.findIndex((i) => i.id === String(active.id));
     const newIndex = navItems.findIndex((i) => i.id === String(over.id));
@@ -328,9 +338,14 @@ const NavigationManager = () => {
     setNavItems(next);
     try {
       // 依專案既有 API：逐筆呼叫 PUT /api/navigation/{id} 更新 sortOrder
-      const results = await Promise.all(
-        next.map((item, idx) => API_UpdateNavigation(item.id, { sortOrder: idx }))
-      );
+      const toUpdate = next.map((item, idx) => ({ item, sortOrder: idx }));
+    const results = await Promise.all(
+      toUpdate
+        .filter(({ item }) => !isItemReadOnly(item))
+        .map(({ item, sortOrder }) =>
+          API_UpdateNavigation(item.id, { sortOrder })
+        )
+    );
 
       const hasFailure = results.some((r) => !r?.success);
       if (hasFailure) await loadNavigation();
@@ -342,6 +357,7 @@ const NavigationManager = () => {
   };
 
   const SortableParentRow = ({ item }: { item: NavigationItem }) => {
+    const readonly = isItemReadOnly(item);
     const {
       attributes,
       listeners,
@@ -349,7 +365,7 @@ const NavigationManager = () => {
       transform,
       transition,
       isDragging,
-    } = useSortable({ id: item.id });
+    } = useSortable({ id: item.id, disabled: readonly });
 
     const style: CSSProperties = {
       transform: CSS.Transform.toString(transform),
@@ -364,12 +380,30 @@ const NavigationManager = () => {
           className={`${styles.tableRow} ${isDragging ? styles.dragging : ""}`}
         >
           <td className={`${styles.tableCell} ${styles.dragCell}`}>
-            <span className={styles.dragHandleWrapper} {...attributes} {...listeners} title="拖曳排序">
-              <FiMenu size={18} className={styles.dragHandle} />
-            </span>
+            {readonly ? (
+              <span className={styles.dragHandleWrapper} title="正式資料不可拖曳">
+                <FiMenu size={18} className={styles.dragHandleDisabled} />
+              </span>
+            ) : (
+              <span className={styles.dragHandleWrapper} {...attributes} {...listeners} title="拖曳排序">
+                <FiMenu size={18} className={styles.dragHandle} />
+              </span>
+            )}
           </td>
           <td className={`${styles.tableCell} ${styles.nameCell}`}>
-            {item.title}
+            <span className={styles.nameCellContent}>
+              {readonly && (
+                <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
+                 系統資料
+                </span>
+              )}
+              {isDemoMode && !readonly && (
+                <span className={styles.readOnlyBadge} title="DEMO 資料">
+                  DEMO 資料
+                </span>
+              )}
+              {item.title}
+            </span>
           </td>
           <td className={`${styles.tableCell} ${styles.typeCell}`}>
             {item.type === "external" ? (
@@ -389,37 +423,51 @@ const NavigationManager = () => {
             )}
           </td>
           <td className={`${styles.tableCell} ${styles.actionsCell}`}>
-            <div className={styles.actions}>
-              <button
-                className={styles.actionButton}
-                onClick={() => toggleVisibility(item)}
-                title={item.isVisible ? "隱藏" : "顯示"}
-              >
-                {item.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
-              </button>
-              <button
-                className={styles.actionButton}
-                onClick={() => handleOpenModal(item)}
-                title="編輯"
-              >
-                <FiEdit size={16} />
-              </button>
-              <button
-                className={`${styles.actionButton} ${styles.deleteButton}`}
-                onClick={() => handleDelete(item.id)}
-                title="刪除"
-              >
-                <FiTrash2 size={16} />
-              </button>
-            </div>
+            {readonly ? (
+              <span className={styles.readOnlyHint}>僅供檢視</span>
+            ) : (
+              <div className={styles.actions}>
+                <button
+                  className={styles.actionButton}
+                  onClick={() => toggleVisibility(item)}
+                  title={item.isVisible ? "隱藏" : "顯示"}
+                >
+                  {item.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
+                </button>
+                <button
+                  className={styles.actionButton}
+                  onClick={() => handleOpenModal(item)}
+                  title="編輯"
+                >
+                  <FiEdit size={16} />
+                </button>
+                <button
+                  className={`${styles.actionButton} ${styles.deleteButton}`}
+                  onClick={() => handleDelete(item.id)}
+                  title="刪除"
+                >
+                  <FiTrash2 size={16} />
+                </button>
+              </div>
+            )}
           </td>
         </tr>
 
-        {(item.children || []).map((child) => (
+        {(item.children || []).map((child) => {
+          const childReadonly = isItemReadOnly(child);
+          return (
           <tr key={child.id} className={`${styles.tableRow} ${styles.childRow}`}>
             <td className={`${styles.tableCell} ${styles.dragCell}`} />
             <td className={`${styles.tableCell} ${styles.nameCell}`}>
               <span className={styles.childName}>
+                {childReadonly && (
+                  <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">系統資料</span>
+                )}
+                {isDemoMode && !childReadonly && (
+                  <span className={styles.readOnlyBadge} title="DEMO 資料">
+                    DEMO 資料
+                  </span>
+                )}
                 <span>↳</span>
                 {child.title}
               </span>
@@ -442,32 +490,37 @@ const NavigationManager = () => {
               )}
             </td>
             <td className={`${styles.tableCell} ${styles.actionsCell}`}>
-              <div className={styles.actions}>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => toggleVisibility(child)}
-                  title={child.isVisible ? "隱藏" : "顯示"}
-                >
-                  {child.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
-                </button>
-                <button
-                  className={styles.actionButton}
-                  onClick={() => handleOpenModal(child)}
-                  title="編輯"
-                >
-                  <FiEdit size={16} />
-                </button>
-                <button
-                  className={`${styles.actionButton} ${styles.deleteButton}`}
-                  onClick={() => handleDelete(child.id)}
-                  title="刪除"
-                >
-                  <FiTrash2 size={16} />
-                </button>
-              </div>
+              {childReadonly ? (
+                <span className={styles.readOnlyHint}>僅供檢視</span>
+              ) : (
+                <div className={styles.actions}>
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => toggleVisibility(child)}
+                    title={child.isVisible ? "隱藏" : "顯示"}
+                  >
+                    {child.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
+                  </button>
+                  <button
+                    className={styles.actionButton}
+                    onClick={() => handleOpenModal(child)}
+                    title="編輯"
+                  >
+                    <FiEdit size={16} />
+                  </button>
+                  <button
+                    className={`${styles.actionButton} ${styles.deleteButton}`}
+                    onClick={() => handleDelete(child.id)}
+                    title="刪除"
+                  >
+                    <FiTrash2 size={16} />
+                  </button>
+                </div>
+              )}
             </td>
           </tr>
-        ))}
+          );
+        })}
       </>
     );
   };
@@ -528,6 +581,7 @@ const NavigationManager = () => {
       ) : navItems.length === 0 ? (
         <div className={styles.emptyState}>尚無導航項目，點擊上方按鈕新增</div>
       ) : (
+        // DndContext 偵測拖放事件/拖曳排序
         // 注意：DndContext 會插入隱藏的 <div>（可及性），不可放在 <table> 內，否則會造成 hydration error
         <DndContext
           sensors={sensors}
@@ -578,6 +632,7 @@ const NavigationManager = () => {
           ? {
               id: editingItem.id,
               title: editingItem.title,
+              titleEn: editingItem.titleEn || "",
               slug: editingSlug,
               parentId: editingItem.parentId,
               sortOrder: editingItem.sortOrder,

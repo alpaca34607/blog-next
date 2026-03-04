@@ -18,9 +18,14 @@ import {
   FiX,
   FiChevronLeft,
   FiLogOut,
+  FiExternalLink,
+  FiLock,
 } from "react-icons/fi";
+import Swal from "sweetalert2";
 import styles from "./AdminLayout.module.scss";
-import { clearAuthToken } from "@/utils/common";
+import { accentOrange } from "@/styles/theme";
+import { clearAuthToken, clearDemoToken, getDemoId } from "@/utils/common";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface AdminLayoutProps {
   children: React.ReactNode;
@@ -41,25 +46,46 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [isRedirectingPermissionDenied, setIsRedirectingPermissionDenied] =
     useState(false);
 
-  const navItems = [
+  // DEMO 訪客模式：僅在 client mount 後才判斷，避免 SSR 與 client 不一致導致 hydration 錯誤
+  const { isDemoMode } = useDemoMode();
+  const [demoId, setDemoId] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    setDemoId(getDemoId());
+  }, []);
+
+  // DEMO 可編輯的頁面（其餘為唯讀展示）
+  const demoEditablePages = [
+    "/admin/dashboard",
+    "/admin/NavigationManager",
+    "/admin/PageManager",
+    "/admin/NewsManager",
+  ];
+
+  const allNavItems = [
     { name: "Dashboard", page: "/admin/dashboard", icon: FiLayout },
     { name: "導覽選單", page: "/admin/NavigationManager", icon: FiNavigation },
     { name: "頁面管理", page: "/admin/PageManager", icon: FiFileText },
     { name: "產品管理", page: "/admin/ProductsManager", icon: FiUsers },
     { name: "最新消息", page: "/admin/NewsManager", icon: FiFile },
-    // { name: "下載專區", page: "/admin/DownloadManager", icon: FiDownload },
     { name: "時間軸管理", page: "/admin/TimelineManager", icon: FiClock },
     { name: "表格管理", page: "/admin/TableManager", icon: FiCheckSquare },
     { name: "管理員帳號", page: "/admin/AdminManager", icon: FiUsers },
     { name: "網站設定", page: "/admin/SiteSettingsManager", icon: FiSettings },
   ];
 
+  // DEMO 可存取所有後台路徑（含子路徑），唯讀頁面僅能 GET
+  const demoNavBases = allNavItems.map((i) => i.page);
+  const isDemoAllowedPath = (path: string) =>
+    demoNavBases.some((base) => path === base || path.startsWith(base + "/"));
+
+  const navItems = allNavItems;
+
   const handleLogout = () => {
-    // 登出：清除前端保存的 token，並導回登入頁
-    // 注意：目前採用 JWT Bearer Token（存於 cookie），因此只要移除 token 即可視為登出
     clearAuthToken();
+    clearDemoToken();
     setMobileOpen(false);
-    router.replace("/login");
+    // 後台無 locale，導向前台登入頁時須加上語言前綴
+    router.replace(`/${routing.defaultLocale}/login`);
   };
 
   useEffect(() => {
@@ -67,26 +93,43 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     setIsRedirectingPermissionDenied(false);
   }, [pathname]);
 
+  // DEMO 訪客若手動輸入非允許路徑，導回 dashboard（允許 PageManager/NewsManager 子路徑如預覽、編輯區塊）
+  useEffect(() => {
+    if (isDemoMode && pathname.startsWith("/admin") && !isDemoAllowedPath(pathname)) {
+      router.replace("/admin/dashboard");
+    }
+  }, [isDemoMode, pathname, router]);
+
   useEffect(() => {
     const handler = (event: Event) => {
       // 若已在「權限不足」頁面，就交由該頁面顯示 SweetAlert
       if (pathname === "/admin/permission-denied") return;
       if (isRedirectingPermissionDenied) return;
-      setIsRedirectingPermissionDenied(true);
 
       const detail =
         (event as CustomEvent<AdminPermissionDeniedDetail>)?.detail || {};
 
-      // 注意：跳頁後 CustomEvent 的 detail 會消失，因此用 sessionStorage 暫存
+      // DEMO 訪客：僅顯示 SweetAlert、不導向登入或首頁，確認後關閉即可
+      if (isDemoMode) {
+        setMobileOpen(false);
+        Swal.fire({
+          icon: "warning",
+          title: "您無權限執行此操作",
+          confirmButtonText: "確定",
+          confirmButtonColor: accentOrange,
+        });
+        return;
+      }
+
+      setIsRedirectingPermissionDenied(true);
       try {
         sessionStorage.setItem(
           "admin:permissionDeniedDetail",
           JSON.stringify(detail)
         );
       } catch {
-        // 忽略：sessionStorage 不可用時，仍可跳頁並顯示預設訊息
+        /* 忽略 */
       }
-
       setMobileOpen(false);
       router.replace("/admin/permission-denied");
     };
@@ -101,7 +144,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
   }, [isRedirectingPermissionDenied, pathname, router]);
 
   return (
-    <div className={styles.adminLayout}>
+    <div
+      className={`${styles.adminLayout} ${
+        isDemoMode ? styles.adminLayoutWithDemoFooter : ""
+      }`}
+    >
       {/* Mobile Header */}
       <div className={styles.mobileHeader}>
         <div className={styles.mobileHeaderContent}>
@@ -111,7 +158,9 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           >
             {mobileOpen ? <FiX size={24} /> : <FiMenu size={24} />}
           </button>
-          <span className={styles.mobileTitle}>CMS Dashboard</span>
+          <span className={styles.mobileTitle}>
+            CMS{isDemoMode ? "(Demo)" : ""} Dashboard
+          </span>
         </div>
       </div>
 
@@ -133,7 +182,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       >
         {/* Logo */}
         <div className={styles.sidebarHeader}>
-          {sidebarOpen && <span className={styles.sidebarTitle}>CMS</span>}
+          {sidebarOpen && (
+            <span className={styles.sidebarTitle}>
+              CMS{isDemoMode ? "(Demo)" : ""}
+            </span>
+          )}
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className={styles.sidebarToggle}
@@ -151,7 +204,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         <nav className={styles.nav}>
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive = pathname === item.page;
+            const isActive =
+              pathname === item.page || pathname.startsWith(item.page + "/");
+            const isDemoReadOnly =
+              isDemoMode && !demoEditablePages.includes(item.page);
             return (
               <Link
                 key={item.page}
@@ -159,16 +215,39 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                 onClick={() => setMobileOpen(false)}
                 className={`${styles.navItem} ${
                   isActive ? styles.navItemActive : ""
-                }`}
+                } ${isDemoReadOnly ? styles.navItemReadOnly : ""}`}
+                title={isDemoReadOnly ? "僅供檢視，無法編輯" : undefined}
               >
                 <Icon size={20} />
                 {sidebarOpen && (
-                  <span className={styles.navItemText}>{item.name}</span>
+                  <>
+                    <span className={styles.navItemText}>{item.name}</span>
+                    {isDemoReadOnly && (
+                      <FiLock size={14} className={styles.navItemLock} />
+                    )}
+                  </>
                 )}
               </Link>
             );
           })}
         </nav>
+
+        {/* 前往前台（DEMO 模式） */}
+        {isDemoMode && demoId && (
+          <div className={styles.demoSection}>
+            <a
+              href={`/${routing.defaultLocale}?UUID=${demoId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={`${styles.demoLink} ${
+                sidebarOpen ? styles.demoLinkExpanded : ""
+              }`}
+            >
+              <FiExternalLink size={20} />
+              {sidebarOpen && <span>前往前台頁面</span>}
+            </a>
+          </div>
+        )}
 
         {/* Logout */}
         <div className={styles.logoutSection}>
@@ -179,7 +258,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             }`}
           >
             <FiLogOut size={20} />
-            {sidebarOpen && <span>登出</span>}
+            {sidebarOpen && <span>{isDemoMode ? "結束體驗" : "登出"}</span>}
           </button>
         </div>
       </aside>
@@ -197,6 +276,13 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           </div>
         </main>
       </NextIntlClientProvider>
+
+      {/* DEMO 模式：底部固定說明 */}
+      {isDemoMode && (
+        <div className={styles.demoFooter}>
+          系統資料僅供檢視參考，儲存無效，僅導覽選單、頁面管理、最新消息供操作體驗
+        </div>
+      )}
     </div>
   );
 };

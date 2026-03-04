@@ -4,7 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Swal from "sweetalert2";
 import AdminLayout from "@/components/Backend/AdminLayout";
+import { accentOrange } from "@/styles/theme";
 import { clearAuthToken } from "@/utils/common";
+import { routing } from "@/routing";
 
 type AdminPermissionDeniedDetail = {
   code?: string;
@@ -32,26 +34,24 @@ export default function PermissionDeniedPage() {
 
     (async () => {
       const result = await Swal.fire({
-        title: "權限不足",
-        text:
-          detail?.message ||
-          "你目前沒有權限存取此後台功能，請重新登入或聯絡管理員。",
+        title: "您無權限執行此操作",
         icon: "warning",
         showCancelButton: true,
         confirmButtonText: "重新登入",
         cancelButtonText: "回到首頁",
+        confirmButtonColor: accentOrange,
         allowOutsideClick: false,
         allowEscapeKey: true,
       });
 
       if (result.isConfirmed) {
-        // 登出：清除前端保存的 token，並導回登入頁
+        // 登出：清除前端保存的 token，並導回登入頁（須帶語言前綴）
         clearAuthToken();
-        router.replace("/login");
+        router.replace(`/${routing.defaultLocale}/login`);
         return;
       }
 
-      router.replace("/");
+      router.replace(`/${routing.defaultLocale}/`);
     })();
   }, [hasShown, router]);
 
@@ -63,11 +63,8 @@ export default function PermissionDeniedPage() {
       */}
       <div style={{ padding: 24 }}>
         <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>
-          權限不足
+          您無權限執行此操作
         </h1>
-        <p style={{ opacity: 0.9 }}>
-          你目前沒有權限存取此後台功能，請重新登入或聯絡管理員。
-        </p>
       </div>
     </AdminLayout>
   );

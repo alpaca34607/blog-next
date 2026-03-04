@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
+import { useDemoHref } from "@/hooks/useDemoHref";
 import FlipButton from "../FlipButton";
 import styles from "./Navigation.module.scss";
 import { FiChevronDown } from "react-icons/fi";
@@ -20,6 +21,7 @@ const Navigation = ({
   isMobile = false,
 }: NavigationProps) => {
   const locale = useLocale();
+  const appendDemoUuid = useDemoHref();
   // 依當前語系取得顯示標題
   const getTitle = (item: NavigationItem) =>
     locale === "en" && item.titleEn ? item.titleEn : item.title;
@@ -79,11 +81,11 @@ const Navigation = ({
     list.sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
-  const buildHref = (item: NavigationItem): string => {
+  // 外部連結直接回傳，站內路徑不附加 UUID（已經在初次以DEMO模式載入中添加過）
+  // FlipButton 已內建呼叫 appendDemoUuid，普通 Link 則在使用時明確呼叫
+  const buildRawPath = (item: NavigationItem): string => {
     if (item.type === "external" && item.url) return item.url;
-
-    if (item.slug) return `/${item.slug}`;
-    return "#";
+    return item.slug ? `/${item.slug}` : "#";
   };
 
   return (
@@ -100,7 +102,7 @@ const Navigation = ({
               {!isMobile && (
                 <FlipButton
                   text={getTitle(parent)}
-                  href={buildHref(parent)}
+                  href={buildRawPath(parent)}
                   as="Link"
                 />
               )}
@@ -129,7 +131,7 @@ const Navigation = ({
                     </button>
                   ) : (
                     <Link
-                      href={buildHref(parent)}
+                      href={appendDemoUuid(buildRawPath(parent))}
                       className={styles.mobileNavLink}
                     >
                       {getTitle(parent)}
@@ -192,7 +194,7 @@ const Navigation = ({
                               </span>
                             </button>
                           ) : (
-                            <Link href={buildHref(child)}>
+                            <Link href={appendDemoUuid(buildRawPath(child))}>
                               {hasProductSubmenu
                                 ? getCategoryLabel(child)
                                 : getTitle(child)}
@@ -211,7 +213,7 @@ const Navigation = ({
                               <ul>
                                 {childProducts.map((product) => (
                                   <li key={product.id}>
-                                    <Link href={`/${product.slug}`}>
+                                    <Link href={appendDemoUuid(`/${product.slug}`)}>
                                       {getProductTitle(product)}
                                     </Link>
                                   </li>

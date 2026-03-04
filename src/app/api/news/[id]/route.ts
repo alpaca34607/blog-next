@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -35,14 +37,15 @@ function getIdFromRequest(request: NextRequest, params?: { id?: string }) {
 }
 
 // GET /api/news/[id] - 獲取單個新聞
-async function getNewsById(request: NextRequest, id: string) {
+async function getNewsById(req: AuthenticatedRequest, id: string) {
   try {
     if (!id) {
       return errorResponse("VALIDATION_ERROR", "缺少新聞 ID", 400);
     }
 
-    const news = await prisma.news.findUnique({
-      where: { id },
+    const ws = getWorkspaceFilter(req);
+    const news = await prisma.news.findFirst({
+      where: { id, demoWorkspaceId: ws.demoWorkspaceId },
       select: {
         id: true,
         title: true,
@@ -74,28 +77,29 @@ async function getNewsById(request: NextRequest, id: string) {
 }
 
 // PUT /api/news/[id] - 更新新聞
-async function updateNews(request: NextRequest, id: string) {
+async function updateNews(req: AuthenticatedRequest, id: string) {
   try {
     if (!id) {
       return errorResponse("VALIDATION_ERROR", "缺少新聞 ID", 400);
     }
 
-    const body = await request.json();
+    const body = await req.json();
     const validatedData = updateNewsSchema.parse(body);
+    const ws = getWorkspaceFilter(req);
 
-    // 檢查新聞是否存在
-    const existingNews = await prisma.news.findUnique({
-      where: { id },
+    // 檢查新聞是否存在且屬於當前工作區
+    const existingNews = await prisma.news.findFirst({
+      where: { id, demoWorkspaceId: ws.demoWorkspaceId },
     });
 
     if (!existingNews) {
       return errorResponse("NOT_FOUND", "新聞不存在", 404);
     }
 
-    // 如果更新 slug，檢查是否重複
+    // 如果更新 slug，檢查是否重複（同一工作區內）
     if (validatedData.slug && validatedData.slug !== existingNews.slug) {
       const slugExists = await prisma.news.findUnique({
-        where: { slug: validatedData.slug },
+        where: { slug_demoWorkspaceId: { slug: validatedData.slug, demoWorkspaceId: ws.demoWorkspaceId } },
       });
 
       if (slugExists) {
@@ -138,15 +142,16 @@ async function updateNews(request: NextRequest, id: string) {
 }
 
 // DELETE /api/news/[id] - 刪除新聞
-async function deleteNews(request: NextRequest, id: string) {
+async function deleteNews(req: AuthenticatedRequest, id: string) {
   try {
     if (!id) {
       return errorResponse("VALIDATION_ERROR", "缺少新聞 ID", 400);
     }
 
-    // 檢查新聞是否存在
-    const existingNews = await prisma.news.findUnique({
-      where: { id },
+    const ws = getWorkspaceFilter(req);
+    // 檢查新聞是否存在且屬於當前工作區
+    const existingNews = await prisma.news.findFirst({
+      where: { id, demoWorkspaceId: ws.demoWorkspaceId },
     });
 
     if (!existingNews) {
@@ -169,7 +174,7 @@ export const GET = async (
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   const id = getIdFromRequest(request, resolvedParams);
-  return withAuth(request, (req) => getNewsById(req, id));
+  return withAuthOrDemo(request, (req) => getNewsById(req, id));
 };
 
 export const PUT = async (
@@ -178,7 +183,7 @@ export const PUT = async (
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   const id = getIdFromRequest(request, resolvedParams);
-  return withAuth(request, (req) => updateNews(req, id));
+  return withAuthOrDemo(request, (req) => updateNews(req, id));
 };
 
 export const DELETE = async (
@@ -187,5 +192,5 @@ export const DELETE = async (
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   const id = getIdFromRequest(request, resolvedParams);
-  return withAuth(request, (req) => deleteNews(req, id));
+  return withAuthOrDemo(request, (req) => deleteNews(req, id));
 };

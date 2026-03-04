@@ -1,6 +1,8 @@
 import Cookies from "js-cookie";
 
 const TokenName = "tccf_exhibition";
+const DemoTokenName = "demo_workspace_token";
+const DemoIdName = "demo_workspace_id";
 const PopupCookieName = "popupShown"; // 處理登入後的彈窗，如果登入顯示過，就不再顯示
 
 export const setAuthToken = (token: string, expiresDay?: number): void => {
@@ -15,6 +17,30 @@ export const getAuthToken = (): { token: string | undefined } => {
 
 export const clearAuthToken = (): void => {
   Cookies.remove(TokenName);
+};
+
+// DEMO 訪客 Token（24h 有效，與 JWT 過期一致）
+export const setDemoToken = (token: string): void => {
+  Cookies.set(DemoTokenName, token, { expires: 1 }); // 1 天
+};
+
+export const getDemoToken = (): { token: string | undefined } => {
+  return {
+    token: Cookies.get(DemoTokenName),
+  };
+};
+
+export const clearDemoToken = (): void => {
+  Cookies.remove(DemoTokenName);
+  Cookies.remove(DemoIdName);
+};
+
+export const setDemoId = (demoId: string): void => {
+  Cookies.set(DemoIdName, demoId, { expires: 1 });
+};
+
+export const getDemoId = (): string | undefined => {
+  return Cookies.get(DemoIdName);
 };
 
 // 設置彈窗已顯示的 cookie

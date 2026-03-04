@@ -1,6 +1,8 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withAuth } from '@/lib/auth-middleware'
+import { withAuthOrDemo } from '@/lib/auth-middleware'
+import { getWorkspaceFilter, getWorkspaceFilterForList } from '@/lib/demo-utils'
+import type { AuthenticatedRequest } from '@/lib/auth-middleware'
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response'
 import { buildWhereClause, buildOrderBy, getPaginationParams, createPaginationResult } from '@/lib/query-utils'
 import { z } from 'zod'
@@ -22,9 +24,9 @@ const createNewsSchema = z.object({
 })
 
 // GET /api/news - 獲取新聞列表（管理用，支援分頁、搜尋、排序）
-async function getNews(request: NextRequest) {
+async function getNews(req: AuthenticatedRequest) {
   try {
-    const { searchParams } = new URL(request.url)
+    const { searchParams } = new URL(req.url)
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
     const search = searchParams.get('search') || undefined
@@ -44,7 +46,10 @@ async function getNews(request: NextRequest) {
 
     const { skip, page: currentPage, limit: currentLimit } = getPaginationParams({ page, limit })
 
-    const where = buildWhereClause(search, filter, ['title', 'content', 'category'])
+    const where = {
+      ...buildWhereClause(search, filter, ['title', 'content', 'category']),
+      ...getWorkspaceFilterForList(req),
+    }
     const orderBy = buildOrderBy(sortBy, sortOrder)
 
     const [news, total] = await Promise.all([
@@ -55,6 +60,7 @@ async function getNews(request: NextRequest) {
         take: currentLimit,
         select: {
           id: true,
+          demoWorkspaceId: true,
           title: true,
           titleEn: true,
           slug: true,
@@ -84,14 +90,15 @@ async function getNews(request: NextRequest) {
 }
 
 // POST /api/news - 創建新聞
-async function createNews(request: NextRequest) {
+async function createNews(req: AuthenticatedRequest) {
   try {
-    const body = await request.json()
+    const body = await req.json()
     const validatedData = createNewsSchema.parse(body)
+    const { demoWorkspaceId } = getWorkspaceFilter(req)
 
-    // 檢查 slug 是否重複
+    // 檢查 slug 是否重複（同一工作區內）
     const existingNews = await prisma.news.findUnique({
-      where: { slug: validatedData.slug }
+      where: { slug_demoWorkspaceId: { slug: validatedData.slug, demoWorkspaceId } }
     })
 
     if (existingNews) {
@@ -101,7 +108,8 @@ async function createNews(request: NextRequest) {
     const news = await prisma.news.create({
       data: {
         ...validatedData,
-        publishDate: validatedData.publishDate ? new Date(validatedData.publishDate) : null
+        demoWorkspaceId,
+        publishDate: validatedData.publishDate ? new Date(validatedData.publishDate) : undefined
       },
       select: {
         id: true,
@@ -129,5 +137,5 @@ async function createNews(request: NextRequest) {
   }
 }
 
-export const GET = (request: NextRequest) => withAuth(request, getNews)
-export const POST = (request: NextRequest) => withAuth(request, createNews)
+export const GET = (request: NextRequest) => withAuthOrDemo(request, getNews)
+export const POST = (request: NextRequest) => withAuthOrDemo(request, createNews)

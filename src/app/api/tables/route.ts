@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { withAuth } from '@/lib/auth-middleware'
+import { withAuth, withAuthOrDemo } from '@/lib/auth-middleware'
 import { successResponse, errorResponse, handleApiError } from '@/lib/api-response'
 import { buildWhereClause, buildOrderBy, getPaginationParams, createPaginationResult } from '@/lib/query-utils'
 import { z } from 'zod'
@@ -90,5 +90,5 @@ async function createTable(request: NextRequest) {
   }
 }
 
-export const GET = (request: NextRequest) => withAuth(request, getTables)
+export const GET = (request: NextRequest) => withAuthOrDemo(request, getTables)
 export const POST = (request: NextRequest) => withAuth(request, createTable)

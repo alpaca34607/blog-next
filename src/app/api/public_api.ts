@@ -13,8 +13,9 @@ export const API_GetSiteSettings = async () => {
 };
 
 // ----------------------------- 取得導覽列 -----------------------------
-export const API_GetNavigationItem = async () => {
-  const path = `/api/get-navigation-item`;
+export const API_GetNavigationItem = async (demoUuid?: string) => {
+  const query = demoUuid ? `?UUID=${encodeURIComponent(demoUuid)}` : "";
+  const path = `/api/get-navigation-item${query}`;
   const requestOption: RequestOptions = {
     method: "GET",
     withAuth: false,
@@ -23,8 +24,9 @@ export const API_GetNavigationItem = async () => {
 };
 
 // ----------------------------- 取得產品 -----------------------------
-export const API_GetProducts = async () => {
-  const path = `/api/get-products`;
+export const API_GetProducts = async (demoUuid?: string) => {
+  const query = demoUuid ? `?UUID=${encodeURIComponent(demoUuid)}` : "";
+  const path = `/api/get-products${query}`;
   const requestOption: RequestOptions = {
     method: "GET",
     withAuth: false,
@@ -33,8 +35,9 @@ export const API_GetProducts = async () => {
 };
 
 // ----------------------------- 取得新聞 -----------------------------
-export const API_GetNews = async () => {
-  const path = `/api/get-news`;
+export const API_GetNews = async (demoUuid?: string) => {
+  const query = demoUuid ? `?UUID=${encodeURIComponent(demoUuid)}` : "";
+  const path = `/api/get-news${query}`;
   const requestOption: RequestOptions = {
     method: "GET",
     withAuth: false,
@@ -47,6 +50,7 @@ export const API_GetNewsWithParams = async (params?: {
   category?: string;
   isFeatured?: boolean;
   slug?: string;
+  demoUuid?: string;
 }) => {
   const query = new URLSearchParams();
   if (params?.category) query.append("category", params.category);
@@ -54,6 +58,7 @@ export const API_GetNewsWithParams = async (params?: {
     query.append("isFeatured", params.isFeatured ? "true" : "false");
   }
   if (params?.slug) query.append("slug", params.slug);
+  if (params?.demoUuid) query.append("UUID", params.demoUuid);
 
   const path = `/api/get-news${query.toString() ? `?${query.toString()}` : ""}`;
   const requestOption: RequestOptions = {
@@ -64,9 +69,10 @@ export const API_GetNewsWithParams = async (params?: {
 };
 
 // ----------------------------- 取得前台頁面（含區塊） -----------------------------
-export const API_GetPageBySlug = async (slug: string) => {
+export const API_GetPageBySlug = async (slug: string, demoUuid?: string) => {
   const query = new URLSearchParams();
   query.append("slug", slug);
+  if (demoUuid) query.append("UUID", demoUuid);
   const path = `/api/get-page?${query.toString()}`;
   const requestOption: RequestOptions = {
     method: "GET",

@@ -23,10 +23,10 @@ import {
 import type { NavigationItem, Product } from "@/types/navigation";
 import type { NewsListItem } from "@/types/news";
 import { useTranslations } from "next-intl";
-
-
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 const Footer = () => {
+  const demoUuid = useDemoUuid();
   interface SiteSettings {
     siteName: string;
     siteNameEn?: string;
@@ -98,7 +98,7 @@ const Footer = () => {
     // 從 API 獲取導覽資料
     const fetchNavigationItem = async () => {
       try {
-        const response = await API_GetNavigationItem();
+        const response = await API_GetNavigationItem(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -143,14 +143,14 @@ const Footer = () => {
     return () => {
       window.removeEventListener("navigationUpdated", handleNavigationUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   // 載入產品資料
   useEffect(() => {
     // 從 API 獲取產品資料
     const fetchProducts = async () => {
       try {
-        const response = await API_GetProducts();
+        const response = await API_GetProducts(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -189,14 +189,14 @@ const Footer = () => {
     return () => {
       window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   // 載入最新消息資料
   useEffect(() => {
     // 從 API 獲取新聞資料
     const fetchNews = async () => {
       try {
-        const response = await API_GetNews();
+        const response = await API_GetNews(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -239,7 +239,7 @@ const Footer = () => {
     return () => {
       window.removeEventListener("newsUpdated", handleNewsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   // 過濾掉子選單（只顯示第一層項目）
   const parentItems = NavigationItem.filter((item) => !item.parentId).sort(

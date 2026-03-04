@@ -1,7 +1,9 @@
 import { NextRequest } from "next/server";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -31,17 +33,19 @@ const updateNavigationSchema = z.object({
   parentId: z.string().nullable().optional(),
 });
 
-// GET /api/navigation/[id] - 獲取單個導航項目（公開）
+// GET /api/navigation/[id] - 獲取單個導航項目（需認證）
 export async function GET(
   request: NextRequest,
   context: { params?: RouteParams }
 ) {
+  return withAuthOrDemo(request, async (req) => {
   try {
     const navigationId = await resolveNavigationId(context);
     if (!navigationId) return errorResponse("BAD_REQUEST", "缺少導航 id", 400);
 
-    const item = await prisma.navigation.findUnique({
-      where: { id: navigationId },
+    const ws = getWorkspaceFilter(req);
+    const item = await prisma.navigation.findFirst({
+      where: { id: navigationId, demoWorkspaceId: ws.demoWorkspaceId },
       select: {
         id: true,
         title: true,
@@ -81,6 +85,7 @@ export async function GET(
   } catch (error) {
     return handleApiError(error);
   }
+  });
 }
 
 // PUT /api/navigation/[id] - 更新導航項目（需要認證）
@@ -88,11 +93,18 @@ export async function PUT(
   request: NextRequest,
   context: { params?: RouteParams }
 ) {
-  return withAuth(request, async (req) => {
+  return withAuthOrDemo(request, async (req) => {
     try {
       const navigationId = await resolveNavigationId(context);
       if (!navigationId)
         return errorResponse("BAD_REQUEST", "缺少導航 id", 400);
+
+      const ws = getWorkspaceFilter(req);
+      const existing = await prisma.navigation.findFirst({
+        where: { id: navigationId, demoWorkspaceId: ws.demoWorkspaceId },
+      });
+      if (!existing)
+        return errorResponse("NOT_FOUND", "導航項目不存在", 404);
 
       const body = await request.json();
       const data = updateNavigationSchema.parse(body);
@@ -117,11 +129,18 @@ export async function DELETE(
   request: NextRequest,
   context: { params?: RouteParams }
 ) {
-  return withAuth(request, async (req) => {
+  return withAuthOrDemo(request, async (req) => {
     try {
       const navigationId = await resolveNavigationId(context);
       if (!navigationId)
         return errorResponse("BAD_REQUEST", "缺少導航 id", 400);
+
+      const ws = getWorkspaceFilter(req);
+      const existing = await prisma.navigation.findFirst({
+        where: { id: navigationId, demoWorkspaceId: ws.demoWorkspaceId },
+      });
+      if (!existing)
+        return errorResponse("NOT_FOUND", "導航項目不存在", 404);
 
       await prisma.navigation.delete({
         where: { id: navigationId },

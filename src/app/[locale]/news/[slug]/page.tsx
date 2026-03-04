@@ -9,6 +9,7 @@ import { FiArrowLeft, FiCalendar, FiTag } from "react-icons/fi";
 import styles from "./page.module.scss";
 import { API_GetNewsWithParams } from "@/app/api/public_api";
 import { useTranslations, useLocale } from "next-intl";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 interface NewsArticle {
   id: string;
@@ -36,6 +37,7 @@ interface NewsPageProps {
 
 export default function NewsPage({ params }: NewsPageProps) {
   const { slug } = use(params);
+  const demoUuid = useDemoUuid();
   const router = useRouter();
   const t = useTranslations("news");
   const locale = useLocale();
@@ -51,7 +53,7 @@ export default function NewsPage({ params }: NewsPageProps) {
       try {
         setLoading(true);
 
-        const res = await API_GetNewsWithParams({ slug });
+        const res = await API_GetNewsWithParams({ slug, demoUuid });
         if (!res?.success) {
           router.push("/news");
           return;
@@ -90,6 +92,7 @@ export default function NewsPage({ params }: NewsPageProps) {
         }
         const relatedRes = await API_GetNewsWithParams({
           category: current.category,
+          demoUuid,
         });
         if (!relatedRes?.success) {
           setRelatedNews([]);
@@ -137,7 +140,7 @@ export default function NewsPage({ params }: NewsPageProps) {
     return () => {
       cancelled = true;
     };
-  }, [slug, router]);
+  }, [slug, demoUuid, router]);
 
   const formatDate = (dateString: string) => {
     try {

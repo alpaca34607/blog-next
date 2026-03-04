@@ -44,10 +44,33 @@ export function verifyToken(token: string): JWTPayload | null {
 
 export async function getUserFromToken(token: string) {
   const payload = verifyToken(token)
-  if (!payload) return null
+  if (!payload?.userId) return null
 
   return await prisma.user.findUnique({
     where: { id: payload.userId },
     select: { id: true, email: true, name: true, role: true }
   })
+}
+
+// ----------------------------- DEMO 訪客 Token（24h 有效）-----------------------------
+export interface DemoTokenPayload {
+  demoId: string
+  iat?: number
+  exp?: number
+}
+
+export function generateDemoToken(demoId: string): string {
+  return jwt.sign(
+    { demoId } as DemoTokenPayload,
+    JWT_SECRET,
+    { expiresIn: '24h' }
+  )
+}
+
+export function verifyDemoToken(token: string): DemoTokenPayload | null {
+  try {
+    return jwt.verify(token, JWT_SECRET) as DemoTokenPayload
+  } catch {
+    return null
+  }
 }

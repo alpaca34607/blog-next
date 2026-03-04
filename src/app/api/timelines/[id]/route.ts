@@ -13,7 +13,7 @@ const updateTimelineSchema = z.object({
   description: z.string().optional(),
 });
 
-// GET /api/timelines/[id] - 獲取單個時間軸
+// GET /api/timelines/[id] - 獲取單個時間軸（DEMO 唯讀可見）
 async function getTimelineById(request: NextRequest, id: string) {
   try {
     if (!id) {

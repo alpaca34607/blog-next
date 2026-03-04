@@ -44,22 +44,25 @@ model SiteSettings {
 }
 
 model Navigation {
-  id        String       @id @default(cuid())
-  title     String
-  titleEn   String?
-  url       String?
+  id               String       @id @default(cuid())
+  title            String
+  titleEn          String?
+  url              String?
   /// 產品分類（選填）：若設定，前台會用此分類自動產生產品子選單
-  productCategory String?   @db.VarChar(255)
-  type      String       @default("internal")
-  isVisible Boolean      @default(true)
-  sortOrder Int          @default(0)
-  parentId  String?
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
-  parent    Navigation?  @relation("NavigationHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
-  children  Navigation[] @relation("NavigationHierarchy")
+  productCategory  String?      @db.VarChar(255)
+  type             String       @default("internal")
+  isVisible        Boolean      @default(true)
+  sortOrder        Int          @default(0)
+  parentId         String?
+  /// 空字串 = 正式資料；非空 = DEMO 工作區 id
+  demoWorkspaceId  String       @default("") @db.VarChar(36)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  parent           Navigation?  @relation("NavigationHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children         Navigation[] @relation("NavigationHierarchy")
 
   @@index([parentId], map: "navigation_parentId_fkey")
+  @@index([demoWorkspaceId], map: "navigation_demoWorkspaceId_idx")
   @@map("navigation")
 }
 
@@ -67,7 +70,9 @@ model Page {
   id                 String    @id @default(cuid())
   title              String
   titleEn            String?
-  slug               String    @unique
+  slug               String
+  /// 空字串 = 正式資料；非空 = DEMO 工作區 id
+  demoWorkspaceId    String    @default("") @db.VarChar(36)
   type               String    @default("page")
   content            String?   @db.LongText
   metaTitle          String?   @db.VarChar(255)
@@ -93,6 +98,8 @@ model Page {
   updatedAt          DateTime  @updatedAt
   sections           Section[]
 
+  @@unique([slug, demoWorkspaceId], map: "pages_slug_demoWorkspaceId_key")
+  @@index([demoWorkspaceId], map: "pages_demoWorkspaceId_idx")
   @@map("pages")
 }
 
@@ -116,11 +123,13 @@ model Section {
 }
 
 model News {
-  id            String    @id @default(cuid())
-  title         String
-  titleEn       String?
-  slug          String    @unique
-  excerpt       String?
+  id               String    @id @default(cuid())
+  title            String
+  titleEn          String?
+  slug             String
+  /// 空字串 = 正式資料；非空 = DEMO 工作區 id
+  demoWorkspaceId  String    @default("") @db.VarChar(36)
+  excerpt          String?
   excerptEn     String?
   content       String    @db.LongText
   contentEn     String?   @db.LongText
@@ -133,6 +142,8 @@ model News {
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 
+  @@unique([slug, demoWorkspaceId], map: "news_slug_demoWorkspaceId_key")
+  @@index([demoWorkspaceId], map: "news_demoWorkspaceId_idx")
   @@map("news")
 }
 
@@ -187,6 +198,14 @@ model TimelineItem {
 
   @@index([timelineId], map: "timeline_items_timelineId_fkey")
   @@map("timeline_items")
+}
+
+// DEMO 訪客工作區：24 小時後會清理
+model DemoWorkspace {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+
+  @@map("demo_workspaces")
 }
 
 // 用於儲存各種不想新增欄位的設定（例如：news 列表頁設定）
