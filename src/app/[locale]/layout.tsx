@@ -2,6 +2,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { routing } from "@/routing";
+import { AppLoadingProvider } from "@/contexts/AppLoadingContext";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -23,7 +24,7 @@ export default async function LocaleLayout({
   return (
     // 必須明確傳入 locale，否則 useLocale() 在 Client Component 中無法取得正確語系
     <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
+      <AppLoadingProvider>{children}</AppLoadingProvider>
     </NextIntlClientProvider>
   );
 }

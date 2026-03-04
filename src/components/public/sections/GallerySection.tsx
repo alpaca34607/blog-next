@@ -11,10 +11,13 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 
+import { useLocale } from "next-intl";
 interface GallerySectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -25,6 +28,10 @@ interface GallerySectionProps {
 }
 
 const GallerySection = ({ section }: GallerySectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -92,11 +99,11 @@ const GallerySection = ({ section }: GallerySectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && (
+        {title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}

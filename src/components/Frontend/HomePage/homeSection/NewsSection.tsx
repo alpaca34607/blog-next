@@ -1,12 +1,16 @@
 "use client";
 import { useRef, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import { newsData, type NewsArticle } from "@/data/homePageData";
 import { Link } from "@/navigation";
 import styles from "./NewsSection.module.scss";
 import Image from "next/image";
 import { API_GetNews } from "@/app/api/frontend_api";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 const NewsSection = () => {
+  const t = useTranslations("homePage");
+  const demoUuid = useDemoUuid();
   const [newsList, setNewsList] = useState<NewsArticle[]>([]);
   const sectionRef = useRef<HTMLElement>(null);
 
@@ -48,7 +52,7 @@ const NewsSection = () => {
     // 從API獲取新聞資料
     const fetchNews = async () => {
       try {
-        const response = await API_GetNews();
+        const response = await API_GetNews(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -90,15 +94,15 @@ const NewsSection = () => {
     return () => {
       window.removeEventListener("newsUpdated", handleNewsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   return (
     <div id="news-section-wrapper" className={styles.newsSectionWrapper}>
       <div className={styles.newsBadge} />
       <section ref={sectionRef} className={styles.newsSection}>
         <div className={styles.title}>
-          <h2>NEWS</h2>
-          <p>最新消息</p>
+          <h2>{t("newsTitle")}</h2>
+          <p>{t("newsSubtitle")}</p>
         </div>
         <div className={styles.list} id="news-section__list">
           {(newsList.length > 0 ? newsList : newsData).map((item) => (
@@ -122,7 +126,7 @@ const NewsSection = () => {
                   <p>{item.excerpt}</p>
                 </div>
                 <Link href={`/news/${item.slug}`} className={styles.cardLink}>
-                  View More
+                  {t("newsViewMore")}
                 </Link>
               </div>
             </div>
@@ -162,7 +166,7 @@ const NewsSection = () => {
                 stroke="currentColor"
               />
             </svg>
-            <span>查看更多內容</span>
+            <span>{t("newsMoreContent")}</span>
             <svg
               className={styles.btnArrow}
               width="24"

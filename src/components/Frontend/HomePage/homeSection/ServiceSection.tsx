@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTranslations } from "next-intl";
 import { servicesData, type Product } from "@/data/homePageData";
 import { cn } from "@/utils/cn";
 import { scrollTriggerAnimations } from "@/utils/gsapAnimations";
@@ -11,6 +12,7 @@ import { FaPlay } from "react-icons/fa";
 import { BsCursorFill } from "react-icons/bs";
 import { API_GetProducts } from "@/app/api/frontend_api";
 import { Link } from "@/navigation";
+import { useDemoUuid } from "@/hooks/useDemoUuid";
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
@@ -22,6 +24,8 @@ interface ServiceSectionProps {
 }
 
 const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
+  const t = useTranslations("homePage");
+  const demoUuid = useDemoUuid();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [servicesList, setServicesList] = useState<Product[]>([]);
   const leftRef = useRef<HTMLDivElement>(null);
@@ -39,7 +43,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
 
     const fetchProducts = async () => {
       try {
-        const response = await API_GetProducts();
+        const response = await API_GetProducts(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -86,7 +90,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
     return () => {
       window.removeEventListener("productsUpdated", handleProductsUpdated);
     };
-  }, []);
+  }, [demoUuid]);
 
   useEffect(() => {
     const leftElement = leftRef.current;
@@ -138,14 +142,11 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
       >
         <section className={styles.serviceSection}>
           <div ref={leftRef} className={styles.left}>
-            <h2 className={styles.title}>SERVICES</h2>
-            <p className={styles.byline}>for Blog-style Brand Sites</p>
-            <p className={styles.description}>
-              以部落格式架構為核心，提供簡約模板與模組化區塊；從內容發佈、分類到版面維護，
-              都能在後台輕鬆完成，讓網站更新變成日常。
-            </p>
+            <h2 className={styles.title}>{t("serviceTitle")}</h2>
+            <p className={styles.byline}>{t("serviceByline")}</p>
+            <p className={styles.description}>{t("serviceDescription")}</p>
             <a href="#" className={styles.link}>
-              查看我們的服務
+              {t("serviceLink")}
               <div className={styles.linkIconWrapper}>
                 <svg
                   className={styles.linkIcon}
@@ -251,14 +252,14 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          深入了解{service.title}
+                          {t("learnMore")} {service.title}
                         </a>
                       ) : (
                         <Link
                           href={`/${service.slug}`}
                           className={styles.servicepageLink}
                         >
-                          深入了解{service.title}
+                          {t("learnMore")} {service.title}
                         </Link>
                       )}
                       {(() => {

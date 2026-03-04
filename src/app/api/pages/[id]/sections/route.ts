@@ -1,6 +1,8 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { withAuth } from "@/lib/auth-middleware";
+import { withAuthOrDemo } from "@/lib/auth-middleware";
+import { getWorkspaceFilter, getWorkspaceFilterForList } from "@/lib/demo-utils";
+import type { AuthenticatedRequest } from "@/lib/auth-middleware";
 import {
   successResponse,
   errorResponse,
@@ -27,6 +29,7 @@ const createSectionSchema = z.object({
   subtitle: z.string().optional(),
   subtitleEn: z.string().optional(),
   content: z.string().optional(),
+  contentEn: z.string().optional(),
   sortOrder: z.number().default(0),
   settings: z.any().optional(),
 });
@@ -40,17 +43,20 @@ const updateSectionsSchema = z.array(
     subtitle: z.string().optional(),
     subtitleEn: z.string().optional(),
     content: z.string().optional(),
+    contentEn: z.string().optional(),
     sortOrder: z.number(),
     settings: z.any().optional(),
   })
 );
 
 // GET /api/pages/[id]/sections - 獲取頁面區塊列表
-async function getPageSections(request: NextRequest, pageId: string) {
+async function getPageSections(req: AuthenticatedRequest, pageId: string) {
   try {
-    // 檢查頁面是否存在
-    const page = await prisma.page.findUnique({
-      where: { id: pageId },
+    // 讀取時允許 demo 訪客存取系統資料（唯讀瀏覽）
+    const ws = getWorkspaceFilterForList(req);
+    // 檢查頁面是否存在且屬於當前工作區（含系統資料）
+    const page = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: { id: true },
     });
 
@@ -69,6 +75,7 @@ async function getPageSections(request: NextRequest, pageId: string) {
         subtitle: true,
         subtitleEn: true,
         content: true,
+        contentEn: true,
         sortOrder: true,
         settings: true,
         createdAt: true,
@@ -83,11 +90,12 @@ async function getPageSections(request: NextRequest, pageId: string) {
 }
 
 // POST /api/pages/[id]/sections - 創建頁面區塊
-async function createPageSection(request: NextRequest, pageId: string) {
+async function createPageSection(req: AuthenticatedRequest, pageId: string) {
   try {
-    // 檢查頁面是否存在
-    const page = await prisma.page.findUnique({
-      where: { id: pageId },
+    const ws = getWorkspaceFilter(req);
+    // 檢查頁面是否存在且屬於當前工作區
+    const page = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: { id: true },
     });
 
@@ -95,7 +103,7 @@ async function createPageSection(request: NextRequest, pageId: string) {
       return errorResponse("NOT_FOUND", "頁面不存在", 404);
     }
 
-    const body = await request.json();
+    const body = await req.json();
     const validatedData = createSectionSchema.parse(body);
 
     const section = await prisma.section.create({
@@ -111,6 +119,7 @@ async function createPageSection(request: NextRequest, pageId: string) {
         subtitle: true,
         subtitleEn: true,
         content: true,
+        contentEn: true,
         sortOrder: true,
         settings: true,
         createdAt: true,
@@ -125,11 +134,12 @@ async function createPageSection(request: NextRequest, pageId: string) {
 }
 
 // PUT /api/pages/[id]/sections - 批量更新頁面區塊
-async function updatePageSections(request: NextRequest, pageId: string) {
+async function updatePageSections(req: AuthenticatedRequest, pageId: string) {
   try {
-    // 檢查頁面是否存在
-    const page = await prisma.page.findUnique({
-      where: { id: pageId },
+    const ws = getWorkspaceFilter(req);
+    // 檢查頁面是否存在且屬於當前工作區
+    const page = await prisma.page.findFirst({
+      where: { id: pageId, demoWorkspaceId: ws.demoWorkspaceId },
       select: { id: true },
     });
 
@@ -137,7 +147,7 @@ async function updatePageSections(request: NextRequest, pageId: string) {
       return errorResponse("NOT_FOUND", "頁面不存在", 404);
     }
 
-    const body = await request.json();
+    const body = await req.json();
     const validatedSections = updateSectionsSchema.parse(body);
 
     // 使用事務處理批量更新
@@ -160,8 +170,11 @@ async function updatePageSections(request: NextRequest, pageId: string) {
             id: true,
             sectionType: true,
             title: true,
+            titleEn: true,
             subtitle: true,
+            subtitleEn: true,
             content: true,
+            contentEn: true,
             sortOrder: true,
             settings: true,
             createdAt: true,
@@ -186,7 +199,7 @@ export async function GET(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => getPageSections(req, pageId));
+  return withAuthOrDemo(request, (req) => getPageSections(req, pageId));
 }
 
 export async function POST(
@@ -195,7 +208,7 @@ export async function POST(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => createPageSection(req, pageId));
+  return withAuthOrDemo(request, (req) => createPageSection(req, pageId));
 }
 
 export async function PUT(
@@ -204,5 +217,5 @@ export async function PUT(
 ) {
   const pageId = await resolvePageId(context);
   if (!pageId) return errorResponse("BAD_REQUEST", "缺少頁面 id", 400);
-  return withAuth(request, (req) => updatePageSections(req, pageId));
+  return withAuthOrDemo(request, (req) => updatePageSections(req, pageId));
 }

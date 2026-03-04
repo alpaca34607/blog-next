@@ -51,6 +51,8 @@ export interface Product extends Page {
 export interface PageRecord extends Page {
   id: string;
   isPublished: boolean;
+  /** 空字串為正式資料；DEMO 模式下正式資料為唯讀 */
+  demoWorkspaceId?: string;
   createdAt?: string;
   updatedAt?: string;
   _count?: {

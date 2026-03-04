@@ -1,4 +1,4 @@
-import { getAuthToken } from "@/utils/common";
+import { getAuthToken, getDemoToken } from "@/utils/common";
 
 // 獲取 API 基礎 URL
 // 注意：務必給預設值，避免 `${Host}/api/...` 變成 `undefined/api/...`
@@ -92,9 +92,10 @@ const handleEncodedRequestOption = ({
   withAuth = true,
 }: RequestOptions): RequestInit => {
   // 注意：避免在 server 端（SSR/Route）讀取 js-cookie
+  // 管理員 token 優先；無則使用 DEMO 訪客 token
   const token =
     withAuth && typeof window !== "undefined"
-      ? getAuthToken().token
+      ? getAuthToken().token || getDemoToken().token
       : undefined;
 
   const headers: HeadersInit = {

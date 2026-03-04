@@ -5,35 +5,46 @@ import styles from "./Loading.module.scss";
 
 interface LoadingProps {
   onLoadingComplete?: () => void;
+  /**
+   * 外部資料是否已載入完成
+   */
+  isDone?: boolean;
 }
 
-const Loading = ({ onLoadingComplete }: LoadingProps) => {
+const HIDE_ANIMATION_DURATION = 800;
+
+const Loading = ({ onLoadingComplete, isDone = false }: LoadingProps) => {
   const [isVisible, setIsVisible] = useState(true);
   const [shouldRender, setShouldRender] = useState(true);
 
   useEffect(() => {
     if (typeof document === "undefined") return;
-    
     document.body.classList.add("loading");
 
-    const timer1 = setTimeout(() => {
-      setIsVisible(false);
-    }, 2000);
-
-    const timer2 = setTimeout(() => {
-      setShouldRender(false);
+    return () => {
       document.body.classList.remove("loading");
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isDone || !shouldRender) return;
+
+    setIsVisible(false);
+
+    const timer = setTimeout(() => {
+      setShouldRender(false);
+      if (typeof document !== "undefined") {
+        document.body.classList.remove("loading");
+      }
       if (onLoadingComplete) {
         onLoadingComplete();
       }
-    }, 3000);
+    }, HIDE_ANIMATION_DURATION);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      document.body.classList.remove("loading");
+      clearTimeout(timer);
     };
-  }, [onLoadingComplete]);
+  }, [isDone, onLoadingComplete, shouldRender]);
 
   if (!shouldRender) {
     return null;
@@ -52,4 +63,3 @@ const Loading = ({ onLoadingComplete }: LoadingProps) => {
 };
 
 export default Loading;
-

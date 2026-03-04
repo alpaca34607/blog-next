@@ -3,6 +3,7 @@ import { useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Link } from "@/navigation";
+import { useTranslations } from "next-intl";
 import { scrollTriggerAnimations } from "@/utils/gsapAnimations";
 import styles from "./ContactSection.module.scss";
 
@@ -12,6 +13,7 @@ if (typeof window !== "undefined") {
 }
 
 const ContactSection = () => {
+  const t = useTranslations("homePage");
   const titleRef = useRef<HTMLDivElement>(null);
   const btnRef = useRef<HTMLDivElement>(null);
 
@@ -44,16 +46,13 @@ const ContactSection = () => {
       <section className={styles.contactSection}>
         <div ref={titleRef} className={styles.title}>
           <h2>
-            現在就開始打造<span>部落格式形象網頁</span>
+            {t("contactTitle")}<span>{t("contactTitleEm")}</span>
           </h2>
-          <p>
-            用模板快速上線，後台輕鬆新增頁面與文章；簡約版面保持一致，維護便利、更新不費力，
-            讓你的品牌內容持續累積、越寫越完整。
-          </p>
+          <p>{t("contactDesc")}</p>
         </div>
         <div ref={btnRef} className={styles.contactbtnWrapper}>
           <Link href="/contact" className={styles.contactbtn}>
-            <span>CONTACT US</span>
+            <span>{t("contactBtn")}</span>
             <svg
               className={styles.btnArrow}
               width="24"

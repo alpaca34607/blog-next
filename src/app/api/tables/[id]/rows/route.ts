@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { withAuth } from "@/lib/auth-middleware";
-import { getUserFromToken } from "@/lib/auth";
+import { getUserFromToken, verifyDemoToken } from "@/lib/auth";
 import {
   successResponse,
   errorResponse,
@@ -45,18 +45,20 @@ async function getTableRows(request: NextRequest, tableId: string) {
       return errorResponse("NOT_FOUND", "表格不存在", 404);
     }
 
-    // 匿名請求僅回傳可見資料；若帶有有效 token 則回傳完整資料（管理用）
+    // 匿名請求僅回傳可見資料；管理員或 DEMO token 則回傳完整資料
     const authHeader = request.headers.get("authorization");
     const token =
       authHeader && authHeader.startsWith("Bearer ")
         ? authHeader.substring(7)
         : null;
     const user = token ? await getUserFromToken(token) : null;
+    const demoPayload = token && !user ? verifyDemoToken(token) : null;
+    const isAdminOrDemo = !!user || !!demoPayload?.demoId;
 
     const rows = await prisma.tableRow.findMany({
       where: {
         tableId,
-        ...(user ? {} : { isVisible: true }),
+        ...(isAdminOrDemo ? {} : { isVisible: true }),
       },
       orderBy: { sortOrder: "asc" },
       select: {

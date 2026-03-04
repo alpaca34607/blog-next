@@ -25,6 +25,7 @@ import {
   API_UpdateNews,
   API_DeleteNews,
 } from "@/app/api/admin_api";
+import { useDemoMode } from "@/hooks/useDemoMode";
 import styles from "./NewsManager.module.scss";
 import adminStyles from "@/styles/AdminPagePublic.module.scss";
 
@@ -281,6 +282,9 @@ const NewsManager = () => {
     }
   };
 
+  // DEMO 模式下，正式資料（demoWorkspaceId === ""）為唯讀
+  const { isDemoMode, isItemReadOnly } = useDemoMode();
+
   const toggleFeatured = async (article: NewsArticle) => {
     try {
       setIsLoading(true);
@@ -400,7 +404,12 @@ const NewsManager = () => {
             <>
               <div className={styles.newsGrid}>
                 {currentNews.map((article) => (
-                  <div key={article.id} className={styles.newsCard}>
+                  <div
+                    key={article.id}
+                    className={`${styles.newsCard} ${
+                      isItemReadOnly(article) ? styles.newsCardReadOnly : ""
+                    }`}
+                  >
                     {/* Featured Image */}
                     <div className={styles.imageContainer}>
                       {article.featuredImage ? (
@@ -419,6 +428,11 @@ const NewsManager = () => {
                     {/* Card Content */}
                     <div className={styles.cardContent}>
                       <div className={styles.badges}>
+                        {isItemReadOnly(article) && (
+                          <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
+                            系統資料
+                          </span>
+                        )}
                         <span className={styles.categoryBadge}>
                           {article.category}
                         </span>
@@ -426,8 +440,12 @@ const NewsManager = () => {
                           <FiStar
                             className={styles.starIcon}
                             size={14}
-                            onClick={() => toggleFeatured(article)}
-                            title="精選"
+                            onClick={
+                              isItemReadOnly(article)
+                                ? undefined
+                                : () => toggleFeatured(article)
+                            }
+                            title={isItemReadOnly(article) ? "正式資料" : "精選"}
                           />
                         )}
                         <span
@@ -457,24 +475,28 @@ const NewsManager = () => {
                           </span>
                         </div>
                         <div className={styles.actions}>
-                          <button
-                            className={styles.actionButton}
-                            onClick={() => handleOpenAddNewsModal(article)}
-                            title="編輯"
-                          >
-                            <FiEdit size={14} />
-                          </button>
-                          <button
-                            className={styles.actionButton}
-                            onClick={() => togglePublish(article)}
-                            title={article.isPublished ? "取消發布" : "發布"}
-                          >
-                            {article.isPublished ? (
-                              <FiEye size={14} />
-                            ) : (
-                              <FiEyeOff size={14} />
-                            )}
-                          </button>
+                          {!isItemReadOnly(article) && (
+                            <>
+                              <button
+                                className={styles.actionButton}
+                                onClick={() => handleOpenAddNewsModal(article)}
+                                title="編輯"
+                              >
+                                <FiEdit size={14} />
+                              </button>
+                              <button
+                                className={styles.actionButton}
+                                onClick={() => togglePublish(article)}
+                                title={article.isPublished ? "取消發布" : "發布"}
+                              >
+                                {article.isPublished ? (
+                                  <FiEye size={14} />
+                                ) : (
+                                  <FiEyeOff size={14} />
+                                )}
+                              </button>
+                            </>
+                          )}
                           <Link
                             href={`/admin/NewsManager/preview?slug=${article.slug}`}
                             className={styles.actionButton}
@@ -482,13 +504,15 @@ const NewsManager = () => {
                           >
                             <MdOpenInNew size={14} />
                           </Link>
-                          <button
-                            className={`${styles.actionButton} ${styles.deleteButton}`}
-                            onClick={() => handleDelete(article.id)}
-                            title="刪除"
-                          >
-                            <FiTrash2 size={14} />
-                          </button>
+                          {!isItemReadOnly(article) && (
+                            <button
+                              className={`${styles.actionButton} ${styles.deleteButton}`}
+                              onClick={() => handleDelete(article.id)}
+                              title="刪除"
+                            >
+                              <FiTrash2 size={14} />
+                            </button>
+                          )}
                         </div>
                       </div>
                     </div>

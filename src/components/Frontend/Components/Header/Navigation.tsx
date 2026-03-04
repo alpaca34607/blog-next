@@ -3,17 +3,15 @@
 import { useState } from "react";
 import { useLocale } from "next-intl";
 import { Link } from "@/navigation";
+import { useDemoHref } from "@/hooks/useDemoHref";
 import FlipButton from "../FlipButton";
 import styles from "./Navigation.module.scss";
 import { FiChevronDown } from "react-icons/fi";
 import type { NavigationItem, Product } from "@/types/navigation";
 
 interface NavigationProps {
-  /** 導航項目列表 */
   navItems: NavigationItem[];
-  /** 產品列表 */
   products: Product[];
-  /** 是否為移動端模式 */
   isMobile?: boolean;
 }
 
@@ -23,9 +21,24 @@ const Navigation = ({
   isMobile = false,
 }: NavigationProps) => {
   const locale = useLocale();
+  const appendDemoUuid = useDemoHref();
   // 依當前語系取得顯示標題
   const getTitle = (item: NavigationItem) =>
     locale === "en" && item.titleEn ? item.titleEn : item.title;
+  const getProductTitle = (item: Product) =>
+    locale === "en" && item.titleEn ? item.titleEn : item.title;
+ 
+
+  const getCategoryLabel = (item: NavigationItem) => {
+    const categoryKey = item.productCategory || item.title;
+    if (locale !== "en") return categoryKey;
+
+    const categoryEn = products.find(
+      (p) => (p.category?.trim() || "") === categoryKey
+    )?.categoryEn;
+
+    return categoryEn || item.titleEn || item.title;
+  };
 
   // 移動端：追蹤哪些項目是展開的
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -65,14 +78,14 @@ const Navigation = ({
     });
 
   Object.values(childrenByParent).forEach((list) =>
-    list.sort((a, b) => a.sortOrder - b.sortOrder)
+    list.sort((a, b) => a.sortOrder - b.sortOrder),
   );
 
-  const buildHref = (item: NavigationItem): string => {
+  // 外部連結直接回傳，站內路徑不附加 UUID（已經在初次以DEMO模式載入中添加過）
+  // FlipButton 已內建呼叫 appendDemoUuid，普通 Link 則在使用時明確呼叫
+  const buildRawPath = (item: NavigationItem): string => {
     if (item.type === "external" && item.url) return item.url;
-
-    if (item.slug) return `/${item.slug}`;
-    return "#";
+    return item.slug ? `/${item.slug}` : "#";
   };
 
   return (
@@ -89,7 +102,7 @@ const Navigation = ({
               {!isMobile && (
                 <FlipButton
                   text={getTitle(parent)}
-                  href={buildHref(parent)}
+                  href={buildRawPath(parent)}
                   as="Link"
                 />
               )}
@@ -118,7 +131,7 @@ const Navigation = ({
                     </button>
                   ) : (
                     <Link
-                      href={buildHref(parent)}
+                      href={appendDemoUuid(buildRawPath(parent))}
                       className={styles.mobileNavLink}
                     >
                       {getTitle(parent)}
@@ -155,36 +168,37 @@ const Navigation = ({
                       return (
                         <li key={child.id}>
                           {isMobile && hasProductSubmenu ? (
-                              <button
-                                type="button"
-                                className={styles.mobileNavItem}
-                                onClick={() => toggleExpand(child.id)}
-                                aria-expanded={isChildExpanded}
-                                aria-label={
-                                  isChildExpanded ? "收合選單" : "展開選單"
-                                }
-                              >
-                                <div
-                                className={styles.mobileSubmenuLink}
-                              >
-                                {getTitle(child)}
+                            <button
+                              type="button"
+                              className={styles.mobileNavItem}
+                              onClick={() => toggleExpand(child.id)}
+                              aria-expanded={isChildExpanded}
+                              aria-label={
+                                isChildExpanded ? "收合選單" : "展開選單"
+                              }
+                            >
+                              <div className={styles.mobileSubmenuLink}>
+                                {getCategoryLabel(child)}
                               </div>
-                                <span
-                                  className={`${styles.expandIcon}
+                              <span
+                                className={`${styles.expandIcon}
 
                               ${isChildExpanded ? styles.expanded : ""}
 
                               `}
-                                >
-                                  <FiChevronDown
-                                    fontSize={16}
-                                    color={"#666666"}
-                                  />
-                                </span>
-                              </button>
-                           
+                              >
+                                <FiChevronDown
+                                  fontSize={16}
+                                  color={"#666666"}
+                                />
+                              </span>
+                            </button>
                           ) : (
-                            <Link href={buildHref(child)}>{getTitle(child)}</Link>
+                            <Link href={appendDemoUuid(buildRawPath(child))}>
+                              {hasProductSubmenu
+                                ? getCategoryLabel(child)
+                                : getTitle(child)}
+                            </Link>
                           )}
                           {hasProductSubmenu && (
                             <div
@@ -199,8 +213,8 @@ const Navigation = ({
                               <ul>
                                 {childProducts.map((product) => (
                                   <li key={product.id}>
-                                    <Link href={`/${product.slug}`}>
-                                      {product.title}
+                                    <Link href={appendDemoUuid(`/${product.slug}`)}>
+                                      {getProductTitle(product)}
                                     </Link>
                                   </li>
                                 ))}

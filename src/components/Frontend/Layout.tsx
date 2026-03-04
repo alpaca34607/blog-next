@@ -5,6 +5,7 @@ import Loading from "./HomePage/homeSection/Loading";
 import GoTopButton from "./Components/GoTopButton";
 import styles from "./Layout.module.scss";
 import Footer from "./Components/Footer";
+import { useAppLoading } from "@/contexts/AppLoadingContext";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -16,6 +17,7 @@ const Layout = ({ children }: LayoutProps) => {
     typeof window !== "undefined" ? window.innerHeight : 1080,
   ]);
   const [isLoading, setIsLoading] = useState(true);
+  const { pendingCount } = useAppLoading();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -66,14 +68,18 @@ const Layout = ({ children }: LayoutProps) => {
     };
   }, [isLoading]);
 
+  const isDataReady = pendingCount === 0;
+
   return (
     <div className={styles.layoutContainer}>
-      {isLoading && <Loading onLoadingComplete={handleLoadingComplete} />}
-      <div
-        className={styles.contentWrapper}
-        style={{ opacity: isLoading ? 0 : 1 }}
-      >
-        {!isLoading && <Header />}
+      {isLoading && (
+        <Loading
+          isDone={isDataReady}
+          onLoadingComplete={handleLoadingComplete}
+        />
+      )}
+      <div className={styles.contentWrapper}>
+        <Header />
         {children}
         <Footer />
       </div>

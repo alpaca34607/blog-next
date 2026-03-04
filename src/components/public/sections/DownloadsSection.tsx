@@ -4,11 +4,14 @@ import { FiDownload, FiFileText, FiCalendar } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import TabBar, { TabItem } from "@/components/public/TabBar";
 import styles from "./DownloadsSection.module.scss";
+import { useLocale } from "next-intl";
 
 interface DownloadsSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -20,7 +23,9 @@ interface DownloadsSectionProps {
 interface DownloadItem {
   id?: string;
   title: string;
+  titleEn?: string;
   category?: string;
+  categoryEn?: string;
   publishDate?: string;
   fileSize?: string;
   fileUrl?: string;
@@ -29,6 +34,10 @@ interface DownloadItem {
 }
 
 const DownloadsSection = ({ section }: DownloadsSectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -54,14 +63,22 @@ const DownloadsSection = ({ section }: DownloadsSectionProps) => {
   // 當前選中的 category，null 表示顯示全部
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // 依「中文分類」找出對應的英文標籤
+  const getEnLabel = (zhCategory: string): string => {
+    if (!isEn) return zhCategory;
+    const matched = downloads.find((item) => item.category === zhCategory);
+    return matched?.categoryEn || zhCategory;
+  };
   // 建立 Tab 項目
   const tabItems: TabItem[] = useMemo(() => {
-    const tabs: TabItem[] = [{ id: "all", label: "全部", value: null }];
+    const tabs: TabItem[] = [
+      { id: "all", label: isEn ? "All" : "全部", value: null },
+    ];
     categories.forEach((category) => {
-      tabs.push({ id: category, label: category, value: category });
+      tabs.push({ id: category, label: getEnLabel(category), value: category });
     });
     return tabs;
-  }, [categories]);
+  }, [categories, isEn, downloads]);
 
   // 根據選中的 category 篩選下載項目
   const filteredDownloads = useMemo(() => {
@@ -95,11 +112,11 @@ const DownloadsSection = ({ section }: DownloadsSectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && (
+        {title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
@@ -125,11 +142,11 @@ const DownloadsSection = ({ section }: DownloadsSectionProps) => {
                       <FiFileText size={24} className={styles.icon} />
                     </div>
                     <div className={styles.downloadDetails}>
-                      <h4 className={styles.downloadTitle}>{download.title}</h4>
+                      <h4 className={styles.downloadTitle}>{isEn ? download.titleEn || download.title : download.title}</h4>
                       <div className={styles.downloadMeta}>
                         {download.category && (
                           <span className={styles.metaItem}>
-                            {download.category}
+                            {isEn ? download.categoryEn || download.category : download.category}
                           </span>
                         )}
                         {download.publishDate && (
@@ -172,7 +189,7 @@ const DownloadsSection = ({ section }: DownloadsSectionProps) => {
                       }}
                     >
                       <FiDownload size={16} />
-                      <span>下載</span>
+                      <span>{isEn ? "Download" : "下載"}</span>
                     </a>
                   )}
                 </div>

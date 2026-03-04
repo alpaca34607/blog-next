@@ -9,6 +9,8 @@ import Link from "next/link";
 import Image from "next/image";
 import styles from "./NewsPreview.module.scss";
 import { API_GetNewsAdmin } from "@/app/api/admin_api";
+import { useDemoMode } from "@/hooks/useDemoMode";
+import { getDemoId } from "@/utils/common";
 
 interface NewsArticle {
   id: string;
@@ -33,8 +35,11 @@ const NewsPreview = () => {
   const [news, setNews] = useState<NewsArticle[]>([]);
   const [isClient, setIsClient] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { isDemoMode } = useDemoMode();
+  const [demoId, setDemoId] = useState<string | undefined>(undefined);
+  useEffect(() => { setDemoId(getDemoId()); }, []);
 
-  // 在客戶端載入 API 資料（避免依賴 localStorage）
+  // 在客戶端載入 API 資料
   useEffect(() => {
     setIsClient(true);
 
@@ -58,6 +63,7 @@ const NewsPreview = () => {
               publishDate: n.publishDate ?? null,
               isPublished: !!n.isPublished,
               isFeatured: !!n.isFeatured,
+              demoWorkspaceId: n.demoWorkspaceId ?? null,
             }))
           );
         } else {
@@ -183,8 +189,13 @@ const NewsPreview = () => {
           <FiArrowLeft size={20} /> <span>返回新聞管理</span>
         </Link>
         <div className={styles.headerActions}>
+
           <Link
-            href={`/zh/news/${article.slug}`}
+            href={
+              isDemoMode && demoId
+                ? `/zh/news/${article.slug}?UUID=${demoId}`
+                : `/zh/news/${article.slug}`
+            }
             target="_blank"
             className={styles.previewButton}
           >

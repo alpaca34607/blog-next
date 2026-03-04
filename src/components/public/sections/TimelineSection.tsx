@@ -6,6 +6,7 @@ import {
   API_GetTimelineByIdPublic,
   API_GetTimelineItemsPublic,
 } from "@/app/api/public_api";
+import { useAppLoading } from "@/contexts/AppLoadingContext";
 
 interface Timeline {
   id: string;
@@ -40,6 +41,7 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
   const [timeline, setTimeline] = useState<Timeline | null>(null);
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [isClient, setIsClient] = useState(false);
+  const { startTask, endTask } = useAppLoading();
 
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
@@ -54,44 +56,49 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
     if (!timelineId) return;
 
     const load = async () => {
-      const [timelineRes, itemsRes] = await Promise.all([
-        API_GetTimelineByIdPublic(timelineId),
-        API_GetTimelineItemsPublic(timelineId),
-      ]);
+      startTask();
+      try {
+        const [timelineRes, itemsRes] = await Promise.all([
+          API_GetTimelineByIdPublic(timelineId),
+          API_GetTimelineItemsPublic(timelineId),
+        ]);
 
-      if (timelineRes?.success && timelineRes.data) {
-        setTimeline({
-          id: (timelineRes.data as any).id,
-          name: (timelineRes.data as any).name,
-          description: (timelineRes.data as any).description || undefined,
-        });
-      } else {
+        if (timelineRes?.success && timelineRes.data) {
+          setTimeline({
+            id: (timelineRes.data as any).id,
+            name: (timelineRes.data as any).name,
+            description: (timelineRes.data as any).description || undefined,
+          });
+        } else {
+          setTimeline(null);
+        }
+
+        if (itemsRes?.success && Array.isArray(itemsRes.data)) {
+          const mapped: TimelineItem[] = (itemsRes.data as any[]).map(
+            (it: any) => ({
+              id: it.id,
+              timelineId,
+              year: it.year || "",
+              title: it.title,
+              description: it.content || undefined,
+              image: it.image || undefined,
+              sortOrder: it.sortOrder ?? 0,
+            })
+          );
+          setItems(mapped.sort((a, b) => a.sortOrder - b.sortOrder));
+        } else {
+          setItems([]);
+        }
+      } catch (e) {
+        console.error("載入時間軸資料時發生錯誤:", e);
         setTimeline(null);
-      }
-
-      if (itemsRes?.success && Array.isArray(itemsRes.data)) {
-        const mapped: TimelineItem[] = (itemsRes.data as any[]).map(
-          (it: any) => ({
-            id: it.id,
-            timelineId,
-            year: it.year || "",
-            title: it.title,
-            description: it.content || undefined,
-            image: it.image || undefined,
-            sortOrder: it.sortOrder ?? 0,
-          })
-        );
-        setItems(mapped.sort((a, b) => a.sortOrder - b.sortOrder));
-      } else {
         setItems([]);
+      } finally {
+        endTask();
       }
     };
 
-    load().catch((e) => {
-      console.error("載入時間軸資料時發生錯誤:", e);
-      setTimeline(null);
-      setItems([]);
-    });
+    load();
   }, [section.settings?.timelineId]);
 
   useEffect(() => {

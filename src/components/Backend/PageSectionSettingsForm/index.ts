@@ -10,3 +10,6 @@ export type { BgSettings } from "./BgSettingsForm";
 
 export { default as HeroSectionForm } from "./HeroSectionForm";
 export type { HeroSectionFormValue } from "./HeroSectionForm";
+
+export { default as ButtonSettingsForm } from "./ButtonSettingsForm";
+export type { ButtonSettings } from "./ButtonSettingsForm";

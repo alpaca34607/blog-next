@@ -37,6 +37,7 @@ import {
   API_GetPageSectionsAdmin,
   API_UpdatePageSectionsAdmin,
 } from "@/app/api/admin_api";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface Section {
   id: string;
@@ -79,6 +80,7 @@ interface SortableSectionCardProps {
   getSectionTypeLabel: (type: string) => string;
   onEdit: (section: Section) => void;
   onDelete: (id: string) => void;
+  readOnly?: boolean;
 }
 
 const SortableSectionCard = ({
@@ -86,6 +88,7 @@ const SortableSectionCard = ({
   getSectionTypeLabel,
   onEdit,
   onDelete,
+  readOnly = false,
 }: SortableSectionCardProps) => {
   const {
     attributes,
@@ -94,7 +97,7 @@ const SortableSectionCard = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: section.id });
+  } = useSortable({ id: section.id, disabled: readOnly });
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -110,11 +113,10 @@ const SortableSectionCard = ({
     >
       <div
         className={styles.dragHandle}
-        {...attributes}
-        {...listeners}
-        // 拖曳提示：僅在拖曳手把上綁定事件，避免誤觸
+        title={readOnly ? "正式資料不可拖曳" : "拖曳排序"}
+        {...(!readOnly ? { ...attributes, ...listeners } : {})}
       >
-        <MdDragHandle size={20} />
+        <MdDragHandle size={20} style={readOnly ? { opacity: 0.3, cursor: "not-allowed" } : {}} />
       </div>
 
       <div className={styles.sectionIcon}>
@@ -146,15 +148,21 @@ const SortableSectionCard = ({
         ) : (
           <FiEyeOff size={18} className={styles.eyeOffIcon} />
         )}
-        <button className={styles.actionButton} onClick={() => onEdit(section)}>
-          <FiEdit size={16} />
-        </button>
-        <button
-          className={`${styles.actionButton} ${styles.deleteButton}`}
-          onClick={() => onDelete(section.id)}
-        >
-          <FiTrash2 size={16} />
-        </button>
+        {readOnly ? (
+          <span className={styles.readOnlyHint}>僅供檢視</span>
+        ) : (
+          <>
+            <button className={styles.actionButton} onClick={() => onEdit(section)}>
+              <FiEdit size={16} />
+            </button>
+            <button
+              className={`${styles.actionButton} ${styles.deleteButton}`}
+              onClick={() => onDelete(section.id)}
+            >
+              <FiTrash2 size={16} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -168,6 +176,9 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
   const [currentItem, setCurrentItem] = useState<Product | null>(null);
   const [isProduct, setIsProduct] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  // demo 訪客檢視正式資料時為唯讀（不可編輯、新增、刪除、拖曳）
+  const { isItemReadOnly } = useDemoMode();
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor, {
@@ -240,9 +251,12 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
             title: string;
             slug: string;
             type?: "page" | "product";
+            demoWorkspaceId?: string;
           };
           setCurrentItem({ id: item.id, title: item.title, slug: item.slug });
           setIsProduct(item.type === "product");
+          // demo 訪客瀏覽正式資料（demoWorkspaceId === ""）時鎖定為唯讀
+          setIsReadOnly(isItemReadOnly(item));
         } else {
           setCurrentItem(null);
           setIsProduct(false);
@@ -257,7 +271,7 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
     loadCurrentItem();
   }, [isClient, pageId]);
 
-  // 儲存區塊資料到 API（避免依賴 localStorage）
+  // 儲存區塊資料到 API
   const saveSections = async (newSections: Section[]) => {
     if (typeof window === "undefined") return;
 
@@ -273,7 +287,7 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
       const jsonString = JSON.stringify(compressedSections);
       const sizeInMB = new Blob([jsonString]).size / 1024 / 1024;
 
-      // 檢查大小（localStorage 通常限制約 5-10MB）
+      // 檢查大小
       if (sizeInMB > 4.5) {
         alert(
           `警告：資料大小為 ${sizeInMB.toFixed(
@@ -288,8 +302,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
           id: s.id,
           sectionType: s.sectionType,
           title: s.title ?? undefined,
+          titleEn: s.titleEn ?? undefined,
           subtitle: s.subtitle ?? undefined,
+          subtitleEn: s.subtitleEn ?? undefined,
           content: s.content ?? undefined,
+          contentEn: s.contentEn ?? undefined,
           sortOrder: typeof s.sortOrder === "number" ? s.sortOrder : idx,
           settings: s.settings || {},
         };
@@ -351,8 +368,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
               ...section,
               sectionType: (formData as any).sectionType || section.sectionType,
               title: formData.title ?? section.title,
+              titleEn: (formData as any).titleEn ?? (section as any).titleEn,
               subtitle: formData.subtitle ?? section.subtitle,
+              subtitleEn: (formData as any).subtitleEn ?? (section as any).subtitleEn,
               content: formData.content ?? section.content,
+              contentEn: (formData as any).contentEn ?? (section as any).contentEn,
               settings: settings,
             };
 
@@ -378,8 +398,11 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
           id: Date.now().toString(),
           sectionType: (formData as any).sectionType || "content_block",
           title: formData.title || "",
+          titleEn: (formData as any).titleEn,
           subtitle: formData.subtitle,
+          subtitleEn: (formData as any).subtitleEn,
           content: formData.content,
+          contentEn: (formData as any).contentEn,
           sortOrder: sections.length,
           settings: settings,
         };
@@ -411,6 +434,7 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    if (isReadOnly) return;
     const { active, over } = event;
 
     if (!over || active.id === over.id) return;
@@ -476,15 +500,19 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
           <h1 className={adminStyles.title}>
             {currentItem?.title || "頁面"} - 區塊編輯
           </h1>
-          <p className={adminStyles.subtitle}>拖放排序區塊，點擊編輯內容</p>
+          <p className={adminStyles.subtitle}>
+            {isReadOnly ? "正式資料，僅供檢視" : "拖放排序區塊，點擊編輯內容"}
+          </p>
         </div>
-        <button
-          className={adminStyles.addButton}
-          onClick={() => handleOpenModal(null)}
-        >
-          <FiPlus size={20} />
-          <span>新增區塊</span>
-        </button>
+        {!isReadOnly && (
+          <button
+            className={adminStyles.addButton}
+            onClick={() => handleOpenModal(null)}
+          >
+            <FiPlus size={20} />
+            <span>新增區塊</span>
+          </button>
+        )}
       </div>
 
       {/* Sections List */}
@@ -519,6 +547,7 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
                       getSectionTypeLabel={getSectionTypeLabel}
                       onEdit={handleOpenModal}
                       onDelete={handleDelete}
+                      readOnly={isReadOnly}
                     />
                   ))}
               </div>

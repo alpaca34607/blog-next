@@ -4,17 +4,22 @@ import { FiArrowRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./CTASection.module.scss";
 import { accentOrange } from "@/styles/theme";
+import { isRichTextEmpty } from "@/utils/common";
+import { useLocale } from "next-intl";
 
 interface CTASectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
-    content?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
       ctaContent?: string;
+      ctaContentEn?: string;
       buttonText?: string;
+      buttonTextEn?: string;
       buttonLink?: string;
       buttonColor?: string;
       buttonTextColor?: string;
@@ -23,6 +28,19 @@ interface CTASectionProps {
 }
 
 const CTASection = ({ section }: CTASectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
+  const ctaContent =
+    (isEn ? section.settings?.ctaContentEn : section.settings?.ctaContent) ||
+    section.settings?.ctaContent;
+  const buttonText =
+    (isEn ? section.settings?.buttonTextEn : section.settings?.buttonText) ||
+    section.settings?.buttonText ||
+    "前往瞭解";
+  const buttonLink = section.settings?.buttonLink || "";
+
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -31,19 +49,15 @@ const CTASection = ({ section }: CTASectionProps) => {
       defaultBgColor: accentOrange,
     });
 
-  const buttonText = section.settings?.buttonText || "前往瞭解";
-  const buttonLink = section.settings?.buttonLink || "";
-  const buttonColor = section.settings?.buttonColor || "#273840";
+  const buttonColor = section.settings?.buttonColor || "#faad3a";
   const buttonTextColor = section.settings?.buttonTextColor || "#ffffff";
 
   // CTA 區塊應該總是顯示按鈕（只要有標題或副標題）
   // 或者如果有 content 或 settings 中有按鈕設定，則顯示按鈕
   const shouldShowButton =
-    section.title ||
-    section.subtitle ||
-    section.content ||
-    section.settings?.buttonText ||
-    section.settings?.buttonLink;
+    (ctaContent && !isRichTextEmpty(ctaContent)) ||
+    buttonText ||
+    buttonLink;
 
   return (
     <section
@@ -53,14 +67,12 @@ const CTASection = ({ section }: CTASectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && <h2 className={styles.title}> {section.title}</h2>}
-        {section.subtitle && (
-          <p className={styles.subtitle}> {section.subtitle}</p>
-        )}
-        {section.settings?.ctaContent && (
+        {title && <h2 className={styles.title}>{title}</h2>}
+        {subtitle && <p className={styles.subtitle}> {subtitle}</p>}
+        {ctaContent && !isRichTextEmpty(ctaContent) && (
           <div
             className={styles.ctaContent}
-            dangerouslySetInnerHTML={{ __html: section.settings.ctaContent }}
+            dangerouslySetInnerHTML={{ __html: ctaContent }}
           />
         )}
         {shouldShowButton && (

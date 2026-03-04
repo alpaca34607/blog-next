@@ -1,7 +1,54 @@
 {
   "common": {
     "loading": "內容載入中…",
-    "notFound": "此頁面不存在或尚未發布"
+    "notFound": "此頁面不存在或尚未發布",
+    "close": "關閉"
+  },
+  "homePage": {
+    "heroTitle": "Built For",
+    "heroTitleEm": "Your Brand Story!",
+    "herotitleEn": "Simple · Clean · Ready-to-Launch",
+    "heroSubtitle": "輕鬆打造專屬於您的形象網頁",
+    "heroButton": "立即諮詢",
+    "marqueeItem1": "模板快速上線 · 版面一致好維護",
+    "marqueeItem2": "後台輕鬆管理 · 內容更新像寫部落格",
+    "introSpec1": "雲端後台，一站式管理",
+    "introSpec2": "模板套用，快速上線",
+    "introSpec3": "文章與頁面，輕鬆編輯",
+    "introTitle": "輕鬆經營品牌內容",
+    "introSubtitle": "專為客戶打造部落格式形象網頁",
+    "introSubtitle2": "直觀操作，長期更新的好選擇",
+    "introSubtitle3": "圖文說明、文章列表、產品展示皆可快速建立",
+    "introSubtitle4": "更新內容不必改程式，管理介面直覺便利",
+    "introButton": "關於我們",
+    "introPageTitle": "About Us",
+    "contactTitle": "現在就開始打造",
+    "contactTitleEm": "部落格式形象網頁",
+    "contactDesc": "用模板快速上線，後台輕鬆新增頁面與文章；簡約版面保持一致，維護便利、更新不費力，讓你的品牌內容持續累積、越寫越完整。",
+    "contactBtn": "CONTACT US",
+    "serviceTitle": "SERVICES",
+    "serviceByline": "for Blog-style Brand Sites",
+    "serviceDescription": "以部落格式架構為核心，提供簡約模板與模組化區塊；從內容發佈、分類到版面維護，都能在後台輕鬆完成，讓網站更新變成日常。",
+    "serviceLink": "查看我們的服務",
+    "learnMore": "深入了解",
+    "newsTitle": "NEWS",
+    "newsSubtitle": "最新消息",
+    "newsViewMore": "View More",
+    "newsMoreContent": "查看更多內容",
+    "partnerTitle": "合作品牌",
+    "successCasesTitle": "上線案例"
+  },
+  "footer": {
+    "socialLinks": "社群連結",
+    "services": "服務項目",
+    "navigation": "關於我們",
+    "newsList": "最新消息",
+    "copyright": "本網站僅作為演示非真實商家 Copyright © 2026 Blogcraft Co., Ltd. All rights reserved."
+  },
+  "topUtils": {
+    "contact": "聯絡我們",
+    "download": "下載專區",
+    "login": "登入體驗"
   },
   "news": {
     "loading": "載入中...",
@@ -9,5 +56,23 @@
     "relatedArticles": "相關文章",
     "breadcrumbHome": "首頁",
     "breadcrumbNews": "最新消息"
+  },
+  "login": {
+    "loginTitle": "CMS 後台管理系統",
+    "emailLabel": "Email",
+    "emailPlaceholder": "請輸入 Email",
+    "passwordLabel": "密碼",
+    "passwordPlaceholder": "請輸入密碼",
+    "loginButton": "登入",
+    "loginLoading": "登入中...",
+    "loginFailed": "登入失敗，請確認帳號密碼是否正確",
+    "loginNoToken": "登入失敗：伺服器未回傳 token",
+    "loginError": "登入時發生錯誤，請稍後再試",
+    "demoButton": "訪客體驗 Demo",
+    "demoLoading": "啟動中...",
+    "demoInfo": "Demo模式下不需帳號密碼，可觀看本站架構並體驗頁面管理功能，並不影響正式資料。體驗結束一天後，測試資料將會清除。",
+    "demoStartFailed": "無法啟動 DEMO，請稍後再試",
+    "demoNoData": "DEMO 啟動失敗：伺服器未回傳正確資料",
+    "demoError": "DEMO 啟動失敗，請稍後再試"
   }
 }

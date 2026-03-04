@@ -9,11 +9,14 @@ import {
 } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./IconFeaturesSection.module.scss";
+import { useLocale } from "next-intl";
 
 interface IconFeaturesSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -27,7 +30,9 @@ interface FeatureItem {
   icon?: string;
   iconImage?: string;
   title: string;
+  titleEn?: string;
   description?: string;
+  descriptionEn?: string;
 }
 
 // 圖標映射
@@ -43,31 +48,12 @@ const ICON_MAP: Record<
   star: FiStar,
 };
 
-// 預設功能項目
-const DEFAULT_FEATURES: FeatureItem[] = [
-  {
-    icon: "shield",
-    title: "安全可靠",
-    description: "企業級資安防護，保障您的數據安全",
-  },
-  {
-    icon: "zap",
-    title: "高效能",
-    description: "極速處理，提升工作效率",
-  },
-  {
-    icon: "users",
-    title: "專業團隊",
-    description: "經驗豐富的技術支援團隊",
-  },
-  {
-    icon: "award",
-    title: "獲獎肯定",
-    description: "多項國內外技術獎項",
-  },
-];
-
 const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
+  
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -78,9 +64,9 @@ const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
   const variant = section.settings?.templateVariant || "grid-3";
   const hasCustomFeatures =
     section.settings?.features && section.settings.features.length > 0;
-  const features = hasCustomFeatures
-    ? section.settings?.features || DEFAULT_FEATURES
-    : DEFAULT_FEATURES;
+  const features = hasCustomFeatures ? section.settings?.features || [] : [];
+  // Feature項目語言轉換
+
 
   // 根據版型決定 grid class
   const getGridClass = () => {
@@ -108,11 +94,11 @@ const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && (
+        {title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
@@ -133,7 +119,7 @@ const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
                     <div className={styles.iconImageWrapper}>
                       <img
                         src={feature.iconImage}
-                        alt={feature.title}
+                        alt={isEn ? feature.titleEn : feature.title}
                         className={styles.iconImage}
                       />
                     </div>
@@ -142,10 +128,10 @@ const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
                       <IconComponent className={styles.icon} />
                     </div>
                   )}
-                  <h3 className={styles.featureTitle}>{feature.title}</h3>
+                  <h3 className={styles.featureTitle}>{(isEn ? feature.titleEn : feature.title) || feature.title}</h3>
                   {feature.description && (
                     <p className={styles.featureDescription}>
-                      {feature.description}
+                      {(isEn ? feature.descriptionEn : feature.description) || feature.description}
                     </p>
                   )}
                 </div>
@@ -154,7 +140,6 @@ const IconFeaturesSection = ({ section }: IconFeaturesSectionProps) => {
           </div>
         ) : (
           <div className={styles.emptyState}>
-            <p>尚無功能項目，請在後台新增功能項目</p>
           </div>
         )}
       </div>

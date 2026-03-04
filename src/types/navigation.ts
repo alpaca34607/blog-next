@@ -15,7 +15,9 @@ export interface NavigationItem {
 export interface Product {
   id: string;
   title: string;
+  titleEn?: string | null;
   slug: string;
   category?: string | null;
+  categoryEn?: string | null;
   isPublished: boolean;
 }

@@ -33,6 +33,8 @@ import {
   API_UpdateTimelineItem,
   API_DeleteTimelineItem,
 } from "@/app/api/admin_api";
+import Swal from "sweetalert2";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 interface Timeline {
   id: string;
@@ -143,6 +145,20 @@ const TimelineManager = () => {
 
   const [timelines, setTimelines] = useState<Timeline[]>([]);
   const [items, setItems] = useState<TimelineItem[]>([]);
+
+  const { isDemoMode } = useDemoMode();
+
+  const showDemoReadOnlyToast = () => {
+    Swal.fire({
+      toast: true,
+      position: "top-end",
+      icon: "info",
+      title: "此頁面僅供檢視，無法儲存",
+      showConfirmButton: false,
+      timer: 2500,
+      timerProgressBar: true,
+    });
+  };
 
   // 載入時間軸列表
   const loadTimelines = async () => {
@@ -438,6 +454,16 @@ const TimelineManager = () => {
         </div>
       </div>
 
+      <div className={adminStyles.demoReadOnlyOverlayWrap}>
+        {isDemoMode && (
+          <div
+            className={adminStyles.demoReadOnlyOverlay}
+            onClick={showDemoReadOnlyToast}
+            role="button"
+            tabIndex={0}
+            aria-label="此頁面僅供檢視"
+          />
+        )}
       <div className={styles.contentGrid}>
         {/* Timeline List */}
         <div className={styles.timelineList}>
@@ -569,6 +595,7 @@ const TimelineManager = () => {
             </div>
           )}
         </div>
+      </div>
       </div>
 
       {/* Modals */}

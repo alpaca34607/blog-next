@@ -5,18 +5,23 @@ import { getSectionStyle } from "@/utils/sectionStyles";
 // 和ImageTextSection.tsx共用css
 import styles from "./ImageTextSection.module.scss";
 import { isRichTextEmpty } from "@/utils/common";
+import { useLocale } from "next-intl";
 
 interface VideoTextSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     content?: string;
+    contentEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
       templateVariant?: string;
       video?: string;
       buttonText?: string;
+      buttonTextEn?: string;
       buttonLink?: string;
     };
     video?: string; // 支援直接的 video 欄位
@@ -58,6 +63,12 @@ const convertYouTubeUrlToEmbed = (url: string): string => {
 };
 
 const VideoTextSection = ({ section }: VideoTextSectionProps) => {
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
+  const content = (isEn ? section.contentEn : section.content) || section.content;
+  const buttonText = (isEn ? section.settings?.buttonTextEn : section.settings?.buttonText) || section.settings?.buttonText;
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -67,7 +78,6 @@ const VideoTextSection = ({ section }: VideoTextSectionProps) => {
 
   const variant = section.settings?.templateVariant || "left-video";
   const video = section.settings?.video || section.video;
-  const buttonText = section.settings?.buttonText;
   const buttonLink = section.settings?.buttonLink || "#";
 
   const isVertical = variant === "vertical";
@@ -96,9 +106,9 @@ const VideoTextSection = ({ section }: VideoTextSectionProps) => {
     >
       <div className={styles.wrapper}>
         <div className={styles.header}>
-          {section.title && <h2 className={styles.title}>{section.title}</h2>}
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+          {title && <h2 className={styles.title}>{title}</h2>}
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
         </div>
         <div className={`${styles.contentContainer} ${getContainerClass()}`}>
@@ -135,10 +145,10 @@ const VideoTextSection = ({ section }: VideoTextSectionProps) => {
               video ? styles.hasVideo : styles.noVideo
             }`}
           >
-            {section.content && !isRichTextEmpty(section.content) && (
+            {content && !isRichTextEmpty(content) && (
               <div
                 className={styles.content}
-                dangerouslySetInnerHTML={{ __html: section.content }}
+                dangerouslySetInnerHTML={{ __html: content || "" }}
               />
             )}
             {buttonText && (
