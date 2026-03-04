@@ -11,6 +11,7 @@ import MobileMenu from "./Header/MobileMenu";
 import { API_GetNavigationItem, API_GetProducts } from "@/app/api/public_api";
 import type { NavigationItem, Product } from "@/types/navigation";
 import { useDemoUuid } from "@/hooks/useDemoUuid";
+import { useAppLoading } from "@/contexts/AppLoadingContext";
 
 // API 無資料或失敗時的新格式備用資料（不依賴舊格式）
 const fallbackNavItems: NavigationItem[] = [
@@ -105,90 +106,101 @@ const Header = () => {
   const [navItems, setNavItems] = useState<NavigationItem[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { startTask, endTask } = useAppLoading();
 
   useEffect(() => {
     let cancelled = false;
 
     // 載入導覽資料（API）
     const loadNavigation = async () => {
-      const res = await API_GetNavigationItem(demoUuid);
-      if (cancelled) return;
+      startTask();
+      try {
+        const res = await (API_GetNavigationItem as any)(demoUuid);
+        if (cancelled) return;
 
-      if (res?.success) {
-        const items: any[] = Array.isArray(res.data) ? res.data : [];
-        // 後端回傳為「頂層 + children」結構；前台 Navigation 元件使用 parentId 的扁平結構
-        const flattened: NavigationItem[] = [];
-        items.forEach((parent: any) => {
-          flattened.push({
-            id: parent.id,
-            title: parent.title,
-            titleEn: parent.titleEn ?? undefined,
-            slug: parent?.url ? String(parent.url).replace(/^\//, "") : "",
-            parentId: parent.parentId ?? null,
-            sortOrder: parent.sortOrder ?? 0,
-            type: parent.type === "external" ? "external" : "internal",
-            url: parent.url ?? null,
-            isVisible: parent.isVisible !== false,
-            hasChildren: Array.isArray(parent.children)
-              ? parent.children.length > 0
-              : false,
-            productCategory: parent.productCategory ?? undefined,
-          });
-
-          const children: any[] = Array.isArray(parent.children)
-            ? parent.children
-            : [];
-          children.forEach((child: any) => {
+        if (res?.success) {
+          const items: any[] = Array.isArray(res.data) ? res.data : [];
+          // 後端回傳為「頂層 + children」結構；前台 Navigation 元件使用 parentId 的扁平結構
+          const flattened: NavigationItem[] = [];
+          items.forEach((parent: any) => {
             flattened.push({
-              id: child.id,
-              title: child.title,
-              titleEn: child.titleEn ?? undefined,
-              slug: child?.url ? String(child.url).replace(/^\//, "") : "",
-              parentId: child.parentId ?? parent.id ?? null,
-              sortOrder: child.sortOrder ?? 0,
-              type: child.type === "external" ? "external" : "internal",
-              url: child.url ?? null,
-              isVisible: child.isVisible !== false,
-              hasChildren: Array.isArray(child.children)
-                ? child.children.length > 0
+              id: parent.id,
+              title: parent.title,
+              titleEn: parent.titleEn ?? undefined,
+              slug: parent?.url ? String(parent.url).replace(/^\//, "") : "",
+              parentId: parent.parentId ?? null,
+              sortOrder: parent.sortOrder ?? 0,
+              type: parent.type === "external" ? "external" : "internal",
+              url: parent.url ?? null,
+              isVisible: parent.isVisible !== false,
+              hasChildren: Array.isArray(parent.children)
+                ? parent.children.length > 0
                 : false,
-              productCategory: child.productCategory ?? undefined,
+              productCategory: parent.productCategory ?? undefined,
+            });
+
+            const children: any[] = Array.isArray(parent.children)
+              ? parent.children
+              : [];
+            children.forEach((child: any) => {
+              flattened.push({
+                id: child.id,
+                title: child.title,
+                titleEn: child.titleEn ?? undefined,
+                slug: child?.url ? String(child.url).replace(/^\//, "") : "",
+                parentId: child.parentId ?? parent.id ?? null,
+                sortOrder: child.sortOrder ?? 0,
+                type: child.type === "external" ? "external" : "internal",
+                url: child.url ?? null,
+                isVisible: child.isVisible !== false,
+                hasChildren: Array.isArray(child.children)
+                  ? child.children.length > 0
+                  : false,
+                productCategory: child.productCategory ?? undefined,
+              });
             });
           });
-        });
 
-        const visible = flattened.filter((i) => i.isVisible);
-        setNavItems(visible.length > 0 ? visible : fallbackNavItems);
-        return;
+          const visible = flattened.filter((i) => i.isVisible);
+          setNavItems(visible.length > 0 ? visible : fallbackNavItems);
+          return;
+        }
+
+        // API 失敗時不使用舊格式備援資料
+        setNavItems(fallbackNavItems);
+      } finally {
+        endTask();
       }
-
-      // API 失敗時不使用舊格式備援資料
-      setNavItems(fallbackNavItems);
     };
 
     // 載入產品資料（API）
     const loadProducts = async () => {
-      const res = await API_GetProducts(demoUuid);
-      if (cancelled) return;
+      startTask();
+      try {
+        const res = await (API_GetProducts as any)(demoUuid);
+        if (cancelled) return;
 
-      if (res?.success) {
-        const items: any[] = Array.isArray(res.data) ? res.data : [];
-        const mapped: Product[] = items.map((p: any) => ({
-          id: p.id,
-          title: p.title,
-          titleEn: p.titleEn ?? null,
-          slug: p.slug,
-          category: p.category ?? null,
-          categoryEn: p.categoryEn ?? null,
-          isPublished: !!p.isPublished,
-        }));
-        const published = mapped.filter((p) => p.isPublished);
-        setProducts(published.length > 0 ? published : fallbackProducts);
-        return;
+        if (res?.success) {
+          const items: any[] = Array.isArray(res.data) ? res.data : [];
+          const mapped: Product[] = items.map((p: any) => ({
+            id: p.id,
+            title: p.title,
+            titleEn: p.titleEn ?? null,
+            slug: p.slug,
+            category: p.category ?? null,
+            categoryEn: p.categoryEn ?? null,
+            isPublished: !!p.isPublished,
+          }));
+          const published = mapped.filter((p) => p.isPublished);
+          setProducts(published.length > 0 ? published : fallbackProducts);
+          return;
+        }
+
+        // API 失敗時不使用舊格式備援資料
+        setProducts(fallbackProducts);
+      } finally {
+        endTask();
       }
-
-      // API 失敗時不使用舊格式備援資料
-      setProducts(fallbackProducts);
     };
 
     loadNavigation();
