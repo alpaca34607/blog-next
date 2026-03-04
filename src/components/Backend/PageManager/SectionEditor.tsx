@@ -43,8 +43,11 @@ interface Section {
   id: string;
   sectionType: string;
   title?: string;
+  titleEn?: string;
   subtitle?: string;
+  subtitleEn?: string;
   content?: string;
+  contentEn?: string;
   sortOrder: number;
   settings?: SectionSettings & Record<string, any>;
 }
