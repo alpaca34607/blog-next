@@ -11,8 +11,12 @@ export async function generateMetadata({
 
   try {
     const [page, siteSettings] = await Promise.all([
-      prisma.page.findUnique({
-        where: { slug },
+      prisma.page.findFirst({
+        where: {
+          slug,
+          // 僅取正式資料的頁面作為 SEO metadata
+          demoWorkspaceId: "",
+        },
         select: {
           title: true,
           metaTitle: true,
