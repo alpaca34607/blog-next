@@ -378,7 +378,9 @@ const SectionModal = ({
           {
             iconImage: "",
             title: "",
+            titleEn: "",
             description: "",
+            descriptionEn: "",
           },
         ],
       },
@@ -400,7 +402,7 @@ const SectionModal = ({
 
   const updateFeatureItem = (
     index: number,
-    field: "icon" | "iconImage" | "title" | "description",
+    field: "icon" | "iconImage" | "title" | "titleEn" | "description"| "descriptionEn",
     value: string,
   ) => {
     // 使用 functional setState，避免同一事件內連續更新導致狀態被舊資料覆蓋
@@ -425,7 +427,7 @@ const SectionModal = ({
   const updateFeatureItemBatch = (
     index: number,
     updates: Partial<
-      Record<"icon" | "iconImage" | "title" | "description", string>
+      Record<"icon" | "iconImage" | "title" | "titleEn" | "description"| "descriptionEn", string>
     >,
   ) => {
     setFormData((prev) => {
@@ -457,7 +459,9 @@ const SectionModal = ({
           ...specs,
           {
             name: "",
+            nameEn: "",
             value: "",
+            valueEn: "",
           },
         ],
       },
@@ -479,7 +483,7 @@ const SectionModal = ({
 
   const updateSpecItem = (
     index: number,
-    field: "name" | "value",
+    field: "name" | "nameEn" | "value" | "valueEn",
     value: string,
   ) => {
     const specs = [...(formData.settings?.specs || [])];
@@ -957,6 +961,7 @@ const SectionModal = ({
                         上傳自定義圖片後，將優先顯示自定義圖片而非預設圖標
                       </p>
                     </div>
+                    <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>標題</label>
                       <input
@@ -967,6 +972,18 @@ const SectionModal = ({
                           updateFeatureItem(index, "title", e.target.value)
                         }
                         placeholder="功能標題"
+                      />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>標題（英文）</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={feature.titleEn || ""}
+                        onChange={(e) =>
+                          updateFeatureItem(index, "titleEn", e.target.value)
+                        }
+                        placeholder="功能標題（英文）"
                       />
                     </div>
                     <div className={styles.formGroup}>
@@ -984,6 +1001,23 @@ const SectionModal = ({
                         placeholder="功能說明"
                         rows={2}
                       />
+                    </div>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>說明（英文）</label>
+                      <textarea
+                        className={styles.textarea}
+                        value={feature.descriptionEn || ""}
+                        onChange={(e) =>  
+                          updateFeatureItem(
+                            index,
+                            "descriptionEn",
+                            e.target.value,
+                          )
+                        }
+                        placeholder="功能說明（英文）"
+                        rows={2}
+                      />
+                    </div>
                     </div>
                   </div>
                 ),
@@ -1526,6 +1560,33 @@ const SectionModal = ({
                             />
                           </div>
                           <div className={styles.formGroup}>
+                            <label className={styles.label}>分類（英文）</label>
+                            <input
+                              type="text"
+                              className={styles.input}
+                              value={card.categoryEn || ""}
+                              onChange={(e) => {
+                                const cards = [
+                                  ...(formData.settings?.cards || []),
+                                ];
+
+                                cards[index] = {
+                                  ...cards[index],
+                                  categoryEn: e.target.value,
+                                };
+
+                                setFormData({
+                                  ...formData,
+                                  settings: {
+                                    ...formData.settings,
+                                    cards,
+                                  },
+                                });
+                              }}
+                              placeholder="例如：媒體報導"
+                            />
+                          </div>
+                          <div className={styles.formGroup}>
                             <label className={styles.label}>發布日期</label>
                             <input
                               type="date"
@@ -1659,6 +1720,7 @@ const SectionModal = ({
                               excerpt: "",
                               excerptEn: "",
                               category: "",
+                              categoryEn: "",
                               publishDate: "",
                               featuredImage: "",
                               link: "",
@@ -1898,6 +1960,8 @@ const SectionModal = ({
                         <FiTrash2 size={16} />
                       </button>
                     </div>
+                  
+                    <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
                       <label className={styles.label}>標題</label>
                       <input
@@ -1925,7 +1989,33 @@ const SectionModal = ({
                         placeholder="下載項目標題"
                       />
                     </div>
-                    <div className={styles.formGrid}>
+                    <div className={styles.formGroup}>
+                      <label className={styles.label}>標題（英文）</label>
+                      <input
+                        type="text"
+                        className={styles.input}
+                        value={download.titleEn || ""}
+                        onChange={(e) => {
+                          const downloads = [
+                            ...(formData.settings?.downloads || []),
+                          ];
+
+                          downloads[index] = {
+                            ...downloads[index],
+                            titleEn: e.target.value,
+                          };
+
+                          setFormData({
+                            ...formData,
+                            settings: {
+                              ...formData.settings,
+                              downloads,
+                            },
+                          });
+                        }}
+                        placeholder="下載項目標題"
+                      />
+                    </div>
                       <div className={styles.formGroup}>
                         <label className={styles.label}>分類</label>
                         <input
@@ -1940,6 +2030,33 @@ const SectionModal = ({
                             downloads[index] = {
                               ...downloads[index],
                               category: e.target.value,
+                            };
+
+                            setFormData({
+                              ...formData,
+                              settings: {
+                                ...formData.settings,
+                                downloads,
+                              },
+                            });
+                          }}
+                          placeholder="例如：產品手冊"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>分類（英文）</label>
+                        <input
+                          type="text"
+                          className={styles.input}
+                          value={download.categoryEn || ""}
+                          onChange={(e) => {
+                            const downloads = [
+                              ...(formData.settings?.downloads || []),
+                            ];
+
+                            downloads[index] = {
+                              ...downloads[index],
+                              categoryEn: e.target.value,
                             };
 
                             setFormData({
@@ -2167,7 +2284,9 @@ const SectionModal = ({
                         ...downloads,
                         {
                           title: "",
+                          titleEn: "",
                           category: "",
+                          categoryEn: "",
                           publishDate: "",
                           fileSize: "",
                           fileUrl: "",
@@ -2285,12 +2404,36 @@ const SectionModal = ({
                         />
                       </div>
                       <div className={styles.formGroup}>
+                        <label className={styles.label}>規格名稱（英文）</label>
+                        <input
+                          type="text"
+                          className={styles.input}
+                          value={spec.nameEn || ""}
+                          onChange={(e) =>
+                            updateSpecItem(index, "nameEn", e.target.value)
+                          }
+                          placeholder="例如：GPU"
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
                         <label className={styles.label}>規格值</label>
                         <textarea
                           className={styles.textarea}
                           value={spec.value || ""}
                           onChange={(e) =>
                             updateSpecItem(index, "value", e.target.value)
+                          }
+                          placeholder="例如：NVIDIA RTX 4090"
+                          rows={3}
+                        />
+                      </div>
+                      <div className={styles.formGroup}>
+                        <label className={styles.label}>規格值（英文）</label>
+                        <textarea
+                          className={styles.textarea}
+                          value={spec.valueEn || ""}
+                          onChange={(e) =>
+                            updateSpecItem(index, "valueEn", e.target.value)
                           }
                           placeholder="例如：NVIDIA RTX 4090"
                           rows={3}

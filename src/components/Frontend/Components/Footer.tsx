@@ -98,7 +98,7 @@ const Footer = () => {
     // 從 API 獲取導覽資料
     const fetchNavigationItem = async () => {
       try {
-        const response = await API_GetNavigationItem(demoUuid);
+        const response = await (API_GetNavigationItem as any)(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -150,7 +150,7 @@ const Footer = () => {
     // 從 API 獲取產品資料
     const fetchProducts = async () => {
       try {
-        const response = await API_GetProducts(demoUuid);
+        const response = await (API_GetProducts as any)(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data
@@ -196,7 +196,7 @@ const Footer = () => {
     // 從 API 獲取新聞資料
     const fetchNews = async () => {
       try {
-        const response = await API_GetNews(demoUuid);
+        const response = await (API_GetNews as any)(demoUuid);
         if (response?.success) {
           const items: any[] = Array.isArray(response.data)
             ? response.data

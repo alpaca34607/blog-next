@@ -69,7 +69,7 @@
 
 .downloadInfo {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 16px;
   flex: 1;
 
@@ -96,6 +96,10 @@
 .downloadDetails {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 
 .downloadTitle {

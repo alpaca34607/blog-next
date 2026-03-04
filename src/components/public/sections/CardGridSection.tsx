@@ -115,7 +115,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
 
     const fetchData = async () => {
       if (dataSource === "news") {
-        const res = await API_GetNewsWithParams({ demoUuid });
+        const res = await (API_GetNewsWithParams as any)({ demoUuid });
 
         if (res?.success) {
           const items: any[] = Array.isArray(res.data) ? res.data : [];
@@ -146,7 +146,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
       }
 
       if (dataSource === "products") {
-        const res = await API_GetProducts(demoUuid);
+        const res = await (API_GetProducts as any)({ demoUuid });
 
         if (res?.success) {
           const items: any[] = Array.isArray(res.data) ? res.data : [];
@@ -481,7 +481,7 @@ const CardGridSection = ({ section }: CardGridSectionProps) => {
                   <div className={styles.cardImage}>
                     <Image
                       src={card.featuredImage}
-                      alt={card.title}
+                      alt={isEn ? (card.titleEn || card.title) : card.title}
                       width={400}
                       height={250}
                       className={styles.image}

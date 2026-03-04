@@ -3,11 +3,14 @@ import { useState, useEffect } from "react";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./ProductSpecsSection.module.scss";
+import { useLocale } from "next-intl";
 
 interface ProductSpecsSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -21,12 +24,17 @@ interface ProductSpecsSectionProps {
 
 interface SpecItem {
   name: string;
+  nameEn: string;
   value: string;
+  valueEn: string;
 }
 
 const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = (isEn ? section.titleEn : section.title) || section.title;
+  const subtitle = (isEn ? section.subtitleEn : section.subtitle) || section.subtitle;
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -67,11 +75,11 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
       style={sectionStyle}
     >
       <div className={styles.container}>
-        {section.title && (
+        {title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            <h2 className={styles.title}>{title}</h2>
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
@@ -83,7 +91,7 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
               <div className={styles.imageWrapper}>
                 <img
                   src={images[currentImageIndex]}
-                  alt={`產品圖片 ${currentImageIndex + 1}`}
+                  alt={`${isEn ? "Product Image" : "產品圖片"} ${currentImageIndex + 1}`}
                   className={styles.image}
                 />
               </div>
@@ -92,14 +100,14 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
                   <button
                     onClick={prevImage}
                     className={styles.navButton}
-                    aria-label="上一張"
+                    aria-label={isEn ? "Previous Image" : "上一張"}
                   >
                     <FiChevronLeft size={24} />
                   </button>
                   <button
                     onClick={nextImage}
                     className={`${styles.navButton} ${styles.navButtonRight}`}
-                    aria-label="下一張"
+                    aria-label={isEn ? "Next Image" : "下一張"}
                   >
                     <FiChevronRight size={24} />
                   </button>
@@ -111,7 +119,7 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
                         className={`${styles.dot} ${
                           index === currentImageIndex ? styles.dotActive : ""
                         }`}
-                        aria-label={`切換到圖片 ${index + 1}`}
+                        aria-label={`${isEn ? "Switch to Image" : "切換到圖片"} ${index + 1}`}
                       />
                     ))}
                   </div>
@@ -121,7 +129,7 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
           ) : (
             <div className={styles.imageCarousel}>
               <div className={styles.emptyImageState}>
-                <p>尚未上傳產品圖片</p>
+                <p>{isEn ? "No Product Images Uploaded" : "尚未上傳產品圖片"}</p>
               </div>
             </div>
           )}
@@ -132,8 +140,8 @@ const ProductSpecsSection = ({ section }: ProductSpecsSectionProps) => {
               <div className={styles.specsList}>
                 {specs.map((spec, index) => (
                   <div key={index} className={styles.specItem}>
-                    <div className={styles.specName}>{spec.name}</div>
-                    <div className={styles.specValue}>{spec.value}</div>
+                    <div className={styles.specName}>{(isEn ? spec.nameEn : spec.name) || spec.name}</div>
+                    <div className={styles.specValue}>{(isEn ? spec.valueEn : spec.value) || spec.value}</div>
                   </div>
                 ))}
               </div>
