@@ -42,6 +42,7 @@ interface SiteSettings {
   phone: string;
   email: string;
   contactTime: string;
+  contactTimeEn: string;
   address: string;
   contactImage: string;
   contactBanner: string;
@@ -53,7 +54,9 @@ interface SiteSettings {
   socialLinks: Record<string, string>;
   additionalLinks: Array<{ title: string; url: string }>;
   metaTitle: string;
+  metaTitleEn: string;
   metaDescription: string;
+  metaDescriptionEn: string;
 }
 
 const DEFAULT_SETTINGS: SiteSettings = {
@@ -64,6 +67,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   phone: "",
   email: "",
   contactTime: "",
+  contactTimeEn: "",
   address: "",
   contactImage: "",
   contactBanner: "",
@@ -75,7 +79,9 @@ const DEFAULT_SETTINGS: SiteSettings = {
   socialLinks: {},
   additionalLinks: [],
   metaTitle: "",
+  metaTitleEn: "",
   metaDescription: "",
+  metaDescriptionEn: "",
 };
 
 export default function SiteSettingsManager() {
@@ -103,11 +109,14 @@ export default function SiteSettingsManager() {
           phone: data.phone || "",
           email: data.email || "",
           contactTime: data.contactTime || "",
+          contactTimeEn: data.contactTimeEn || "",
           address: data.address || "",
           contactImage: data.contactImage || "",
           contactBanner: data.contactBanner || "",
           metaTitle: data.metaTitle || "",
+          metaTitleEn: data.metaTitleEn || "",
           metaDescription: data.metaDescription || "",
+          metaDescriptionEn: data.metaDescriptionEn || "",
           facebookUrl: data.socialLinks?.facebook || "",
           lineUrl: data.socialLinks?.line || "",
           lineQrCode: data.lineQrCode || "",
@@ -144,6 +153,7 @@ export default function SiteSettingsManager() {
         phone: formData.phone,
         email: formData.email,
         contactTime: formData.contactTime,
+        contactTimeEn: formData.contactTimeEn,
         address: formData.address,
         lineQrCode: formData.lineQrCode,
         socialLinks: {
@@ -153,7 +163,9 @@ export default function SiteSettingsManager() {
         },
         additionalLinks: formData.additionalLinks,
         metaTitle: formData.metaTitle,
+        metaTitleEn: formData.metaTitleEn,
         metaDescription: formData.metaDescription,
+        metaDescriptionEn: formData.metaDescriptionEn,
         contactImage: formData.contactImage,
         contactBanner: formData.contactBanner,
       };
@@ -293,79 +305,286 @@ export default function SiteSettingsManager() {
           )}
           {/* Content Grid */}
           <div className={styles.contentGrid}>
-          {/* Basic Info Card */}
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardTitle}>
-                <FiGlobe className={styles.cardIcon} size={20} />
-                基本資訊
+            {/* Basic Info Card */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardTitle}>
+                  <FiGlobe className={styles.cardIcon} size={20} />
+                  基本資訊
+                </div>
               </div>
-            </div>
-            <div className={styles.cardContent}>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>網站名稱</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.siteName}
-                  onChange={(e) =>
-                    setFormData({ ...formData, siteName: e.target.value })
-                  }
-                  placeholder="例如：Blogcraft 布創設計"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>網站名稱(英文)</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.siteNameEn}
-                  onChange={(e) =>
-                    setFormData({ ...formData, siteNameEn: e.target.value })
-                  }
-                  placeholder="例如：Blogcraft Co., Ltd."
-                />
-              </div>
-
-              <div className={styles.imageUploadGrid}>
-                <div className={styles.imageUploadGroup}>
-                  <label className={styles.label}>主 Logo</label>
-                  {formData.logo ? (
-                    <div className={styles.imagePreview}>
-                      <Image
-                        src={formData.logo}
-                        alt="主 Logo"
-                        width={200}
-                        height={200}
-                        className={styles.image}
-                      />
-                      <button
-                        type="button"
-                        className={styles.removeImage}
-                        onClick={() => setFormData({ ...formData, logo: "" })}
-                      >
-                        <FiX size={16} />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className={styles.uploadPlaceholder}>
-                      <ImageUploader
-                        onUpload={(url) =>
-                          setFormData({ ...formData, logo: url })
-                        }
-                        buttonLabel="上傳圖片"
-                      />
-                    </div>
-                  )}
+              <div className={styles.cardContent}>
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>網站名稱</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.siteName}
+                      onChange={(e) =>
+                        setFormData({ ...formData, siteName: e.target.value })
+                      }
+                      placeholder="例如：Blogcraft 布創設計"
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>網站名稱(英文)</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.siteNameEn}
+                      onChange={(e) =>
+                        setFormData({ ...formData, siteNameEn: e.target.value })
+                      }
+                      placeholder="例如：Blogcraft Co., Ltd."
+                    />
+                  </div>
                 </div>
 
-                <div className={styles.imageUploadGroup}>
-                  <label className={styles.label}>Footer Logo</label>
-                  {formData.footerLogo ? (
+                <div className={styles.imageUploadGrid}>
+                  <div className={styles.imageUploadGroup}>
+                    <label className={styles.label}>主 Logo</label>
+                    {formData.logo ? (
+                      <div className={styles.imagePreview}>
+                        <Image
+                          src={formData.logo}
+                          alt="主 Logo"
+                          width={200}
+                          height={200}
+                          className={styles.image}
+                        />
+                        <button
+                          type="button"
+                          className={styles.removeImage}
+                          onClick={() => setFormData({ ...formData, logo: "" })}
+                        >
+                          <FiX size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.uploadPlaceholder}>
+                        <ImageUploader
+                          onUpload={(url) =>
+                            setFormData({ ...formData, logo: url })
+                          }
+                          buttonLabel="上傳圖片"
+                        />
+                      </div>
+                    )}
+                  </div>
+
+                  <div className={styles.imageUploadGroup}>
+                    <label className={styles.label}>Footer Logo</label>
+                    {formData.footerLogo ? (
+                      <div className={styles.imagePreview}>
+                        <Image
+                          src={formData.footerLogo}
+                          alt="Footer Logo"
+                          width={200}
+                          height={200}
+                          className={styles.image}
+                        />
+                        <button
+                          type="button"
+                          className={styles.removeImage}
+                          onClick={() =>
+                            setFormData({ ...formData, footerLogo: "" })
+                          }
+                        >
+                          <FiX size={16} />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className={styles.uploadPlaceholder}>
+                        <ImageUploader
+                          onUpload={(url) =>
+                            setFormData({
+                              ...formData,
+                              footerLogo: url,
+                            })
+                          }
+                          buttonLabel="上傳圖片"
+                        />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>版權文字</label>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={formData.copyright}
+                    onChange={(e) =>
+                      setFormData({ ...formData, copyright: e.target.value })
+                    }
+                    placeholder="例如：Copyright © 2024 Blogcraft Co., Ltd. All rights reserved."
+                  />
+                </div>
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Meta 標題</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.metaTitle}
+                      onChange={(e) =>
+                        setFormData({ ...formData, metaTitle: e.target.value })
+                      }
+                      placeholder="Blogcraft 布創設計｜品牌部落格網站建構方案"
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>Meta 標題（英文）</label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.metaTitleEn}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          metaTitleEn: e.target.value,
+                        })
+                      }
+                      placeholder="例如：Blogcraft Co., Ltd."
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <DefaultInput
+                      textarea={true}
+                      label="Meta 描述"
+                      name="metaDescription"
+                      value={formData.metaDescription}
+                      onChangeFun={(e) =>
+                        setFormData({
+                          ...formData,
+                          metaDescription: e.target.value,
+                        })
+                      }
+                      placeholder="例如：布創設計提供品牌部落格網站建構方案，主打模板化快速上線、簡約版面設計與易於管理的後台架構，讓品牌能像寫部落格一樣自然更新網站內容。"
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <DefaultInput
+                      textarea={true}
+                      label="Meta 描述（英文）"
+                      name="metaDescription"
+                      value={formData.metaDescriptionEn}
+                      onChangeFun={(e) =>
+                        setFormData({
+                          ...formData,
+                          metaDescriptionEn: e.target.value,
+                        })
+                      }
+                      placeholder="Blogcraft provides blog-style website solutions featuring template-based setup, clean layouts, and easy backend management, allowing brands to update website content as naturally as writing a blog."
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact Info Card */}
+            <div className={styles.card}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardTitle}>
+                  <FiPhone className={styles.cardIcon} size={20} />
+                  聯絡資訊
+                </div>
+              </div>
+              <div className={styles.cardContent}>
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FiPhone size={16} /> 電話
+                  </label>
+                  <input
+                    type="text"
+                    className={styles.input}
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    placeholder="例如：02-1234-5678"
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FiMail size={16} /> Email
+                  </label>
+                  <input
+                    type="email"
+                    className={styles.input}
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    placeholder="例如：alpaca34607@gmail.com"
+                  />
+                </div>
+                <div className={styles.formGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiClock size={16} /> 可聯絡時間
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.contactTime}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          contactTime: e.target.value,
+                        })
+                      }
+                      placeholder="例如：週一至週五，09:00~18:00 (國定假日、例假日休息)"
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiClock size={16} /> 可聯絡時間（英文）
+                    </label>
+                    <input
+                      type="text"
+                      className={styles.input}
+                      value={formData.contactTimeEn}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          contactTimeEn: e.target.value,
+                        })
+                      }
+                      placeholder="Mon–Fri 18:30–22:30 (UTC+8)"
+                    />
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FiMapPin size={16} /> 地址
+                  </label>
+                  <textarea
+                    className={styles.textarea}
+                    value={formData.address}
+                    onChange={(e) =>
+                      setFormData({ ...formData, address: e.target.value })
+                    }
+                    placeholder="辦公室地址"
+                    rows={6}
+                  />
+                </div>
+
+                {/* 聯絡我們圖片 */}
+                
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FiImage size={16} /> 聯絡我們圖片
+                  </label>
+                  {formData.contactImage ? (
                     <div className={styles.imagePreview}>
                       <Image
-                        src={formData.footerLogo}
-                        alt="Footer Logo"
+                        src={formData.contactImage}
+                        alt="聯絡我們圖片"
                         width={200}
                         height={200}
                         className={styles.image}
@@ -374,7 +593,43 @@ export default function SiteSettingsManager() {
                         type="button"
                         className={styles.removeImage}
                         onClick={() =>
-                          setFormData({ ...formData, footerLogo: "" })
+                          setFormData({ ...formData, contactImage: "" })
+                        }
+                      >
+                        <FiX size={16} />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className={styles.uploadPlaceholder}>
+                      <ImageUploader
+                        onUpload={(url) =>
+                          setFormData({ ...formData, contactImage: url })
+                        }
+                        buttonLabel="上傳圖片"
+                      />
+                    </div>
+                  )}
+                </div>
+
+                {/* 聯絡我們Banner */}
+                <div className={styles.formGroup}>
+                  <label className={styles.label}>
+                    <FiImage size={16} /> 聯絡我們Banner
+                  </label>
+                  {formData.contactBanner ? (
+                    <div className={styles.imagePreview}>
+                      <Image
+                        src={formData.contactBanner}
+                        alt="聯絡我們圖片"
+                        width={200}
+                        height={200}
+                        className={styles.image}
+                      />
+                      <button
+                        type="button"
+                        className={styles.removeImage}
+                        onClick={() =>
+                          setFormData({ ...formData, contactBanner: "" })
                         }
                       >
                         <FiX size={16} />
@@ -386,7 +641,7 @@ export default function SiteSettingsManager() {
                         onUpload={(url) =>
                           setFormData({
                             ...formData,
-                            footerLogo: url,
+                            contactBanner: url,
                           })
                         }
                         buttonLabel="上傳圖片"
@@ -395,358 +650,178 @@ export default function SiteSettingsManager() {
                   )}
                 </div>
               </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>版權文字</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.copyright}
-                  onChange={(e) =>
-                    setFormData({ ...formData, copyright: e.target.value })
-                  }
-                  placeholder="例如：Copyright © 2024 Blogcraft Co., Ltd. All rights reserved."
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>Meta 標題</label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.metaTitle}
-                  onChange={(e) =>
-                    setFormData({ ...formData, metaTitle: e.target.value })
-                  }
-                  placeholder="例如：Blogcraft 布創設計"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <DefaultInput
-                  textarea={true}
-                  label="Meta 描述"
-                  name="metaDescription"
-                  value={formData.metaDescription}
-                  onChangeFun={(e) =>
-                    setFormData({ ...formData, metaDescription: e.target.value })
-                  }
-                  placeholder="例如：布創設計提供部落格形象網站方案，主打模板化快速上線、簡約版面、後台輕鬆管理與便利維護，讓內容更新像寫部落格一樣自然。"
-                />
-              </div>
             </div>
-          </div>
 
-          {/* Contact Info Card */}
-          <div className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardTitle}>
-                <FiPhone className={styles.cardIcon} size={20} />
-                聯絡資訊
+            {/* Social Media Card */}
+            <div className={`${styles.card} ${styles.fullWidth}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardTitle}>
+                  <FiFacebook className={styles.cardIcon} size={20} />
+                  社群媒體
+                </div>
               </div>
-            </div>
-            <div className={styles.cardContent}>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiPhone size={16} /> 電話
-                </label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.phone}
-                  onChange={(e) =>
-                    setFormData({ ...formData, phone: e.target.value })
-                  }
-                  placeholder="例如：02-1234-5678"
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiMail size={16} /> Email
-                </label>
-                <input
-                  type="email"
-                  className={styles.input}
-                  value={formData.email}
-                  onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
-                  }
-                  placeholder="例如：alpaca34607@gmail.com"
-                />
-              </div>
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiClock size={16} /> 可聯絡時間
-                </label>
-                <input
-                  type="text"
-                  className={styles.input}
-                  value={formData.contactTime}
-                  onChange={(e) =>
-                    setFormData({ ...formData, contactTime: e.target.value })
-                  }
-                  placeholder="例如：週一至週五，09:00~18:00 (國定假日、例假日休息)"
-                />
-              </div>
-
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiMapPin size={16} /> 地址
-                </label>
-                <textarea
-                  className={styles.textarea}
-                  value={formData.address}
-                  onChange={(e) =>
-                    setFormData({ ...formData, address: e.target.value })
-                  }
-                  placeholder="辦公室地址"
-                  rows={6}
-                />
-              </div>
-
-              {/* 聯絡我們圖片 */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiImage size={16} /> 聯絡我們圖片
-                </label>
-                {formData.contactImage ? (
-                  <div className={styles.imagePreview}>
-                    <Image
-                      src={formData.contactImage}
-                      alt="聯絡我們圖片"
-                      width={200}
-                      height={200}
-                      className={styles.image}
-                    />
-                    <button
-                      type="button"
-                      className={styles.removeImage}
-                      onClick={() =>
-                        setFormData({ ...formData, contactImage: "" })
-                      }
-                    >
-                      <FiX size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className={styles.uploadPlaceholder}>
-                    <ImageUploader
-                      onUpload={(url) =>
-                        setFormData({ ...formData, contactImage: url })
-                      }
-                      buttonLabel="上傳圖片"
-                    />
-                  </div>
-                )}
-              </div>
-
-              {/* 聯絡我們Banner */}
-              <div className={styles.formGroup}>
-                <label className={styles.label}>
-                  <FiImage size={16} /> 聯絡我們Banner
-                </label>
-                {formData.contactBanner ? (
-                  <div className={styles.imagePreview}>
-                    <Image
-                      src={formData.contactBanner}
-                      alt="聯絡我們圖片"
-                      width={200}
-                      height={200}
-                      className={styles.image}
-                    />
-                    <button
-                      type="button"
-                      className={styles.removeImage}
-                      onClick={() =>
-                        setFormData({ ...formData, contactBanner: "" })
-                      }
-                    >
-                      <FiX size={16} />
-                    </button>
-                  </div>
-                ) : (
-                  <div className={styles.uploadPlaceholder}>
-                    <ImageUploader
-                      onUpload={(url) =>
+              <div className={styles.cardContent}>
+                <div className={styles.socialGrid}>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiFacebook size={16} /> Facebook
+                    </label>
+                    <input
+                      type="url"
+                      className={styles.input}
+                      value={formData.facebookUrl}
+                      onChange={(e) =>
                         setFormData({
                           ...formData,
-                          contactBanner: url,
+                          facebookUrl: e.target.value,
                         })
                       }
-                      buttonLabel="上傳圖片"
-                    /> 
+                      placeholder="https://facebook.com/..."
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiMessageCircle size={16} /> Line
+                    </label>
+                    <input
+                      type="url"
+                      className={styles.input}
+                      value={formData.lineUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, lineUrl: e.target.value })
+                      }
+                      placeholder="https://line.me/..."
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <MdOutlineQrCode size={16} /> Line QRcode圖片網址
+                    </label>
+                    <input
+                      type="url"
+                      className={styles.input}
+                      value={formData.lineQrCode}
+                      onChange={(e) =>
+                        setFormData({ ...formData, lineQrCode: e.target.value })
+                      }
+                      placeholder="例如：https://line.me/ti/p/OD4fPP6GtD"
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiYoutube size={16} /> YouTube
+                    </label>
+                    <input
+                      type="url"
+                      className={styles.input}
+                      value={formData.youtubeUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, youtubeUrl: e.target.value })
+                      }
+                      placeholder="https://youtube.com/..."
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* 補充連結 */}
+            <div className={`${styles.card} ${styles.fullWidth}`}>
+              <div className={styles.cardHeader}>
+                <div className={styles.cardTitle}>
+                  <FiLink className={styles.cardIcon} size={20} /> 補充連結
+                </div>
+              </div>
+              <div className={styles.cardContent}>
+                {formData.additionalLinks.length === 0 ? (
+                  <div className={styles.emptyState}>
+                    尚無補充連結，點擊下方按鈕新增
+                  </div>
+                ) : (
+                  <div className={styles.linksList}>
+                    {formData.additionalLinks.map((link, index) => (
+                      <div key={index} className={styles.linkItem}>
+                        <div className={styles.linkItemContent}>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              <FiLink size={16} /> 連結名稱
+                            </label>
+                            <input
+                              type="text"
+                              className={styles.input}
+                              value={link.title}
+                              onChange={(e) => {
+                                const newLinks = [...formData.additionalLinks];
+                                newLinks[index].title = e.target.value;
+                                setFormData({
+                                  ...formData,
+                                  additionalLinks: newLinks,
+                                });
+                              }}
+                              placeholder="例如：Google Maps"
+                            />
+                          </div>
+                          <div className={styles.formGroup}>
+                            <label className={styles.label}>
+                              <FiLink size={16} /> 連結網址
+                            </label>
+                            <input
+                              type="url"
+                              className={styles.input}
+                              value={link.url}
+                              onChange={(e) => {
+                                const newLinks = [...formData.additionalLinks];
+                                newLinks[index].url = e.target.value;
+                                setFormData({
+                                  ...formData,
+                                  additionalLinks: newLinks,
+                                });
+                              }}
+                              placeholder="例如：https://www.google.com/maps"
+                            />
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          className={styles.removeButton}
+                          onClick={() => {
+                            const newLinks = formData.additionalLinks.filter(
+                              (_, i) => i !== index,
+                            );
+                            setFormData({
+                              ...formData,
+                              additionalLinks: newLinks,
+                            });
+                          }}
+                          title="刪除連結"
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
                 )}
+                <button
+                  type="button"
+                  className={styles.addButton}
+                  onClick={() => {
+                    setFormData({
+                      ...formData,
+                      additionalLinks: [
+                        ...formData.additionalLinks,
+                        { title: "", url: "" },
+                      ],
+                    });
+                  }}
+                >
+                  <FiPlus size={20} />
+                  <span>新增連結</span>
+                </button>
               </div>
             </div>
           </div>
-
-          {/* Social Media Card */}
-          <div className={`${styles.card} ${styles.fullWidth}`}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardTitle}>
-                <FiFacebook className={styles.cardIcon} size={20} />
-                社群媒體
-              </div>
-            </div>
-            <div className={styles.cardContent}>
-              <div className={styles.socialGrid}>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    <FiFacebook size={16} /> Facebook
-                  </label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={formData.facebookUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, facebookUrl: e.target.value })
-                    }
-                    placeholder="https://facebook.com/..."
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    <FiMessageCircle size={16} /> Line
-                  </label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={formData.lineUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lineUrl: e.target.value })
-                    }
-                    placeholder="https://line.me/..."
-                  />
-                </div>
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    <MdOutlineQrCode size={16} /> Line QRcode圖片網址
-                  </label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={formData.lineQrCode}
-                    onChange={(e) =>
-                      setFormData({ ...formData, lineQrCode: e.target.value })
-                    }
-                    placeholder="例如：https://line.me/ti/p/OD4fPP6GtD"
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    <FiYoutube size={16} /> YouTube
-                  </label>
-                  <input
-                    type="url"
-                    className={styles.input}
-                    value={formData.youtubeUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, youtubeUrl: e.target.value })
-                    }
-                    placeholder="https://youtube.com/..."
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* 補充連結 */}
-          <div className={`${styles.card} ${styles.fullWidth}`}>
-            <div className={styles.cardHeader}>
-              <div className={styles.cardTitle}>
-                <FiLink className={styles.cardIcon} size={20} /> 補充連結
-              </div>
-            </div>
-            <div className={styles.cardContent}>
-              {formData.additionalLinks.length === 0 ? (
-                <div className={styles.emptyState}>
-                  尚無補充連結，點擊下方按鈕新增
-                </div>
-              ) : (
-                <div className={styles.linksList}>
-                  {formData.additionalLinks.map((link, index) => (
-                    <div key={index} className={styles.linkItem}>
-                      <div className={styles.linkItemContent}>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            <FiLink size={16} /> 連結名稱
-                          </label>
-                          <input
-                            type="text"
-                            className={styles.input}
-                            value={link.title}
-                            onChange={(e) => {
-                              const newLinks = [...formData.additionalLinks];
-                              newLinks[index].title = e.target.value;
-                              setFormData({
-                                ...formData,
-                                additionalLinks: newLinks,
-                              });
-                            }}
-                            placeholder="例如：Google Maps"
-                          />
-                        </div>
-                        <div className={styles.formGroup}>
-                          <label className={styles.label}>
-                            <FiLink size={16} /> 連結網址
-                          </label>
-                          <input
-                            type="url"
-                            className={styles.input}
-                            value={link.url}
-                            onChange={(e) => {
-                              const newLinks = [...formData.additionalLinks];
-                              newLinks[index].url = e.target.value;
-                              setFormData({
-                                ...formData,
-                                additionalLinks: newLinks,
-                              });
-                            }}
-                            placeholder="例如：https://www.google.com/maps"
-                          />
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        className={styles.removeButton}
-                        onClick={() => {
-                          const newLinks = formData.additionalLinks.filter(
-                            (_, i) => i !== index
-                          );
-                          setFormData({
-                            ...formData,
-                            additionalLinks: newLinks,
-                          });
-                        }}
-                        title="刪除連結"
-                      >
-                        <FiTrash2 size={16} />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-              <button
-                type="button"
-                className={styles.addButton}
-                onClick={() => {
-                  setFormData({
-                    ...formData,
-                    additionalLinks: [
-                      ...formData.additionalLinks,
-                      { title: "", url: "" },
-                    ],
-                  });
-                }}
-              >
-                <FiPlus size={20} />
-                <span>新增連結</span>
-              </button>
-            </div>
-          </div>
-        </div>
         </div>
       </div>
     </AdminLayout>
