@@ -1,12 +1,13 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useLocale } from "next-intl";
 import { getSectionStyle } from "@/utils/sectionStyles";
 import styles from "./TimelineSection.module.scss";
 import {
   API_GetTimelineByIdPublic,
   API_GetTimelineItemsPublic,
 } from "@/app/api/public_api";
-import { useAppLoading } from "@/contexts/AppLoadingContext";
+import { AppLoadingContext } from "@/contexts/AppLoadingContext";
 
 interface Timeline {
   id: string;
@@ -18,8 +19,11 @@ interface TimelineItem {
   id: string;
   timelineId: string;
   year: string;
+  yearEn?: string;
   title: string;
-  description?: string;
+  titleEn?: string;
+  content?: string;
+  contentEn?: string;
   image?: string;
   sortOrder: number;
 }
@@ -28,7 +32,9 @@ interface TimelineSectionProps {
   section: {
     id?: string;
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -41,7 +47,13 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
   const [timeline, setTimeline] = useState<Timeline | null>(null);
   const [items, setItems] = useState<TimelineItem[]>([]);
   const [isClient, setIsClient] = useState(false);
-  const { startTask, endTask } = useAppLoading();
+  const appLoading = useContext(AppLoadingContext);
+  const startTask = appLoading?.startTask ?? (() => {});
+  const endTask = appLoading?.endTask ?? (() => {});
+  const locale = useLocale();
+  const isEn = locale === "en";
+  const title = isEn ? section.titleEn || section.title : section.title;
+  const subtitle = isEn ? section.subtitleEn || section.subtitle : section.subtitle;
 
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
@@ -79,8 +91,11 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
               id: it.id,
               timelineId,
               year: it.year || "",
-              title: it.title,
-              description: it.content || undefined,
+              yearEn: it.yearEn || undefined,
+              title: it.title || "",
+              titleEn: it.titleEn || undefined,
+              content: it.content || undefined,
+              contentEn: it.contentEn || undefined,
               image: it.image || undefined,
               sortOrder: it.sortOrder ?? 0,
             })
@@ -126,8 +141,11 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
                 id: it.id,
                 timelineId,
                 year: it.year || "",
-                title: it.title,
-                description: it.content || undefined,
+                yearEn: it.yearEn || undefined,
+                title: it.title || "",
+                titleEn: it.titleEn || undefined,
+                content: it.content || undefined,
+                contentEn: it.contentEn || undefined,
                 image: it.image || undefined,
                 sortOrder: it.sortOrder ?? 0,
               })
@@ -170,9 +188,9 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
       <div className={styles.container}>
         {(section.title || section.subtitle) && (
           <div className={styles.header}>
-            {section.title && <h2 className={styles.title}>{section.title}</h2>}
-            {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+            {title && <h2 className={styles.title}>{title}</h2>}
+            {subtitle && (
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
@@ -210,13 +228,17 @@ const TimelineSection = ({ section }: TimelineSectionProps) => {
                             </div>
                           )}
                         <div className={styles.contentText}>
-                          {item.year && (
-                            <span className={styles.year}>{item.year}</span>
+                          {(isEn ? item.yearEn || item.year : item.year) && (
+                            <span className={styles.year}>
+                              {isEn ? item.yearEn || item.year : item.year}
+                            </span>
                           )}
-                          <h3 className={styles.itemTitle}>{item.title}</h3>
-                          {item.description && (
+                          <h3 className={styles.itemTitle}>
+                            {isEn ? item.titleEn || item.title : item.title}
+                          </h3>
+                          {(isEn ? item.contentEn || item.content : item.content) && (
                             <p className={styles.description}>
-                              {item.description}
+                              {isEn ? item.contentEn || item.content : item.content}
                             </p>
                           )}
                         </div>

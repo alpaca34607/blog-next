@@ -8,50 +8,30 @@ import {
 } from "@/lib/api-response";
 import { z } from "zod";
 
-// 支援前端舊欄位命名：description/date（對應到 content/year）
 const createItemSchema = z.object({
   title: z.string().min(1, "標題不能為空"),
+  titleEn: z.string().optional(),
   content: z.string().optional(),
-  description: z.string().optional(),
+  contentEn: z.string().optional(),
   image: z.string().optional(),
   year: z.string().optional(),
-  date: z.string().optional(),
+  yearEn: z.string().optional(),
   sortOrder: z.number().default(0),
 });
 
 const updateItemsSchema = z.array(
   z.object({
-    id: z.string().optional(), // 新增時不需要 id
+    id: z.string().optional(),
     title: z.string().min(1, "標題不能為空"),
+    titleEn: z.string().optional(),
     content: z.string().optional(),
-    description: z.string().optional(),
+    contentEn: z.string().optional(),
     image: z.string().optional(),
     year: z.string().optional(),
-    date: z.string().optional(),
+    yearEn: z.string().optional(),
     sortOrder: z.number(),
   })
 );
-
-function normalizeTimelineItemInput(input: {
-  title: string;
-  content?: string;
-  description?: string;
-  image?: string;
-  year?: string;
-  date?: string;
-  sortOrder: number;
-}) {
-  const content = input.content !== undefined ? input.content : input.description;
-  const year = input.year !== undefined ? input.year : input.date;
-
-  return {
-    title: input.title,
-    content,
-    image: input.image,
-    year,
-    sortOrder: input.sortOrder,
-  };
-}
 
 const deleteItemsSchema = z.object({
   ids: z.array(z.string()).min(1, "至少需要一個 ID"),
@@ -80,9 +60,12 @@ async function getTimelineItems(request: NextRequest, timelineId: string) {
       select: {
         id: true,
         title: true,
+        titleEn: true,
         content: true,
+        contentEn: true,
         image: true,
         year: true,
+        yearEn: true,
         sortOrder: true,
         createdAt: true,
         updatedAt: true,
@@ -114,27 +97,21 @@ async function createTimelineItem(request: NextRequest, timelineId: string) {
 
     const body = await request.json();
     const validatedData = createItemSchema.parse(body);
-    const data = normalizeTimelineItemInput({
-      title: validatedData.title,
-      content: validatedData.content,
-      description: validatedData.description,
-      image: validatedData.image,
-      year: validatedData.year,
-      date: validatedData.date,
-      sortOrder: validatedData.sortOrder,
-    });
 
     const item = await prisma.timelineItem.create({
       data: {
-        ...data,
+        ...validatedData,
         timelineId,
       },
       select: {
         id: true,
         title: true,
+        titleEn: true,
         content: true,
+        contentEn: true,
         image: true,
         year: true,
+        yearEn: true,
         sortOrder: true,
         createdAt: true,
         updatedAt: true,
@@ -178,18 +155,20 @@ async function updateTimelineItems(request: NextRequest, timelineId: string) {
       const createdItems = [];
       for (const itemData of validatedItems) {
         const { id, ...raw } = itemData;
-        const data = normalizeTimelineItemInput(raw);
         const item = await tx.timelineItem.create({
           data: {
-            ...data,
+            ...raw,
             timelineId,
           },
           select: {
             id: true,
             title: true,
+            titleEn: true,
             content: true,
+            contentEn: true,
             image: true,
             year: true,
+            yearEn: true,
             sortOrder: true,
             createdAt: true,
             updatedAt: true,

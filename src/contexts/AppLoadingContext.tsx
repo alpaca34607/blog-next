@@ -14,7 +14,7 @@ interface AppLoadingContextValue {
   endTask: () => void;
 }
 
-const AppLoadingContext = createContext<AppLoadingContextValue | null>(null);
+export const AppLoadingContext = createContext<AppLoadingContextValue | null>(null);
 
 export const AppLoadingProvider = ({
   children,

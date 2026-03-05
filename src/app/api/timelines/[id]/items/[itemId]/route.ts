@@ -8,30 +8,16 @@ import {
 } from "@/lib/api-response";
 import { z } from "zod";
 
-// 支援前端舊欄位命名：description/date（對應到 content/year）
 const updateTimelineItemSchema = z.object({
   title: z.string().min(1, "標題不能為空").optional(),
+  titleEn: z.string().optional(),
   content: z.string().optional(),
-  description: z.string().optional(),
+  contentEn: z.string().optional(),
   image: z.string().optional(),
   year: z.string().optional(),
-  date: z.string().optional(),
+  yearEn: z.string().optional(),
   sortOrder: z.number().optional(),
 });
-
-function normalizeTimelineItemInput(input: z.infer<typeof updateTimelineItemSchema>) {
-  const content =
-    input.content !== undefined ? input.content : input.description;
-  const year = input.year !== undefined ? input.year : input.date;
-
-  return {
-    title: input.title,
-    content,
-    image: input.image,
-    year,
-    sortOrder: input.sortOrder,
-  };
-}
 
 // GET /api/timelines/[id]/items/[itemId] - 取得單筆時間軸項目
 async function getTimelineItem(timelineId: string, itemId: string) {
@@ -46,9 +32,12 @@ async function getTimelineItem(timelineId: string, itemId: string) {
         id: true,
         timelineId: true,
         title: true,
+        titleEn: true,
         content: true,
+        contentEn: true,
         image: true,
         year: true,
+        yearEn: true,
         sortOrder: true,
         createdAt: true,
         updatedAt: true,
@@ -77,8 +66,7 @@ async function updateTimelineItem(
     }
 
     const body = await request.json();
-    const validated = updateTimelineItemSchema.parse(body);
-    const data = normalizeTimelineItemInput(validated);
+    const data = updateTimelineItemSchema.parse(body);
 
     // 確保項目屬於該 timelineId（避免跨時間軸誤改）
     const existing = await prisma.timelineItem.findFirst({
@@ -97,9 +85,12 @@ async function updateTimelineItem(
         id: true,
         timelineId: true,
         title: true,
+        titleEn: true,
         content: true,
+        contentEn: true,
         image: true,
         year: true,
+        yearEn: true,
         sortOrder: true,
         createdAt: true,
         updatedAt: true,

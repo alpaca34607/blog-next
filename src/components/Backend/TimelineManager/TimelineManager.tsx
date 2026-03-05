@@ -46,8 +46,11 @@ interface TimelineItem {
   id: string;
   timelineId: string;
   year: string;
+  yearEn: string;
   title: string;
-  description: string;
+  titleEn: string;
+  content: string;
+  contentEn: string;
   image: string;
   sortOrder: number;
 }
@@ -100,8 +103,8 @@ const SortableItem = ({ item, onEdit, onDelete }: SortableItemProps) => {
           )}
           <div className={styles.itemText}>
             <h4 className={styles.itemTitle}>{item.title}</h4>
-            {item.description && (
-              <p className={styles.itemDescription}>{item.description}</p>
+            {item.content && (
+              <p className={styles.itemDescription}>{item.content}</p>
             )}
           </div>
           <div className={styles.itemActions}>
@@ -199,16 +202,7 @@ const TimelineManager = () => {
       if (response?.success) {
         const itemsData = (response.data || []) as any[];
 
-        // 後端欄位：content/year；後台使用：description/year
-        const normalized = itemsData.map((item) => ({
-          ...item,
-          year: item.year ?? item.date ?? "",
-          description: item.description ?? item.content ?? "",
-          image: item.image ?? "",
-        }));
-
-        // 按 sortOrder 排序
-        const sortedItems = [...normalized].sort(
+        const sortedItems = [...itemsData].sort(
           (a: TimelineItem, b: TimelineItem) => a.sortOrder - b.sortOrder
         );
         setItems(sortedItems as TimelineItem[]);
@@ -348,15 +342,17 @@ const TimelineManager = () => {
           editingItem.id,
           {
             title: formData.title,
-            description: formData.description,
-            date: formData.year,
+            titleEn: formData.titleEn,
+            content: formData.content,
+            contentEn: formData.contentEn,
+            year: formData.year,
+            yearEn: formData.yearEn,
             image: formData.image || undefined,
             sortOrder: formData.sortOrder,
           }
         );
 
         if (response?.success) {
-          // 重新載入項目
           await loadItems(selectedTimelineId);
         } else {
           setError(response?.error?.message || "更新項目失敗");
@@ -365,8 +361,11 @@ const TimelineManager = () => {
         // 新增項目
         const response = await API_CreateTimelineItem(selectedTimelineId, {
           title: formData.title || "",
-          description: formData.description || "",
-          date: formData.year || "",
+          titleEn: formData.titleEn || "",
+          content: formData.content || "",
+          contentEn: formData.contentEn || "",
+          year: formData.year || "",
+          yearEn: formData.yearEn || "",
           image: formData.image || undefined,
           sortOrder: items.length,
         });

@@ -186,13 +186,16 @@ model Timeline {
 }
 
 model TimelineItem {
-  id         String   @id @default(cuid())
-  timelineId String
-  title      String
-  content    String?
-  image      String?
-  year       String?
-  sortOrder  Int      @default(0)
+  id          String   @id @default(cuid())
+  timelineId  String
+  title       String
+  titleEn     String?
+  content     String?
+  contentEn   String?
+  image       String?
+  year        String?
+  yearEn      String?
+  sortOrder   Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   timeline   Timeline @relation(fields: [timelineId], references: [id], onDelete: Cascade)

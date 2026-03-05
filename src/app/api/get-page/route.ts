@@ -96,6 +96,7 @@ export async function GET(request: NextRequest) {
         subtitle: true,
         subtitleEn: true,
         content: true,
+        contentEn: true,
         sortOrder: true,
         settings: true,
       },

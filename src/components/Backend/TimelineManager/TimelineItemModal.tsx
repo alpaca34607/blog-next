@@ -8,8 +8,11 @@ interface TimelineItem {
   id?: string;
   timelineId?: string;
   year: string;
+  yearEn: string;
   title: string;
-  description: string;
+  titleEn: string;
+  content: string;
+  contentEn: string;
   image: string;
   sortOrder?: number;
 }
@@ -29,8 +32,11 @@ const TimelineItemModal = ({
 }: TimelineItemModalProps) => {
   const [formData, setFormData] = useState<Partial<TimelineItem>>({
     year: "",
+    yearEn: "",
     title: "",
-    description: "",
+    titleEn: "",
+    content: "",
+    contentEn: "",
     image: "",
     sortOrder: 0,
   });
@@ -39,16 +45,22 @@ const TimelineItemModal = ({
     if (editingItem) {
       setFormData({
         year: editingItem.year || "",
+        yearEn: editingItem.yearEn || "",
         title: editingItem.title || "",
-        description: editingItem.description || "",
+        titleEn: editingItem.titleEn || "",
+        content: editingItem.content || "",
+        contentEn: editingItem.contentEn || "",
         image: editingItem.image || "",
         sortOrder: editingItem.sortOrder || 0,
       });
     } else {
       setFormData({
         year: "",
+        yearEn: "",
         title: "",
-        description: "",
+        titleEn: "",
+        content: "",
+        contentEn: "",
         image: "",
         sortOrder: 0,
       });
@@ -90,6 +102,7 @@ const TimelineItemModal = ({
         </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
+          <div className={styles.formGrid}>
           <div className={styles.formGroup}>
             <label className={styles.label}>
               年份/步驟 <span className={styles.required}>*</span>
@@ -97,12 +110,26 @@ const TimelineItemModal = ({
             <input
               type="text"
               className={styles.input}
-              value={formData.year}
+              value={formData.year ?? ""}
               onChange={(e) =>
                 setFormData({ ...formData, year: e.target.value })
               }
               placeholder="例如：2024"
               required
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label className={styles.label}>
+              年份/步驟 (英文)
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              value={formData.yearEn ?? ""}
+              onChange={(e) =>
+                setFormData({ ...formData, yearEn: e.target.value })
+              }
+              placeholder="例如：2024"
             />
           </div>
 
@@ -113,7 +140,7 @@ const TimelineItemModal = ({
             <input
               type="text"
               className={styles.input}
-              value={formData.title}
+              value={formData.title ?? ""}
               onChange={(e) =>
                 setFormData({ ...formData, title: e.target.value })
               }
@@ -123,18 +150,48 @@ const TimelineItemModal = ({
           </div>
 
           <div className={styles.formGroup}>
+            <label className={styles.label}>
+              標題 (英文)
+            </label>
+            <input
+              type="text"
+              className={styles.input}
+              value={formData.titleEn ?? ""}
+              onChange={(e) =>
+                setFormData({ ...formData, titleEn: e.target.value })
+              }
+              placeholder="重要事件標題（英文）"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
             <label className={styles.label}>描述</label>
             <textarea
               className={styles.textarea}
-              value={formData.description}
+              value={formData.content ?? ""}
               onChange={(e) =>
-                setFormData({ ...formData, description: e.target.value })
+                setFormData({ ...formData, content: e.target.value })
               }
               placeholder="詳細描述"
               rows={3}
             />
           </div>
 
+          <div className={styles.formGroup}>
+            <label className={styles.label}>描述 (英文)</label>
+            <textarea
+              className={styles.textarea}
+              value={formData.contentEn ?? ""}
+              onChange={(e) =>
+                setFormData({ ...formData, contentEn: e.target.value })
+              }
+              placeholder="詳細描述（英文）"
+              rows={3}
+            />
+          </div>
+
+        
+          </div>
           <div className={styles.formGroup}>
             <label className={styles.label}>相關圖片</label>
             <div className={styles.imageUploadContainer}>
@@ -159,7 +216,6 @@ const TimelineItemModal = ({
               )}
             </div>
           </div>
-
           <div className={styles.formActions}>
             <button
               type="button"

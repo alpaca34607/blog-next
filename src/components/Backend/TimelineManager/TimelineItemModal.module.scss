@@ -92,6 +92,17 @@
   gap: 20px;
 }
 
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+
+  @include rwd-md {
+    grid-template-columns: 1fr;
+  }
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -148,7 +159,6 @@
 .imagePreview {
   position: relative;
   width: 100%;
-  max-width: 300px;
   padding-top: 56.25%; // 16:9 aspect ratio
   border-radius: 8px;
   overflow: hidden;

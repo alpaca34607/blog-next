@@ -437,8 +437,11 @@ export const API_CreateTimelineItem = async (
   timelineId: string,
   data: {
     title: string;
-    description?: string;
-    date: string;
+    titleEn?: string;
+    content?: string;
+    contentEn?: string;
+    year?: string;
+    yearEn?: string;
     image?: string;
     sortOrder?: number;
   }
@@ -453,8 +456,11 @@ export const API_UpdateTimelineItem = async (
   itemId: string,
   data: {
     title?: string;
-    description?: string;
-    date?: string;
+    titleEn?: string;
+    content?: string;
+    contentEn?: string;
+    year?: string;
+    yearEn?: string;
     image?: string;
     sortOrder?: number;
   }
