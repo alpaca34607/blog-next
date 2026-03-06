@@ -54,10 +54,12 @@ interface NavigationItem {
 
 type PageOption = { id: string; title: string; slug: string };
 
+// 將 url 轉換為 slug
 const normalizeSlugFromUrl = (url?: string | null) =>
   (url ? String(url) : "").replace(/^\//, "").trim();
 
-const normalizeInternalUrlFromSlug = (slug?: string | null) => {
+// 將 slug 轉換為 url
+const normalizeUrlFromSlug = (slug?: string | null) => {
   const s = (slug ? String(slug) : "").trim().replace(/^\/+/, "");
   return s ? `/${s}` : undefined;
 };
@@ -87,12 +89,12 @@ const NavigationManager = () => {
 
         // 保底排序：避免 sortOrder 相同時順序飄動
         const sorted = [...items].sort(
-          (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+          (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
         );
         sorted.forEach((p) => {
           if (Array.isArray(p.children)) {
             p.children = [...p.children].sort(
-              (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0)
+              (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
             );
           }
         });
@@ -152,8 +154,8 @@ const NavigationManager = () => {
         new Set(
           items
             .map((p: any) => String(p?.category ?? "").trim())
-            .filter((c: string) => !!c)
-        )
+            .filter((c: string) => !!c),
+        ),
       ).sort((a, b) => a.localeCompare(b, "zh-Hant"));
 
       setProductCategories(categories);
@@ -198,9 +200,9 @@ const NavigationManager = () => {
         url = (formData.externalUrl || "").trim() || undefined;
       } else if (formData.pageId) {
         const selected = pages.find((p) => p.id === formData.pageId);
-        url = normalizeInternalUrlFromSlug(selected?.slug || formData.slug);
+        url = normalizeUrlFromSlug(selected?.slug || formData.slug);
       } else {
-        url = normalizeInternalUrlFromSlug(formData.slug);
+        url = normalizeUrlFromSlug(formData.slug);
       }
 
       const normalizedCategory = (formData.productCategory || "").trim();
@@ -312,7 +314,9 @@ const NavigationManager = () => {
   // DEMO 模式下，正式資料（demoWorkspaceId === ""）為唯讀
   const { isDemoMode, isItemReadOnly } = useDemoMode();
 
-  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+  );
 
   const parentIds = useMemo(() => navItems.map((n) => n.id), [navItems]);
 
@@ -323,7 +327,13 @@ const NavigationManager = () => {
 
     const activeItem = navItems.find((i) => i.id === String(active.id));
     const overItem = navItems.find((i) => i.id === String(over.id));
-    if (!activeItem || !overItem || isItemReadOnly(activeItem) || isItemReadOnly(overItem)) return;
+    if (
+      !activeItem ||
+      !overItem ||
+      isItemReadOnly(activeItem) ||
+      isItemReadOnly(overItem)
+    )
+      return;
 
     const oldIndex = navItems.findIndex((i) => i.id === String(active.id));
     const newIndex = navItems.findIndex((i) => i.id === String(over.id));
@@ -339,13 +349,13 @@ const NavigationManager = () => {
     try {
       // 依專案既有 API：逐筆呼叫 PUT /api/navigation/{id} 更新 sortOrder
       const toUpdate = next.map((item, idx) => ({ item, sortOrder: idx }));
-    const results = await Promise.all(
-      toUpdate
-        .filter(({ item }) => !isItemReadOnly(item))
-        .map(({ item, sortOrder }) =>
-          API_UpdateNavigation(item.id, { sortOrder })
-        )
-    );
+      const results = await Promise.all(
+        toUpdate
+          .filter(({ item }) => !isItemReadOnly(item))
+          .map(({ item, sortOrder }) =>
+            API_UpdateNavigation(item.id, { sortOrder }),
+          ),
+      );
 
       const hasFailure = results.some((r) => !r?.success);
       if (hasFailure) await loadNavigation();
@@ -381,11 +391,19 @@ const NavigationManager = () => {
         >
           <td className={`${styles.tableCell} ${styles.dragCell}`}>
             {readonly ? (
-              <span className={styles.dragHandleWrapper} title="正式資料不可拖曳">
+              <span
+                className={styles.dragHandleWrapper}
+                title="正式資料不可拖曳"
+              >
                 <FiMenu size={18} className={styles.dragHandleDisabled} />
               </span>
             ) : (
-              <span className={styles.dragHandleWrapper} {...attributes} {...listeners} title="拖曳排序">
+              <span
+                className={styles.dragHandleWrapper}
+                {...attributes}
+                {...listeners}
+                title="拖曳排序"
+              >
                 <FiMenu size={18} className={styles.dragHandle} />
               </span>
             )}
@@ -393,8 +411,11 @@ const NavigationManager = () => {
           <td className={`${styles.tableCell} ${styles.nameCell}`}>
             <span className={styles.nameCellContent}>
               {readonly && (
-                <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">
-                 系統資料
+                <span
+                  className={styles.readOnlyBadge}
+                  title="正式網站資料，僅供檢視"
+                >
+                  系統資料
                 </span>
               )}
               {isDemoMode && !readonly && (
@@ -432,7 +453,11 @@ const NavigationManager = () => {
                   onClick={() => toggleVisibility(item)}
                   title={item.isVisible ? "隱藏" : "顯示"}
                 >
-                  {item.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
+                  {item.isVisible ? (
+                    <FiEye size={14} />
+                  ) : (
+                    <FiEyeOff size={14} />
+                  )}
                 </button>
                 <button
                   className={styles.actionButton}
@@ -456,69 +481,81 @@ const NavigationManager = () => {
         {(item.children || []).map((child) => {
           const childReadonly = isItemReadOnly(child);
           return (
-          <tr key={child.id} className={`${styles.tableRow} ${styles.childRow}`}>
-            <td className={`${styles.tableCell} ${styles.dragCell}`} />
-            <td className={`${styles.tableCell} ${styles.nameCell}`}>
-              <span className={styles.childName}>
-                {childReadonly && (
-                  <span className={styles.readOnlyBadge} title="正式網站資料，僅供檢視">系統資料</span>
-                )}
-                {isDemoMode && !childReadonly && (
-                  <span className={styles.readOnlyBadge} title="DEMO 資料">
-                    DEMO 資料
-                  </span>
-                )}
-                <span>↳</span>
-                {child.title}
-              </span>
-            </td>
-            <td className={`${styles.tableCell} ${styles.typeCell}`}>
-              {child.type === "external" ? (
-                <span className={styles.badgeExternal}>
-                  <FiExternalLink size={12} />
-                  外部連結
+            <tr
+              key={child.id}
+              className={`${styles.tableRow} ${styles.childRow}`}
+            >
+              <td className={`${styles.tableCell} ${styles.dragCell}`} />
+              <td className={`${styles.tableCell} ${styles.nameCell}`}>
+                <span className={styles.childName}>
+                  {childReadonly && (
+                    <span
+                      className={styles.readOnlyBadge}
+                      title="正式網站資料，僅供檢視"
+                    >
+                      系統資料
+                    </span>
+                  )}
+                  {isDemoMode && !childReadonly && (
+                    <span className={styles.readOnlyBadge} title="DEMO 資料">
+                      DEMO 資料
+                    </span>
+                  )}
+                  <span>↳</span>
+                  {child.title}
                 </span>
-              ) : (
-                <span className={styles.badgeInternal}>內部頁面</span>
-              )}
-            </td>
-            <td className={`${styles.tableCell} ${styles.statusCell}`}>
-              {child.isVisible ? (
-                <FiEye className={styles.eyeIcon} size={18} />
-              ) : (
-                <FiEyeOff className={styles.eyeOffIcon} size={18} />
-              )}
-            </td>
-            <td className={`${styles.tableCell} ${styles.actionsCell}`}>
-              {childReadonly ? (
-                <span className={styles.readOnlyHint}>僅供檢視</span>
-              ) : (
-                <div className={styles.actions}>
-                  <button
-                    className={styles.actionButton}
-                    onClick={() => toggleVisibility(child)}
-                    title={child.isVisible ? "隱藏" : "顯示"}
-                  >
-                    {child.isVisible ? <FiEye size={14} /> : <FiEyeOff size={14} />}
-                  </button>
-                  <button
-                    className={styles.actionButton}
-                    onClick={() => handleOpenModal(child)}
-                    title="編輯"
-                  >
-                    <FiEdit size={16} />
-                  </button>
-                  <button
-                    className={`${styles.actionButton} ${styles.deleteButton}`}
-                    onClick={() => handleDelete(child.id)}
-                    title="刪除"
-                  >
-                    <FiTrash2 size={16} />
-                  </button>
-                </div>
-              )}
-            </td>
-          </tr>
+              </td>
+              <td className={`${styles.tableCell} ${styles.typeCell}`}>
+                {child.type === "external" ? (
+                  <span className={styles.badgeExternal}>
+                    <FiExternalLink size={12} />
+                    外部連結
+                  </span>
+                ) : (
+                  <span className={styles.badgeInternal}>內部頁面</span>
+                )}
+              </td>
+              <td className={`${styles.tableCell} ${styles.statusCell}`}>
+                {child.isVisible ? (
+                  <FiEye className={styles.eyeIcon} size={18} />
+                ) : (
+                  <FiEyeOff className={styles.eyeOffIcon} size={18} />
+                )}
+              </td>
+              <td className={`${styles.tableCell} ${styles.actionsCell}`}>
+                {childReadonly ? (
+                  <span className={styles.readOnlyHint}>僅供檢視</span>
+                ) : (
+                  <div className={styles.actions}>
+                    <button
+                      className={styles.actionButton}
+                      onClick={() => toggleVisibility(child)}
+                      title={child.isVisible ? "隱藏" : "顯示"}
+                    >
+                      {child.isVisible ? (
+                        <FiEye size={14} />
+                      ) : (
+                        <FiEyeOff size={14} />
+                      )}
+                    </button>
+                    <button
+                      className={styles.actionButton}
+                      onClick={() => handleOpenModal(child)}
+                      title="編輯"
+                    >
+                      <FiEdit size={16} />
+                    </button>
+                    <button
+                      className={`${styles.actionButton} ${styles.deleteButton}`}
+                      onClick={() => handleDelete(child.id)}
+                      title="刪除"
+                    >
+                      <FiTrash2 size={16} />
+                    </button>
+                  </div>
+                )}
+              </td>
+            </tr>
           );
         })}
       </>
@@ -592,11 +629,15 @@ const NavigationManager = () => {
             <table className={styles.table}>
               <thead className={styles.tableHead}>
                 <tr>
-                  <th className={`${styles.tableHeader} ${styles.dragColumn}`}></th>
+                  <th
+                    className={`${styles.tableHeader} ${styles.dragColumn}`}
+                  ></th>
                   <th className={styles.tableHeader}>名稱</th>
                   <th className={styles.tableHeader}>類型</th>
                   <th className={styles.tableHeader}>狀態</th>
-                  <th className={`${styles.tableHeader} ${styles.actionsColumn}`}>
+                  <th
+                    className={`${styles.tableHeader} ${styles.actionsColumn}`}
+                  >
                     操作
                   </th>
                 </tr>
