@@ -29,12 +29,16 @@ model SiteSettings {
   phone           String?
   email           String?
   contactTime     String?
+  contactTimeEn   String?
   address         String?
+  addressEn       String?
   lineQrCode      String?
   socialLinks     Json?
   additionalLinks Json?
   metaTitle       String?   @db.VarChar(255)
+  metaTitleEn     String?   @db.VarChar(255)
   metaDescription String?   @db.Text
+  metaDescriptionEn String? @db.Text
   contactImage    String?   @db.VarChar(2048)
   contactBanner   String?   @db.VarChar(2048)
   createdAt       DateTime @default(now())

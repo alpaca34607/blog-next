@@ -16,6 +16,7 @@ export interface DefaultInputProps {
   placeholder?: string;
   textarea?: boolean;
   options?: { value: string; label: string }[];
+  errorMessage?: string;
 }
 
 const DefaultInput: React.FC<DefaultInputProps> = ({
@@ -28,6 +29,7 @@ const DefaultInput: React.FC<DefaultInputProps> = ({
   placeholder = "",
   textarea = false,
   options = [],
+  errorMessage = "",
 }) => {
   // 控制密碼顯示/隱藏狀態，僅在 type="password" 時使用
   const [showPassword, setShowPassword] = React.useState(false);
@@ -92,7 +94,10 @@ const DefaultInput: React.FC<DefaultInputProps> = ({
             </option>
           ))}
         </select>
-      )}  
+      )}
+      {errorMessage && (
+        <span className={styles.errorMessage}>{errorMessage}</span>
+      )}
     </div>
   );
 };

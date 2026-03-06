@@ -6,6 +6,12 @@ import DefaultInput from "@/components/public/Input";
 import { PiMapPinFill } from "react-icons/pi";
 import { PiPhoneFill } from "react-icons/pi";
 import HeroSection from "@/components/public/sections/HeroSection";
+import { useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
+import emailjs from "@emailjs/browser";
+import { accentOrange } from "@/styles/theme";
+import Swal from "sweetalert2";
+
 // 網站設定介面
 interface SiteSettings {
   phone: string;
@@ -13,13 +19,14 @@ interface SiteSettings {
   lineUrl: string;
   lineQrCode: string;
   contactTime: string;
+  contactTimeEn: string;
   address: string;
+  addressEn: string;
   contactImage: string;
   contactBanner: string;
 }
-
+  
 const ContactPage = () => {
-  const [address, setAddress] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
   const [formData, setFormData] = useState({
@@ -33,6 +40,8 @@ const ContactPage = () => {
     contactNeed: "",
     message: "",
   });
+  const [emailError, setEmailError] = useState("");
+  const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   useEffect(() => {
     // 從 API 獲取網站設定中的地址
@@ -47,13 +56,14 @@ const ContactPage = () => {
             lineUrl: data?.socialLinks?.line || "",
             lineQrCode: data?.lineQrCode || "",
             contactTime: data?.contactTime || "",
+            contactTimeEn: data?.contactTimeEn || "",
             address: data?.address || "",
+            addressEn: data?.addressEn || "",
             contactImage: data?.contactImage || "",
             contactBanner: data?.contactBanner || "",
           };
 
           setSiteSettings(mapped);
-          setAddress(mapped.address || "");
         } else {
           console.error(
             "取得網站設定失敗:",
@@ -69,16 +79,18 @@ const ContactPage = () => {
     };
     fetchSiteSettings();
   }, []);
+  const locale = useLocale();
+  const t = useTranslations("ContactPage");
+  const contactTime = locale === "en" ? siteSettings?.contactTimeEn : siteSettings?.contactTime ;
+  const address = locale === "en" ? siteSettings?.addressEn : siteSettings?.address;
 
   const contactData = [
     {
       id: 1,
-      title: "電話",
+      title: t("phoneTitle"),
       contact: siteSettings?.phone || "02-1234-5678",
       icon: <PiPhoneFill size="100%" />,
-      time:
-        siteSettings?.contactTime ||
-        "週一至週五，09:00~18:00 (國定假日、例假日休息)",
+      time: contactTime || "",
       link: "",
     },
     {
@@ -87,10 +99,8 @@ const ContactPage = () => {
       qrCode:
         siteSettings?.lineQrCode ||
         "https://line.me/ti/p/OD4fPP6GtD",
-      time:
-        siteSettings?.contactTime ||
-        "週一至週五，09:00~18:00 (國定假日、例假日休息)",
-      linkText: "加入LINE",
+      time: contactTime || "",
+      linkText: t("lineAddText"),
       link: siteSettings?.lineUrl || "",
     },
   ];
@@ -100,17 +110,64 @@ const ContactPage = () => {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!e.target.value || !emailRegex.test(e.target.value)) {
-      setFormData({
-        ...formData,
-        [e.target.name]: e.target.value,
-        email: "請輸入正確的電子郵件格式",
-      });
-    } else {
-      setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    if (name === "email") {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      setEmailError(value && !emailRegex.test(value) ? t("emailError") : "");
     }
-    console.log(formData);
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (emailError) return;
+
+    setSubmitStatus("loading");
+
+    try {
+      await emailjs.send(
+        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
+        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
+        {
+          name: formData.name,
+          contact: formData.contact,
+          phone: formData.phone,
+          email: formData.email,
+          lineUrl: formData.lineUrl,
+          source: formData.source,
+          subject: formData.subject,
+          contactNeed: formData.contactNeed,
+          message: formData.message,
+        },
+        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+      );
+
+      setSubmitStatus("success");
+      Swal.fire({
+        icon: "success",
+        title: t("submitSuccess"),
+        text: t("submitSuccessText"),
+        confirmButtonText: t("confirmButtonText"),
+        confirmButtonColor: accentOrange,
+      });
+      // 重置表單
+      setFormData({
+        name: "",
+        contact: "",
+        phone: "",
+        email: "",
+        lineUrl: "",
+        source: "",
+        subject: "",
+        contactNeed: "",
+        message: "",
+      });
+    } catch (error) {
+      console.error("寄送失敗:", error);
+      setSubmitStatus("error");
+    }
   };
 
   return (
@@ -119,8 +176,8 @@ const ContactPage = () => {
       {siteSettings?.contactBanner ? (
         <HeroSection
           section={{
-            title: "聯絡我們",
-            subtitle: "contact us",
+            title: t("heroTitle"),
+            subtitle: t("heroSubtitle"),
             content: "",
             settings: {
               backgroundColor: "transparent",
@@ -134,8 +191,10 @@ const ContactPage = () => {
       ) : (
         <HeroSection
           section={{
-            title: "聯絡我們",
-            subtitle: "contact us",
+            title: t("heroTitle"),
+            titleEn: "Contact Us",
+            subtitle: t("heroSubtitle"),
+            subtitleEn: "Leave a message",
             content: "",
             settings: {
               backgroundColor: "transparent",
@@ -167,11 +226,8 @@ const ContactPage = () => {
       )}
 
       <div className={styles.header}>
-        <h1 className={styles.title}>線上諮詢表單</h1>
-        <p className={styles.description}>
-          布創設計提供部落格形象模板、形象首頁設計、客製化網站開發等服務，若是有網頁製作需求、維護需求或任何寶貴意見，
-          我們都誠摯地邀請您留下訊息，或將資訊傳送到我們專人服務的電子郵件信箱，我們將立即與您聯繫！
-        </p>
+        <h1 className={styles.title}>{t("formTitle")}</h1>
+        <p className={styles.description}>{t("formDescription")}</p>
       </div>
       <div className={styles.container}>
         <div className={styles.cardWrapper}>
@@ -205,124 +261,116 @@ const ContactPage = () => {
             </div>
           ))}
         </div>
-        <form className={styles.contactForm}>
+        <form className={styles.contactForm} onSubmit={handleSubmit}>
           <div className={styles.formgrid}>
             <DefaultInput
-              label="公司名稱/您的大名"
+              label={t("labelName")}
               name="name"
               onChangeFun={handleChange}
               value={formData.name}
-              placeholder="請輸入公司名稱/您的大名"
+              placeholder={t("placeholderName")}
               required={true}
             />
             <DefaultInput
-              label="聯絡窗口"
+              label={t("labelContact")}
               name="contact"
               onChangeFun={handleChange}
               value={formData.contact}
-              placeholder="請輸入您的聯絡窗口"
+              placeholder={t("placeholderContact")}
               required={true}
             />
             <DefaultInput
-              label="聯絡電話"
+              label={t("labelPhone")}
               name="phone"
               onChangeFun={handleChange}
               value={formData.phone}
-              placeholder="請輸入您的聯絡電話"
+              placeholder={t("placeholderPhone")}
               required={true}
             />
             <DefaultInput
-              label="電子郵件"
+              label={t("labelEmail")}
               name="email"
               onChangeFun={handleChange}
               value={formData.email}
-              placeholder="請輸入您的電子郵件"
+              placeholder={t("placeholderEmail")}
               required={true}
+              errorMessage={emailError}
             />
             <DefaultInput
-              label="LINE ID"
+              label={t("labelLine")}
               name="lineUrl"
               onChangeFun={handleChange}
               value={formData.lineUrl}
-              placeholder="請輸入您的LINE ID"
+              placeholder={t("placeholderLine")}
             />
             <DefaultInput
-              label="從哪得知我們的"
+              label={t("labelSource")}
               type="select"
               name="source"
               onChangeFun={handleChange}
               value={formData.source}
-              placeholder="請選擇您從哪得知我們的"
+              placeholder={t("placeholderSource")}
               required={true}
               options={[
                 { value: "google", label: "Google" },
                 { value: "facebook", label: "Facebook" },
                 { value: "youtube", label: "Youtube" },
                 { value: "behance", label: "Behance" },
-                { value: "other", label: "其他" },
+                { value: "other", label: t("optionOther") },
               ]}
             />
             <DefaultInput
-              label="主旨"
+              label={t("labelSubject")}
               name="subject"
               onChangeFun={handleChange}
               value={formData.subject}
-              placeholder="請選擇您的主旨"
+              placeholder={t("placeholderSubject")}
               required={true}
               type="select"
               options={[
-                {
-                  value: "品牌部落格形象模板",
-                  label: "品牌部落格形象模板",
-                },
-                {
-                  value: "形象首頁設計",
-                  label: "形象首頁設計",
-                },
-                { value: "客製化網站開發", label: "客製化網站開發" },
-                { value: "other", label: "其他" },
+                { value: "brand-blog", label: t("subjectBlog") },
+                { value: "homepage-design", label: t("subjectHomepage") },
+                { value: "custom-dev", label: t("subjectCustom") },
+                { value: "other", label: t("optionOther") },
               ]}
             />
             <DefaultInput
-              label="聯繫需求"
+              label={t("labelContactNeed")}
               name="contactNeed"
               onChangeFun={handleChange}
               value={formData.contactNeed}
-              placeholder="請選擇您的聯繫需求"
+              placeholder={t("placeholderContactNeed")}
               required={true}
               type="select"
               options={[
-                {
-                  value: "網站製作諮詢",
-                  label: "網站製作諮詢",
-                },
-                {
-                  value: "維護提問",
-                  label: "維護提問",
-                },
-                {
-                  value: "回饋建議",
-                  label: "回饋建議",
-                },
-
-                {
-                  value: "其他",
-                  label: "其他",
-                },
+                { value: "web-consult", label: t("needWebConsult") },
+                { value: "maintenance", label: t("needMaintenance") },
+                { value: "feedback", label: t("needFeedback") },
+                { value: "other", label: t("optionOther") },
               ]}
             />
           </div>
           <DefaultInput
-            label="留言內容"
+            label={t("labelMessage")}
             name="message"
             onChangeFun={handleChange}
             value=""
-            placeholder="請輸入您的留言內容"
+            placeholder={t("placeholderMessage")}
             required={true}
             textarea={true}
           />
-          <button type="submit" className={styles.submitButton}>
-            送出
+          {submitStatus === "success" && (
+            <p className={styles.successMessage}>{t("submitSuccess")}</p>
+          )}
+          {submitStatus === "error" && (
+            <p className={styles.errorMessage}>{t("submitError")}</p>
+          )}
+          <button
+            type="submit"
+            className={styles.submitButton}
+            disabled={submitStatus === "loading"}
+          >
+            {submitStatus === "loading" ? t("submitting") : t("submitButton")}
           </button>
         </form>
       </div>

@@ -14,6 +14,7 @@ pnpm dev
 bun dev
 ```
 啟動prisma後台 npm run prisma:studio
+更新prisma欄位 npx prisma generate
 
 ---
 
