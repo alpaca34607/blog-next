@@ -14,14 +14,18 @@ export async function GET() {
         siteNameEn: "Blogcraft",
         // SEO（若尚未建立 SiteSettings，回傳安全值以保持介面穩定）
         metaTitle: "Blogcraft",
+        metaTitleEn: "Blogcraft",
         metaDescription: "",
+        metaDescriptionEn: "",
         logo: null,
         footerLogo: null,
         copyright: "© 2024 Blogcraft. All rights reserved.",
         phone: "+886-2-1234-5678",
         email: "contact@blogcraft.com",
         contactTime: "週一至週五 09:00-18:00",
+        contactTimeEn: "Mon–Fri 18:30–22:30 (UTC+8)",
         address: "台北市信義區...",
+        addressEn: "Taipei City, Xinyi District,...",
         lineQrCode: null,
         socialLinks: {
           facebook: "https://facebook.com/blogcraft",
@@ -30,8 +34,8 @@ export async function GET() {
         },
         additionalLinks: [
           {
-            title: "隱私權政策",
-            url: "/privacy",
+            title: "額外連結",
+            url: "/",
           },
         ],
       });

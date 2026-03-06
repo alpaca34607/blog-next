@@ -13,7 +13,9 @@ const siteSettingsSchema = z.object({
   phone: z.string().optional(),
   email: z.string().optional(),
   contactTime: z.string().optional(),
+  contactTimeEn: z.string().optional(),
   address: z.string().optional(),
+  addressEn: z.string().optional(),
   lineQrCode: z.string().optional(),
   socialLinks: z.record(z.string(), z.string()).optional(),
   additionalLinks: z.array(z.object({
@@ -21,7 +23,9 @@ const siteSettingsSchema = z.object({
     url: z.string()
   })).optional(),
   metaTitle: z.string().optional(),
+  metaTitleEn: z.string().optional(),
   metaDescription: z.string().optional(),
+  metaDescriptionEn: z.string().optional(),
   contactImage: z.string().optional(),
   contactBanner: z.string().optional()
 })

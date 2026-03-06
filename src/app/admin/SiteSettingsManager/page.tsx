@@ -44,6 +44,7 @@ interface SiteSettings {
   contactTime: string;
   contactTimeEn: string;
   address: string;
+  addressEn: string;
   contactImage: string;
   contactBanner: string;
   facebookUrl: string;
@@ -69,6 +70,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contactTime: "",
   contactTimeEn: "",
   address: "",
+  addressEn: "",
   contactImage: "",
   contactBanner: "",
   facebookUrl: "",
@@ -111,6 +113,7 @@ export default function SiteSettingsManager() {
           contactTime: data.contactTime || "",
           contactTimeEn: data.contactTimeEn || "",
           address: data.address || "",
+          addressEn: data.addressEn || "",
           contactImage: data.contactImage || "",
           contactBanner: data.contactBanner || "",
           metaTitle: data.metaTitle || "",
@@ -155,6 +158,7 @@ export default function SiteSettingsManager() {
         contactTime: formData.contactTime,
         contactTimeEn: formData.contactTimeEn,
         address: formData.address,
+        addressEn: formData.addressEn,
         lineQrCode: formData.lineQrCode,
         socialLinks: {
           facebook: formData.facebookUrl,
@@ -447,7 +451,7 @@ export default function SiteSettingsManager() {
                           metaTitleEn: e.target.value,
                         })
                       }
-                      placeholder="例如：Blogcraft Co., Ltd."
+                      placeholder="Blogcraft | Blog-Style Website Solutions"
                     />
                   </div>
                   <div className={styles.formGroup}>
@@ -493,6 +497,7 @@ export default function SiteSettingsManager() {
                 </div>
               </div>
               <div className={styles.cardContent}>
+                <div className={styles.formGrid}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
                     <FiPhone size={16} /> 電話
@@ -507,7 +512,6 @@ export default function SiteSettingsManager() {
                     placeholder="例如：02-1234-5678"
                   />
                 </div>
-
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
                     <FiMail size={16} /> Email
@@ -522,7 +526,6 @@ export default function SiteSettingsManager() {
                     placeholder="例如：alpaca34607@gmail.com"
                   />
                 </div>
-                <div className={styles.formGrid}>
                   <div className={styles.formGroup}>
                     <label className={styles.label}>
                       <FiClock size={16} /> 可聯絡時間
@@ -557,25 +560,39 @@ export default function SiteSettingsManager() {
                       placeholder="Mon–Fri 18:30–22:30 (UTC+8)"
                     />
                   </div>
-                </div>
+       
 
-                <div className={styles.formGroup}>
-                  <label className={styles.label}>
-                    <FiMapPin size={16} /> 地址
-                  </label>
-                  <textarea
-                    className={styles.textarea}
-                    value={formData.address}
-                    onChange={(e) =>
-                      setFormData({ ...formData, address: e.target.value })
-                    }
-                    placeholder="辦公室地址"
-                    rows={6}
-                  />
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiMapPin size={16} /> 地址
+                    </label>
+                    <textarea
+                      className={styles.textarea}
+                      value={formData.address}
+                      onChange={(e) =>
+                        setFormData({ ...formData, address: e.target.value })
+                      }
+                      placeholder="辦公室地址"
+                      rows={2}
+                    />
+                  </div>
+                  <div className={styles.formGroup}>
+                    <label className={styles.label}>
+                      <FiMapPin size={16} /> 地址(英文)
+                    </label>
+                    <textarea
+                      className={styles.textarea}
+                      value={formData.addressEn}
+                      onChange={(e) =>
+                        setFormData({ ...formData, addressEn: e.target.value })
+                      }
+                      placeholder="辦公室地址 (英文)"
+                      rows={2}
+                    />
+                  </div>
                 </div>
-
                 {/* 聯絡我們圖片 */}
-                
+
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
                     <FiImage size={16} /> 聯絡我們圖片
