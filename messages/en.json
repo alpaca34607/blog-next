@@ -90,10 +90,16 @@
     "labelMessage": "Message",
     "placeholderMessage": "Enter your message",
     "emailError": "Please enter a valid email address",
+    "emailErrorText": "Please enter a valid email address",
+    "requiredError": "This field is required",
     "submitButton": "Submit",
     "submitting": "Submitting...",
-    "submitSuccess": "Thank you for reaching out! We'll get back to you shortly.",
-    "submitError": "Submission failed. Please try again or contact us directly."
+    "submitSuccess": "Thank you for reaching out",
+    "submitSuccessText": "We have received your message and will contact you shortly.",
+    "submitError": "Submission failed",
+    "submitErrorText": "Please try again or contact us directly.",
+    "confirmButtonText": "OK"
+    
   },
   "login": {
     "loginTitle": "CMS Backend Management System",

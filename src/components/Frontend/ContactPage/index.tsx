@@ -29,18 +29,21 @@ interface SiteSettings {
 const ContactPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [siteSettings, setSiteSettings] = useState<SiteSettings | null>(null);
+  // 下拉選單預設為第一個選項
   const [formData, setFormData] = useState({
     name: "",
     contact: "",
     phone: "",
     email: "",
     lineUrl: "",
-    source: "",
-    subject: "",
-    contactNeed: "",
+    source: "google",
+    subject: "品牌部落格形象模板",
+    contactNeed: "網站製作諮詢",
     message: "",
   });
   const [emailError, setEmailError] = useState("");
+  // 必填欄位錯誤訊息，key 為欄位 name
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [submitStatus, setSubmitStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
   useEffect(() => {
@@ -117,12 +120,46 @@ const ContactPage = () => {
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       setEmailError(value && !emailRegex.test(value) ? t("emailError") : "");
     }
+    // 使用者輸入時清除該欄位的必填錯誤
+    if (fieldErrors[name]) {
+      setFieldErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
+
+  // 必填欄位名稱列表
+  const REQUIRED_FIELDS = ["name", "contact", "phone", "email", "source", "subject", "contactNeed", "message"] as const;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (emailError) return;
+    if (emailError) {
+      Swal.fire({
+        icon: "error",
+        title: t("emailError"),
+        text: t("emailErrorText"),
+        confirmButtonText: t("confirmButtonText"),
+        confirmButtonColor: accentOrange,
+      });
+      return;
+    }
+
+    // 驗證必填欄位，收集錯誤並顯示在欄位下方
+    const errors: Record<string, string> = {};
+    for (const field of REQUIRED_FIELDS) {
+      const value = formData[field];
+      if (value === undefined || String(value).trim() === "") {
+        errors[field] = t("requiredError");
+      }
+    }
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      return;
+    }
+    setFieldErrors({});
 
     setSubmitStatus("loading");
 
@@ -152,21 +189,30 @@ const ContactPage = () => {
         confirmButtonText: t("confirmButtonText"),
         confirmButtonColor: accentOrange,
       });
-      // 重置表單
+      // 重置表單與欄位錯誤（下拉選單還原為第一個選項）
       setFormData({
         name: "",
         contact: "",
         phone: "",
         email: "",
         lineUrl: "",
-        source: "",
-        subject: "",
-        contactNeed: "",
+        source: "google",
+        subject: "brand-blog",
+        contactNeed: "web-consult",
         message: "",
       });
+      setFieldErrors({});
     } catch (error) {
       console.error("寄送失敗:", error);
       setSubmitStatus("error");
+      Swal.fire({
+        icon: "error",
+        title: t("submitError"),
+        text: t("submitErrorText"),
+        confirmButtonText: t("confirmButtonText"),
+        confirmButtonColor: accentOrange,
+      });
+      return;
     }
   };
 
@@ -270,6 +316,7 @@ const ContactPage = () => {
               value={formData.name}
               placeholder={t("placeholderName")}
               required={true}
+              errorMessage={fieldErrors.name}
             />
             <DefaultInput
               label={t("labelContact")}
@@ -278,6 +325,7 @@ const ContactPage = () => {
               value={formData.contact}
               placeholder={t("placeholderContact")}
               required={true}
+              errorMessage={fieldErrors.contact}
             />
             <DefaultInput
               label={t("labelPhone")}
@@ -286,6 +334,7 @@ const ContactPage = () => {
               value={formData.phone}
               placeholder={t("placeholderPhone")}
               required={true}
+              errorMessage={fieldErrors.phone}
             />
             <DefaultInput
               label={t("labelEmail")}
@@ -311,6 +360,7 @@ const ContactPage = () => {
               value={formData.source}
               placeholder={t("placeholderSource")}
               required={true}
+              errorMessage={fieldErrors.source}
               options={[
                 { value: "google", label: "Google" },
                 { value: "facebook", label: "Facebook" },
@@ -327,6 +377,7 @@ const ContactPage = () => {
               placeholder={t("placeholderSubject")}
               required={true}
               type="select"
+              errorMessage={fieldErrors.subject}
               options={[
                 { value: "brand-blog", label: t("subjectBlog") },
                 { value: "homepage-design", label: t("subjectHomepage") },
@@ -342,6 +393,7 @@ const ContactPage = () => {
               placeholder={t("placeholderContactNeed")}
               required={true}
               type="select"
+              errorMessage={fieldErrors.contactNeed}
               options={[
                 { value: "web-consult", label: t("needWebConsult") },
                 { value: "maintenance", label: t("needMaintenance") },
@@ -354,10 +406,11 @@ const ContactPage = () => {
             label={t("labelMessage")}
             name="message"
             onChangeFun={handleChange}
-            value=""
+            value={formData.message}
             placeholder={t("placeholderMessage")}
             required={true}
             textarea={true}
+            errorMessage={fieldErrors.message}
           />
           {submitStatus === "success" && (
             <p className={styles.successMessage}>{t("submitSuccess")}</p>

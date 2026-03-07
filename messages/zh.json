@@ -90,10 +90,15 @@
     "labelMessage": "留言內容",
     "placeholderMessage": "請輸入您的留言內容",
     "emailError": "請輸入正確的電子郵件格式",
+    "emailErrorText": "請輸入正確的電子郵件格式",
+    "requiredError": "此欄位為必填",
     "submitButton": "送出",
     "submitting": "送出中...",
-    "submitSuccess": "感謝您的來信，我們將盡快與您聯繫！",
-    "submitError": "送出失敗，請稍後再試或直接與我們聯繫。"
+    "submitSuccess": "感謝您的來信",
+    "submitSuccessText": "我們已收到您的訊息，將盡快與您聯繫。",
+    "submitError": "送出失敗",
+    "submitErrorText": "請稍後再試或直接與我們聯繫。",
+    "confirmButtonText": "確定"
   },
   "login": {
     "loginTitle": "CMS 後台管理系統",
