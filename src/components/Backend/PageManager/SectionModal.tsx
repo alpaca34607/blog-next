@@ -1149,6 +1149,7 @@ const SectionModal = ({
               <ButtonSettingsForm
                 value={{
                   buttonText: (formData.settings as any)?.buttonText,
+                  buttonTextEn: (formData.settings as any)?.buttonTextEn,
                   buttonLink: (formData.settings as any)?.buttonLink,
                 }}
                 onChange={(values) =>
@@ -1262,6 +1263,7 @@ const SectionModal = ({
               <ButtonSettingsForm
                 value={{
                   buttonText: (formData.settings as any)?.buttonText,
+                  buttonTextEn: (formData.settings as any)?.buttonTextEn,
                   buttonLink: (formData.settings as any)?.buttonLink,
                 }}
                 onChange={(values) =>
