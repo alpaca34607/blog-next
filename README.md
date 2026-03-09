@@ -43,6 +43,11 @@ https://blogcreation-next.vercel.app/zh
 - 遷移方式：`mysqldump --set-gtid-purged=OFF --single-transaction --default-character-set=utf8mb4` 匯出後匯入
 - 資料完整搬移，Schema 與資料內容不變
 
+- 從 RDS 備份並轉換的指令（密碼為 RDS 的密碼，詳見 `.env`）
+```bash
+cmd /c '"C:\Program Files\MySQL\MySQL Server 8.4\bin\mysqldump.exe" -h <rds-endpoint> -u admin -p<RDS密碼> --set-gtid-purged=OFF --single-transaction --default-character-set=utf8mb4 blogcraft-dev > backup.sql'
+```
+
 ### 完整 `.env` 範例
 
 ```env
