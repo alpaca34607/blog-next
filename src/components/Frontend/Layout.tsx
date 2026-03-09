@@ -18,6 +18,8 @@ const Layout = ({ children }: LayoutProps) => {
   ]);
   const [isLoading, setIsLoading] = useState(true);
   const { pendingCount } = useAppLoading();
+  // pendingCount 初始為 0，需等到至少有一次任務啟動後歸零才算資料就緒
+  const [taskEverStarted, setTaskEverStarted] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -68,7 +70,11 @@ const Layout = ({ children }: LayoutProps) => {
     };
   }, [isLoading]);
 
-  const isDataReady = pendingCount === 0;
+  useEffect(() => {
+    if (pendingCount > 0) setTaskEverStarted(true);
+  }, [pendingCount]);
+
+  const isDataReady = taskEverStarted && pendingCount === 0;
 
   return (
     <div className={styles.layoutContainer}>
