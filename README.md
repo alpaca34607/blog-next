@@ -26,8 +26,22 @@ https://blogcreation-next.vercel.app/zh
 
 ## 環境建置
 
-本專案使用 **MySQL + Prisma** 作為資料層，資料庫部署於 AWS RDS。
+本專案使用 **MySQL + Prisma** 作為資料層。
 圖片與靜態檔案存放於 **AWS S3**
+
+### 資料庫遷移記錄
+
+**2026/03/09 前 — AWS RDS (MySQL)**
+- 平台：AWS RDS，部署於 ap-northeast-1（東京）
+- 資料庫名稱：`blogcraft-dev`
+- 包含資料：users × 2、pages × 6、sections × 29 等
+
+**2026/03/09 — 遷移至 TiDB Cloud Serverless**
+- 遷移原因：AWS RDS 免費方案到期，TiDB Cloud Serverless 提供永久免費方案
+- 平台：TiDB Cloud Serverless，部署於 ap-northeast-1（東京）
+- 資料庫名稱：`blogcraft-dev`
+- 遷移方式：`mysqldump --set-gtid-purged=OFF --single-transaction --default-character-set=utf8mb4` 匯出後匯入
+- 資料完整搬移，Schema 與資料內容不變
 
 ### 完整 `.env` 範例
 
