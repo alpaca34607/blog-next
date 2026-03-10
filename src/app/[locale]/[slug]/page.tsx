@@ -20,29 +20,41 @@ export async function generateMetadata({
         select: {
           title: true,
           metaTitle: true,
+          metaTitleEn: true,
           metaDescription: true,
+          metaDescriptionEn: true,
           isPublished: true,
         },
       }),
       prisma.siteSettings.findFirst({
         select: {
           siteName: true,
+          siteNameEn: true,
         },
       }),
     ]);
 
+    const isEn = locale === "en";
+    const fallbackSiteName = (isEn ? siteSettings?.siteNameEn : siteSettings?.siteName)
+      || siteSettings?.siteName
+      || "Blogcraft";
+
     if (!page || !page.isPublished) {
-      const fallbackSiteName = siteSettings?.siteName || "Blogcraft";
       return {
-        title: `找不到頁面 | ${fallbackSiteName}`,
+        title: isEn ? `Page Not Found | ${fallbackSiteName}` : `找不到頁面 | ${fallbackSiteName}`,
         description: "",
         robots: { index: false, follow: false },
       };
     }
 
-    const fallbackSiteName = siteSettings?.siteName || "Blogcraft";
-    const title = page.metaTitle || page.title || fallbackSiteName;
-    const description = page.metaDescription || "";
+    // 依語系優先讀取對應欄位，再 fallback 至中文欄位
+    const title = (isEn ? page.metaTitleEn : page.metaTitle)
+      || page.metaTitle
+      || page.title
+      || fallbackSiteName;
+    const description = (isEn ? page.metaDescriptionEn : page.metaDescription)
+      || page.metaDescription
+      || "";
 
     return {
       title,

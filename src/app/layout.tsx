@@ -2,49 +2,15 @@ import { ReduxProvider } from "@/store/provider";
 import ScrollToTop from "@/components/Frontend/Components/ScrollToTop";
 import "@/styles/globals.scss";
 import type { Metadata } from "next";
-import { prisma } from "@/lib/prisma";
 
-export async function generateMetadata(): Promise<Metadata> {
-  // 全站預設 SEO：優先使用 SiteSettings 的 metaTitle/metaDescription；若未填寫則使用既有文案作為 fallback
-  const settings = await prisma.siteSettings
-    .findFirst({
-      select: {
-        siteName: true,
-        metaTitle: true,
-        metaDescription: true,
-      },
-    })
-    .catch(() => null);
-
-  const siteName = settings?.siteName || "布創 BLOGCRAFT";
-  const fallbackTitle = `${siteName} | 部落格式形象網頁方案`;
-  const fallbackDescription =
-    "專為客戶打造部落格式形象網頁，主打模板化快速上線、簡約版面、後台輕鬆管理與便利維護，讓內容更新像寫部落格一樣自然。";
-
-  const metaTitle =
-    (typeof settings?.metaTitle === "string" && settings.metaTitle.trim()) ||
-    fallbackTitle;
-  const metaDescription =
-    (typeof settings?.metaDescription === "string" &&
-      settings.metaDescription.trim()) ||
-    fallbackDescription;
-
-  return {
-    title: {
-      default: metaTitle,
-      template: `%s | ${siteName}`,
-    },
-    description: metaDescription,
-    keywords: ["形象網站", "部落格網站", "網站模板", "內容管理", "後台管理", "簡約設計"],
-    openGraph: {
-      title: metaTitle,
-      description: metaDescription,
-      type: "website",
-      locale: "zh_TW",
-      siteName,
-    },
-  };
-}
+// 根層級僅提供最基本的 fallback，語系相關的 SEO 由 [locale]/layout.tsx 處理
+export const metadata: Metadata = {
+  title: {
+    default: "布創 BLOGCRAFT",
+    template: "%s | 布創 BLOGCRAFT",
+  },
+  description: "專為客戶打造部落格式形象網頁，主打模板化快速上線、簡約版面、後台輕鬆管理與便利維護。",
+};
 
 export default function RootLayout({
   children,
