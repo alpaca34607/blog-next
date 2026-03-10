@@ -141,11 +141,11 @@ const HeroSection = ({
         {/* {page?.logo && (
           <img src={page.logo} alt="logo" className={styles.logo} />
         )} */}
-        {subtitle && <p className={styles.subtitle}>{subtitle}</p>}
         {title && <h1 className={styles.title}>{title}</h1>}
-        {section.content && !isRichTextEmpty(section.content) && (
+        {subtitle && <h2 className={styles.subtitle}>{subtitle}</h2>}
+        {/* {section.content && !isRichTextEmpty(section.content) && (
           <p className={styles.description}>{section.content}</p>
-        )}
+        )} */}
       </div>
     </section>
   );
