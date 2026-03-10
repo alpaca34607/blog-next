@@ -8,6 +8,7 @@ import {
 } from "../PageSectionSettingsForm";
 import styles from "./PageModal.module.scss";
 import type { Page, Product } from "@/types/page";
+import { useDemoMode } from "@/hooks/useDemoMode";
 
 type PageType = "page" | "product";
 
@@ -26,6 +27,9 @@ const PageModal = ({
   editingPage,
   type = "page",
 }: PageModalProps) => {
+  const { isDemoMode } = useDemoMode();
+  // 產品管理在 Demo 模式下僅供檢視，不允許新增或儲存
+  const isReadOnly = isDemoMode && type === "product";
   const [formData, setFormData] = useState<Partial<Page | Product>>({
     title: "",
     titleEn: "",
@@ -143,7 +147,12 @@ const PageModal = ({
     <div className={styles.modalOverlay}>
       <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
-          <h2 className={styles.modalTitle}>{modalTitle}</h2>
+          <div className={styles.modalTitleRow}>
+            <h2 className={styles.modalTitle}>{modalTitle}</h2>
+            {isReadOnly && (
+              <span className={styles.readOnlyBadge}>（僅供檢視）</span>
+            )}
+          </div>
           <button className={styles.closeButton} onClick={onClose}>
             <FiX size={24} />
           </button>
@@ -509,9 +518,11 @@ const PageModal = ({
             >
               取消
             </button>
-            <button type="submit" className={styles.saveButton}>
-              儲存
-            </button>
+            {!isReadOnly && (
+              <button type="submit" className={styles.saveButton}>
+                儲存
+              </button>
+            )}
           </div>
         </form>
       </div>

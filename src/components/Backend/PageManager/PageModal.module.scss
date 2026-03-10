@@ -59,10 +59,26 @@
   z-index: 10;
 }
 
+.modalTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .modalTitle {
   font-size: 24px;
   font-weight: 700;
   color: $text-main;
+}
+
+.readOnlyBadge {
+  font-size: 16px;
+  font-weight: 600;
+  color: $text-muted;
+  border-radius: 4px;
+  padding: 2px 8px;
+  white-space: nowrap;
 }
 
 .closeButton {
