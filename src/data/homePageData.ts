@@ -102,9 +102,11 @@ export const servicesData: Product[] = [
 export interface NewsArticle {
   id: string;
   title: string;
+  titleEn?: string;
   slug: string;
   category: string;
   excerpt: string;
+  excerptEn?: string;
   content: string;
   featuredImage: string;
   publishDate: string;
@@ -116,10 +118,13 @@ export const newsData: NewsArticle[] = [
   {
     id: "1",
     title: "小編筆記：模板先上線，再慢慢把內容養起來",
+    titleEn: "Design Cheat Sheet: Why “Minimal Templates” Are More Timeless",
     slug: "#",
     category: "小編分享",
     excerpt:
       "先用模板把架構搭起來（首頁、文章列表、分類），再用日常更新把內容養起來；比起一次到位，這種做法更適合長期經營。小編建議先把版面規則固定住，後續只要專注寫內容、換圖片、調整段落就好。",
+    excerptEn:
+      "Adapted from a senior designer’s talk: Minimalism isn’t about being plain—it’s about having clear rules and a steady rhythm. When whitespace, typography scale, and spacing are properly contro",
     content:
       "<p>小編最近整理了一些做網站的心得：與其等到每個區塊都「完美」才上線，不如先用模板把架構搭好——首頁、文章列表、分類頁先到位，版面也會比較一致。上線後再把重心放在內容：每週一篇更新、每次一個主題，把品牌故事慢慢養起來，網站就會越來越完整。</p>",
     featuredImage: "/images/news/0814.png",
@@ -130,11 +135,14 @@ export const newsData: NewsArticle[] = [
   {
     id: "2",
     title: "轉分享：把網站更新流程做簡單，才會真的有人持續寫",
+    titleEn: "Editor’s Note: Launch the Templates First, Then Cultivate Content Gradually",
     slug: "#",
     category: "轉分享",
     excerpt:
       "整理自內容行銷常見建議：先降低更新門檻，網站才會真的有人持續寫。頁面、文章、分類、摘要都能在後台完成，就不會每次小改都卡住。越少人需要被「叫來支援」，更新頻率通常就越穩。",
-    content:
+    excerptEn:
+      "Launch site structures first to beat perfectionism. Templates are soil; content is the plant. Clear frameworks reduce fatigue and ensure steady brand growth.",
+      content:
       "<p>這篇是小編整理／轉分享的重點：網站會不會常更新，通常不是因為大家不想寫，而是「更新太麻煩」。如果新增文章、改段落順序、替換圖片都要找工程，那更新很快就停了。部落格式形象網頁最實用的地方，是把日常維護放進後台：建立頁面、發布文章、設定分類與摘要，甚至微調版面內容順序，都能直接操作完成。</p>",
     featuredImage: "/images/news/0703.png",
     publishDate: "2025-07-03",
@@ -144,11 +152,14 @@ export const newsData: NewsArticle[] = [
   {
     id: "3",
     title: "設計小抄：為什麼「簡約模板」反而更耐看？",
+    titleEn: "Design Cheat Sheet: Why “Minimal Templates” Are More Timeless",
     slug: "#",
     category: "設計觀點",
     excerpt:
       "小編最常被問：簡約是不是很無聊？其實重點是留白、字級與間距一致，讀起來更舒服，也更不容易越改越亂。當文章越來越多，一套固定的模板規則反而能讓內容更突出、視覺更耐看。",
-    content:
+    excerptEn:
+      "Keep content alive by lowering update barriers. A website should be a tool, not a tech project. Smooth workflows ensure consistency more than flashy features.",
+      content:
       "<p>這篇是小編的設計心得筆記：簡約不是「什麼都不要放」，而是把規則訂清楚。像是同一層級的標題字級一致、段落行距固定、卡片圖片比例統一、留白不要忽大忽小。當網站內容越來越多，這些規則會救你——不會因為多加幾篇文章就讓版面走鐘。模板化設計最大的好處，就是把一致性先做好，讓內容更突出、閱讀更順。</p>",
     featuredImage: "/images/news/0621.png",
     publishDate: "2025-06-21",

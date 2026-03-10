@@ -7,6 +7,7 @@ import styles from "./NewsSection.module.scss";
 import Image from "next/image";
 import { API_GetNews } from "@/app/api/frontend_api";
 import { useDemoUuid } from "@/hooks/useDemoUuid";
+import { useLocale } from "next-intl";
 
 const NewsSection = () => {
   const t = useTranslations("homePage");
@@ -60,9 +61,11 @@ const NewsSection = () => {
           const allNews: NewsArticle[] = items.map((n: any) => ({
             id: n.id,
             title: n.title,
+            titleEn: n.titleEn ?? "",
             slug: n.slug,
             category: n.category ?? "",
             excerpt: n.excerpt ?? "",
+            excerptEn: n.excerptEn ?? "",
             content: n.content ?? "",
             featuredImage: n.featuredImage ?? "",
             publishDate: n.publishDate ? String(n.publishDate) : "",
@@ -95,6 +98,8 @@ const NewsSection = () => {
       window.removeEventListener("newsUpdated", handleNewsUpdated);
     };
   }, [demoUuid]);
+  const locale = useLocale();
+  const isEn = locale === "en";
 
   return (
     <div id="news-section-wrapper" className={styles.newsSectionWrapper}>
@@ -102,7 +107,7 @@ const NewsSection = () => {
       <section ref={sectionRef} className={styles.newsSection}>
         <div className={styles.title}>
           <h2>{t("newsTitle")}</h2>
-          <p>{t("newsSubtitle")}</p>
+          <span>{t("newsSubtitle")}</span>
         </div>
         <div className={styles.list} id="news-section__list">
           {(newsList.length > 0 ? newsList : newsData).map((item) => (
@@ -121,9 +126,9 @@ const NewsSection = () => {
                   );
                 })()}
                 <div className={styles.cardContent}>
-                  <h3>{item.title}</h3>
+                  <h3>{isEn ? (item.titleEn || item.title) : item.title}</h3>
                   <span>{(item.publishDate || "").slice(0, 10)}</span>
-                  <p>{item.excerpt}</p>
+                  <p>{isEn ? (item.excerptEn || item.excerpt) : item.excerpt}</p>
                 </div>
                 <Link href={`/news/${item.slug}`} className={styles.cardLink}>
                   {t("newsViewMore")}
