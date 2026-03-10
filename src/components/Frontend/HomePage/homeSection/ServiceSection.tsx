@@ -13,6 +13,7 @@ import { BsCursorFill } from "react-icons/bs";
 import { API_GetProducts } from "@/app/api/frontend_api";
 import { Link } from "@/navigation";
 import { useDemoUuid } from "@/hooks/useDemoUuid";
+import { useLocale } from "next-intl";
 
 // 註冊 ScrollTrigger 插件
 if (typeof window !== "undefined") {
@@ -25,6 +26,8 @@ interface ServiceSectionProps {
 
 const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
   const t = useTranslations("homePage");
+  const locale = useLocale();
+  const isEn = locale === "en";
   const demoUuid = useDemoUuid();
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const [servicesList, setServicesList] = useState<Product[]>([]);
@@ -51,14 +54,17 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
           const allProducts: Product[] = items.map((p: any) => ({
             id: p.id,
             title: p.title,
+            titleEn: p.titleEn ?? undefined,
             slug: p.slug,
             metaTitle: p.metaTitle ?? undefined,
             metaDescription: p.metaDescription ?? undefined,
+            metaDescriptionEn: p.metaDescriptionEn ?? undefined,
             category: p.category ?? undefined,
             logo: p.logo ?? undefined,
             externalUrl: p.externalUrl ?? undefined,
             videoUrl: p.videoUrl ?? undefined,
             introImage: p.introImage ?? undefined,
+            introImageEn: p.introImageEn ?? undefined,
             navOrder: typeof p.sortOrder === "number" ? p.sortOrder : undefined,
             isPublished: !!p.isPublished,
             isFeatured: p.isFeatured ?? false,
@@ -71,7 +77,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
         } else if (response) {
           console.error(
             "取得產品資料失敗:",
-            response?.error?.message || "未知錯誤"
+            response?.error?.message || "未知錯誤",
           );
         }
       } catch (error) {
@@ -79,9 +85,10 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
       }
     };
 
+
     // 監聽產品資料更新事件
     const handleProductsUpdated = () => {
-      // 改為直接重新呼叫 API，避免依賴 localStorage
+      // 重新呼叫 API
       fetchProducts().catch(() => {});
     };
 
@@ -134,6 +141,9 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
     onVideoOpen(videoUrl);
   };
 
+// 使用第一個服務的 slug 作為連結
+  const serviceLink = servicesList.length > 0 ? `/${servicesList[0].slug}` : "/contact";
+
   return (
     <>
       <div
@@ -145,7 +155,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
             <h2 className={styles.title}>{t("serviceTitle")}</h2>
             <p className={styles.byline}>{t("serviceByline")}</p>
             <p className={styles.description}>{t("serviceDescription")}</p>
-            <a href="#" className={styles.link}>
+            <Link href={serviceLink} className={styles.link}>
               {t("serviceLink")}
               <div className={styles.linkIconWrapper}>
                 <svg
@@ -164,7 +174,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                   />
                 </svg>
               </div>
-            </a>
+            </Link>
           </div>
           <div
             ref={rightRef}
@@ -180,7 +190,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                     activeIndex === index && styles.active,
                     activeIndex !== null &&
                       activeIndex !== index &&
-                      styles.hidden
+                      styles.hidden,
                   )}
                   onClick={(e) => handleArticleClick(index, e)}
                 >
@@ -205,11 +215,9 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                         })()}
                       </div>
                       <div className={styles.infoarea}>
-                        <h3 className={styles.articleTitle}>{service.title}</h3>
+                        <h3 className={styles.articleTitle}>{isEn ? (service.titleEn || service.title) : service.title}</h3>
                         <p className={styles.articleDescription}>
-                          {service.metaDescription ||
-                            service.heroSubtitle ||
-                            ""}
+                          {isEn ? (service.metaDescriptionEn || service.metaDescription) : service.metaDescription}
                         </p>
                       </div>
                     </div>
@@ -223,8 +231,8 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                         <FaPlay />
                       </button>
                     )}
-                    {!service.videoUrl && (
-                      service.externalUrl ? (
+                    {!service.videoUrl &&
+                      (service.externalUrl ? (
                         <a
                           className={cn(styles.playbtn)}
                           href={service.externalUrl}
@@ -240,8 +248,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                         >
                           <BsCursorFill />
                         </Link>
-                      )
-                    )}
+                      ))}
                   </div>
                   <div className={styles.serviceimgWrapper}>
                     <div className={styles.serviceimg}>
@@ -252,22 +259,19 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                           target="_blank"
                           rel="noopener noreferrer"
                         >
-                          {t("learnMore")} {service.title}
+                          {t("learnMore")} {isEn ? (service.titleEn || service.title) : service.title}
                         </a>
                       ) : (
                         <Link
                           href={`/${service.slug}`}
                           className={styles.servicepageLink}
                         >
-                          {t("learnMore")} {service.title}
+                          {t("learnMore")} {isEn ? (service.titleEn || service.title) : service.title}
                         </Link>
                       )}
                       {(() => {
                         const introSrc =
-                          normalizeImageSrc(service.introImage) ||
-                          normalizeImageSrc(service.heroImages?.[0]) ||
-                          normalizeImageSrc(service.thumbImage) ||
-                          normalizeImageSrc(service.logo);
+                          normalizeImageSrc(isEn ? (service.introImageEn || service.introImage) : service.introImage) 
                         if (!introSrc) return null;
                         return (
                           <Image
@@ -281,7 +285,7 @@ const ServiceSection = ({ onVideoOpen }: ServiceSectionProps) => {
                     </div>
                   </div>
                 </div>
-              )
+              ),
             )}
           </div>
         </section>

@@ -1,9 +1,11 @@
 export interface BasePage {
   id: string;
   title: string;
+  titleEn?: string;
   slug: string;
   metaTitle?: string;
   metaDescription?: string;
+  metaDescriptionEn?: string;
   heroTitle?: string;
   heroSubtitle?: string;
   heroImages?: string[];
@@ -19,6 +21,7 @@ export interface Product extends BasePage {
   // 服務相關的額外欄位（用於 ServiceSection）
   thumbImage?: string;
   introImage?: string;
+  introImageEn?: string;
   videoUrl?: string;
 }
 
@@ -26,17 +29,20 @@ export const servicesData: Product[] = [
   {
     id: "1",
     title: "品牌部落格形象模板",
+    titleEn: "Blog Template",
     slug: "#",
-    category: "網站模板",
+    category: "網頁建構方案",
     heroTitle: "品牌部落格形象模板",
-    heroSubtitle:
-      "使用內建區塊版型，快速建立頁面與圖文配置，讓內容發佈更有節奏。",
+    heroSubtitle: "Blog Template",
     metaDescription:
       "使用內建區塊版型，快速建立頁面與圖文配置，讓內容發佈更有節奏。",
+    metaDescriptionEn:
+      "We provide brand website design and homepage development, optimizing layout, visual style, and user experience to help brands establish a clear and distinctive online presence.",
     heroImages: ["/images/services/VirtualES-intro.jpg"],
     logo: "/images/services/service-blog.png",
     thumbImage: "/images/services/service-blog.png",
     introImage: "/images/services/service-blog-intro.png",
+    introImageEn: "/images/services/service-blog-intro-en.jpg",
     videoUrl: "https://www.youtube.com/embed/MxPdn6jJMMQ?si=erikyLY85bhOvooV",
     externalUrl: "/contact",
     navOrder: 1,
@@ -45,18 +51,22 @@ export const servicesData: Product[] = [
   },
   {
     id: "2",
-    title: "形象首頁設計",
+    title: "風格化介面設計",
+    titleEn: "Web Design",
     slug: "#",
-    category: "網站模板",
-    heroTitle: "形象首頁設計",
+    category: "網頁建構方案",
+    heroTitle: "品牌部落格形象模板",
     heroSubtitle:
-      "根據您的品牌形象與需求，量身打造獨特的首頁設計，讓您的品牌在眾多競爭者中脫穎而出。",
+      "Web Design",
     metaDescription:
       "根據您的品牌形象與需求，量身打造獨特的首頁設計，讓您的品牌在眾多競爭者中脫穎而出。",
+    metaDescriptionEn:
+      "We provide brand website design and homepage development, optimizing layout, visual style, and user experience to help brands establish a clear and distinctive online presence.",
     heroImages: ["/images/services/landingpage-design-intro.jpg"],
     logo: "/images/services/landingpage-design.png",
     thumbImage: "/images/services/landingpage-design.png",
     introImage: "/images/services/landingpage-design-intro.png",
+    introImageEn: "/images/services/landingpage-design-intro-en.jpg",
     videoUrl: "https://www.youtube.com/embed/MxPdn6jJMMQ?si=erikyLY85bhOvooV",
     externalUrl: "/contact",
     navOrder: 2,
@@ -66,17 +76,21 @@ export const servicesData: Product[] = [
   {
     id: "3",
     title: "客製化網站開發",
+    titleEn: "Custom Development",
     slug: "#",
-    category: "網站模板",
+    category: "網頁建構方案",
     heroTitle: "客製化網站開發",
     heroSubtitle:
-      "您的品牌有獨特的營運需求？我們可以為您規劃兼具美感與體貼近使用者需求的網站，並提供完整的開發與維護服務。",
+      "Custom Development",
     metaDescription:
       "您的品牌有獨特的營運需求？我們可以為您規劃兼具美感與體貼近使用者需求的網站，並提供完整的開發與維護服務。",
-    heroImages: ["/images/services/customization-intro.jpg"],
+    metaDescriptionEn:
+      "Do you have unique operational needs for your brand? We can plan websites that are both beautiful and user-friendly, and provide complete development and maintenance services.",
+      heroImages: ["/images/services/customization-intro.jpg"],
     logo: "/images/services/customization.png",
     thumbImage: "/images/services/customization.png",
     introImage: "/images/services/customization-intro.png",
+    introImageEn: "/images/services/customization-intro-en.jpg",
     videoUrl: "https://www.youtube.com/embed/MxPdn6jJMMQ?si=erikyLY85bhOvooV",
     externalUrl: "/contact",
     navOrder: 3,
@@ -233,7 +247,6 @@ export const partnersData = [
 
 // Success Cases Data Array
 export const successCasesData = [
-
   {
     id: 1,
     name: "GonirMator",
