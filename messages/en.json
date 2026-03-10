@@ -2,6 +2,7 @@
   "common": {
     "loading": "Loading…",
     "notFound": "This page does not exist or has not been published",
+    "noContent": "This page has no content yet",
     "close": "Close"
   },
   "homePage": {

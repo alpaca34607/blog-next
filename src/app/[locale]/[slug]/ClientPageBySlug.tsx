@@ -284,7 +284,22 @@ const ClientPageBySlug = () => {
                   />
                 )}
 
-                {sections.map((section) => renderSection(section))}
+                {sections.length > 0 ? (
+                  sections.map((section) => renderSection(section))
+                ) : (
+                  <div
+                    style={{
+                      height: "100vh",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      padding: "4rem 1.5rem",
+                      textAlign: "center",
+                    }}
+                  >
+                    {t("noContent")}
+                  </div>
+                )}
               </>
             );
           })()}

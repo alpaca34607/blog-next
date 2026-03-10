@@ -2,6 +2,7 @@
   "common": {
     "loading": "內容載入中…",
     "notFound": "此頁面不存在或尚未發布",
+    "noContent": "此頁面尚無內容",
     "close": "關閉"
   },
   "homePage": {
