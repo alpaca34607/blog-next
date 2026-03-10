@@ -25,6 +25,7 @@ import type { NewsListItem } from "@/types/news";
 import { useTranslations } from "next-intl";
 import { useDemoUuid } from "@/hooks/useDemoUuid";
 
+
 const Footer = () => {
   const demoUuid = useDemoUuid();
   interface SiteSettings {
@@ -35,6 +36,7 @@ const Footer = () => {
     phone?: string;
     email?: string;
     address?: string;
+    addressEn?: string;
     lineQrCode?: string;
     socialLinks?: {
       facebook?: string;
@@ -68,6 +70,7 @@ const Footer = () => {
             phone: data?.phone || "",
             email: data?.email || "",
             address: data?.address || "",
+            addressEn: data?.addressEn || "",
             lineQrCode: data?.lineQrCode || "",
             socialLinks: data?.socialLinks || {},
             copyright: data?.copyright || "",
@@ -247,6 +250,14 @@ const Footer = () => {
   );
 
   const locale = useLocale();
+
+  const siteName = (locale === "en" && siteSettings?.siteNameEn)
+    || siteSettings?.siteName
+    || "布創 BLOGCRAFT";
+    const address = (locale === "en" && siteSettings?.addressEn)
+    || siteSettings?.address
+    || "台北市中正區忠孝東路走9遍";
+
   const getNavTitle = (item: NavigationItem) =>
     locale === "en" && item.titleEn ? item.titleEn : item.title;
   const getProductTitle = (item: Product) =>
@@ -269,10 +280,7 @@ const Footer = () => {
                 className={styles.footerLogoImg}
               />
               <p className={styles.footerCompanyName}>
-                {siteSettings?.siteNameEn || "Blogcraft Co., Ltd."}
-              </p>
-              <p className={styles.footerCompanyNameChinese}>
-                {siteSettings?.siteName || "布創設計股份有限公司"}
+                {siteName}
               </p>
             </div>
             <div className={styles.footerDivider} />
@@ -380,7 +388,7 @@ const Footer = () => {
               <FaMapMarkerAlt className={styles.footerContactIcon} />
               <div className={styles.footerAddresses}>
                 <span>
-                  {siteSettings?.address || "台北市中正區忠孝東路走9遍"}
+                  {address}
                 </span>
               </div>
             </div>
