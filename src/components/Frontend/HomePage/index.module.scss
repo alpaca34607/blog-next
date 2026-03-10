@@ -4,7 +4,13 @@
   width: 100%;
   position: relative;
   color: $text-main;
-  font-family: "Inter", "Noto Sans TC", sans-serif;
   min-height: 100vh;
+  font-family: "Titillium Web", "Noto Sans TC", sans-serif;
+  p{
+    font-family: "Montserrat","Noto Sans TC", sans-serif;
+  }
+  a{
+    font-family: "Orbitron","Noto Sans TC", sans-serif;
+  }
 }
 
