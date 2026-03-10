@@ -4,7 +4,6 @@
 
 .heroSection {
   position: relative;
-  height: 400px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -28,7 +27,7 @@
   &.hasBgImage {
     @extend .hasBgImage;
     height: auto;
-    // HeroSection 特殊處理：桌機版高度改為 auto
+    min-height: 300px; // 保留最小空間
   }
 }
 

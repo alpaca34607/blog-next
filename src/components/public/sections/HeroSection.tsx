@@ -104,6 +104,17 @@ const HeroSection = ({
           : sectionStyle || undefined
       }
     >
+      {/* 預載首張輪播圖，讓瀏覽器盡早下載以改善 LCP */}
+      {carouselImages && (
+        <img
+          src={carouselImages[0]}
+          alt=""
+          aria-hidden="true"
+          fetchPriority="high"
+          style={{ display: "none" }}
+        />
+      )}
+
       {/* 輪播圖片 */}
       {carouselImages && (
         <div className={styles.carouselContainer}>
