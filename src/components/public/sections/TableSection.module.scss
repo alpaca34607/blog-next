@@ -43,6 +43,9 @@
   padding: 24px;
   background-color: white;
   border-radius: 12px;
+  @include rwd-md {
+    padding: 0px;
+  }
 }
 
 .searchContainer {
@@ -140,12 +143,11 @@
 // 表格區域
 .tableWrapper {
   background-color: white;
-  border-radius: 12px;
   padding: 24px;
   overflow-x: auto;
 
   @include rwd-md {
-    padding: 16px;
+    padding: 0px;
   }
 }
 
