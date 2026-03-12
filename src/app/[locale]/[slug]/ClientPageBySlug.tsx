@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
 import Layout from "@/components/Frontend/Layout";
 import CTASection from "@/components/public/sections/CTASection";
 import CardGridSection from "@/components/public/sections/CardGridSection";
@@ -17,9 +16,8 @@ import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import { API_GetPageBySlug } from "@/app/api/public_api";
 import { useTranslations } from "next-intl";
-import { useDemoUuid } from "@/hooks/useDemoUuid";
 
-interface BasePage {
+export interface BasePage {
   id: string;
   title: string;
   titleEn?: string | null;
@@ -36,14 +34,14 @@ interface BasePage {
   isPublished: boolean;
 }
 
-interface Product extends BasePage {
+export interface Product extends BasePage {
   logo?: string;
   externalUrl?: string | null;
   category?: string | null;
   sortOrder?: number | null;
 }
 
-interface Section {
+export interface Section {
   id: string;
   sectionType: string;
   title?: string;
@@ -66,87 +64,57 @@ function normalizeSections(input: any[]): Section[] {
   }));
 }
 
-const ClientPageBySlug = () => {
-  const params = useParams<{ locale: string; slug: string }>();
-  const slug = params?.slug;
-  const demoUuid = useDemoUuid();
+function getVisibleSections(input: Section[]): Section[] {
+  return normalizeSections(input)
+    .filter((s) => s.settings?.isVisible !== false)
+    .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+}
+
+interface ClientPageBySlugProps {
+  initialSlug: string;
+  initialDemoUuid?: string;
+  initialPage?: BasePage | Product;
+  initialSections?: Section[];
+}
+
+const ClientPageBySlug = ({
+  initialSlug,
+  initialDemoUuid,
+  initialPage,
+  initialSections = [],
+}: ClientPageBySlugProps) => {
   const t = useTranslations("common");
-  const [isClient, setIsClient] = useState(false);
-  const [page, setPage] = useState<BasePage | Product | undefined>(undefined);
-  const [sections, setSections] = useState<Section[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState<BasePage | Product | undefined>(initialPage);
+  const [sections, setSections] = useState<Section[]>(() =>
+    getVisibleSections(initialSections)
+  );
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    setPage(initialPage);
+    setSections(getVisibleSections(initialSections));
+  }, [initialPage, initialSections]);
 
   useEffect(() => {
-    if (!isClient || !slug) return;
-
-    let cancelled = false;
-    const load = async () => {
-      try {
-        setLoading(true);
-        const res = await API_GetPageBySlug(slug, demoUuid);
-        if (!res?.success || !res.data?.page) {
-          setPage(undefined);
-          setSections([]);
-          return;
-        }
-
-        const nextPage = res.data.page as BasePage | Product;
-        const nextSections = Array.isArray(res.data.sections)
-          ? normalizeSections(res.data.sections as any[])
-          : [];
-
-        if (!nextPage.isPublished) {
-          setPage(undefined);
-          setSections([]);
-          return;
-        }
-
-        if (!cancelled) {
-          setPage(nextPage);
-          setSections(
-            nextSections
-              .filter((s) => s.settings?.isVisible !== false)
-              .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-          );
-        }
-      } catch (e) {
-        console.error("載入頁面資料時發生錯誤:", e);
-        if (!cancelled) {
-          setPage(undefined);
-          setSections([]);
-        }
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    load();
-    return () => {
-      cancelled = true;
-    };
-  }, [isClient, slug, demoUuid]);
-
-  useEffect(() => {
-    if (!isClient || !slug) return;
+    if (!initialSlug) return;
 
     const reload = () => {
-      API_GetPageBySlug(slug, demoUuid)
+      API_GetPageBySlug(initialSlug, initialDemoUuid)
         .then((res) => {
           if (res?.success && res.data?.page) {
             const nextPage = res.data.page as BasePage | Product;
+            if (!nextPage.isPublished) {
+              setPage(undefined);
+              setSections([]);
+              return;
+            }
             const nextSections = Array.isArray(res.data.sections)
               ? normalizeSections(res.data.sections as any[])
               : [];
             setPage(nextPage);
-            setSections(
-              nextSections
-                .filter((s) => s.settings?.isVisible !== false)
-                .sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0))
-            );
+            setSections(getVisibleSections(nextSections));
+          } else {
+            setPage(undefined);
+            setSections([]);
           }
         })
         .catch(() => {});
@@ -161,7 +129,7 @@ const ClientPageBySlug = () => {
       window.removeEventListener("productsUpdated", reload);
       window.removeEventListener("sectionsUpdated", reload);
     };
-  }, [isClient, slug, demoUuid]);
+  }, [initialSlug, initialDemoUuid]);
 
   const renderSection = (section: Section) => {
     switch (section.sectionType) {
@@ -213,15 +181,7 @@ const ClientPageBySlug = () => {
 
   return (
     <Layout>
-      {!isClient ? (
-        <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          {t("loading")}
-        </div>
-      ) : loading ? (
-        <div style={{ padding: "4rem 1.5rem", textAlign: "center" }}>
-          {t("loading")}
-        </div>
-      ) : !page ? (
+      {!page ? (
         <div
           style={{
             height: "100vh",
