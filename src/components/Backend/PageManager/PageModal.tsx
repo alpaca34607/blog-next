@@ -209,10 +209,11 @@ const PageModal = ({
                 required
               />
             </div>
-            <div className={styles.formSection}>
-              {/* 產品專屬欄位 */}
-              <h3 className={styles.sectionTitle}>產品欄位</h3>
-              {type === "product" && (
+            {/* 產品專屬欄位 */}
+            {type === "product" && (
+              <div className={styles.formSection}>
+                <h3 className={styles.sectionTitle}>產品欄位</h3>
+
                 <>
                   <div className={styles.formGrid}>
                     <div className={styles.formGroup}>
@@ -292,8 +293,8 @@ const PageModal = ({
                     />
                   </div>
                 </>
-              )}
-            </div>
+              </div>
+            )}
           </div>
 
           {/* SEO 設定 */}
