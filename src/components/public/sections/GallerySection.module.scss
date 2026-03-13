@@ -65,6 +65,10 @@
     max-width: 100% !important;
     width: 100% !important;
   }
+  @include rwd-md {
+    border-radius: 8px;
+    box-shadow: none;
+  }
 }
 
 .swiperSlide {
