@@ -40,6 +40,8 @@ type NewsArticle = NewsRecord;
 
 const CATEGORIES = ["技術文章", "媒體報導", "活動訊息"];
 const ITEMS_PER_PAGE = 9; // 每頁顯示 9 筆資料
+/** 預設以文章發布時間由新到舊排序 */
+const DEFAULT_SORT = { sortBy: "publishDate" as const, sortOrder: "desc" as const };
 
 const NewsManager = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -60,7 +62,7 @@ const NewsManager = () => {
       setIsLoading(true);
       setError(null);
 
-      const response = await API_GetNewsAdmin(params);
+      const response = await API_GetNewsAdmin({ ...DEFAULT_SORT, ...params });
 
       if (response?.success) {
         setNews(response.data || []);
@@ -90,7 +92,7 @@ const NewsManager = () => {
   // 在客戶端載入 API 資料
   useEffect(() => {
     setIsClient(true);
-    loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+    loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
   }, []);
 
   // 過濾新聞（前端過濾，因為 API 已經返回分頁數據）
@@ -111,6 +113,7 @@ const NewsManager = () => {
       limit: ITEMS_PER_PAGE,
       filter:
         activeCategory !== "all" ? { category: activeCategory } : undefined,
+      ...DEFAULT_SORT,
     });
   }, [activeCategory]);
 
@@ -119,7 +122,7 @@ const NewsManager = () => {
     setCurrentPage(selected);
 
     // 載入新頁面的數據
-    await loadNews({ page: selected + 1, limit: ITEMS_PER_PAGE });
+    await loadNews({ page: selected + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
 
     // 滾動到頂部
     window.scrollTo({
@@ -211,7 +214,7 @@ const NewsManager = () => {
 
         if (response?.success) {
           // 重新載入新聞列表
-          await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+          await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
         } else {
           setError(formatValidationError(response) || "更新新聞失敗");
         }
@@ -221,7 +224,7 @@ const NewsManager = () => {
 
         if (response?.success) {
           // 重新載入新聞列表
-          await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+          await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
         } else {
           setError(formatValidationError(response) || "創建新聞失敗");
         }
@@ -247,7 +250,7 @@ const NewsManager = () => {
 
       if (response?.success) {
         // 重新載入新聞列表
-        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
       } else {
         setError(response?.error?.message || "刪除新聞失敗");
       }
@@ -270,7 +273,7 @@ const NewsManager = () => {
 
       if (response?.success) {
         // 重新載入新聞列表
-        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
       } else {
         setError(response?.error?.message || "更新發布狀態失敗");
       }
@@ -296,7 +299,7 @@ const NewsManager = () => {
 
       if (response?.success) {
         // 重新載入新聞列表
-        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE });
+        await loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT });
       } else {
         setError(response?.error?.message || "更新精選狀態失敗");
       }
@@ -321,7 +324,7 @@ const NewsManager = () => {
             <button
               className={adminStyles.refreshButton}
               onClick={() =>
-                loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE })
+                loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT })
               }
               disabled={isLoading}
               title="重新載入新聞"
@@ -381,7 +384,7 @@ const NewsManager = () => {
               <p style={{ whiteSpace: "pre-line" }}>{error}</p>
               <button
                 onClick={() =>
-                  loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE })
+                  loadNews({ page: currentPage + 1, limit: ITEMS_PER_PAGE, ...DEFAULT_SORT })
                 }
                 className={styles.retryButton}
               >
