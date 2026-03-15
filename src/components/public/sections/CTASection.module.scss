@@ -19,8 +19,6 @@
 
 .container {
   @include section-container(1024px);
-  
-  text-align: center;
 }
 
 .title {

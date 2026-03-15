@@ -71,7 +71,7 @@ const CTASection = ({ section }: CTASectionProps) => {
         {subtitle && <p className={styles.subtitle}> {subtitle}</p>}
         {ctaContent && !isRichTextEmpty(ctaContent) && (
           <div
-            className={styles.ctaContent}
+            className={styles.content}
             dangerouslySetInnerHTML={{ __html: ctaContent }}
           />
         )}
