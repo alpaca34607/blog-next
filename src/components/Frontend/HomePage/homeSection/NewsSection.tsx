@@ -73,7 +73,7 @@ const NewsSection = () => {
             isFeatured: !!n.isFeatured,
           }));
           const publishedNews = allNews
-            .filter((news) => news.isPublished)
+            .filter((news) => news.isPublished && news.isFeatured === true)
             .slice(0, 3);
           setNewsList(publishedNews);
         } else if (response) {
