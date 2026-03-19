@@ -3,3 +3,4 @@
  * 供 TS/TSX 無法使用 SCSS 變數時使用（如 SweetAlert、inline style）。
  */
 export const accentOrange = "#f1a532";
+export const textMuted = "#908bb4";

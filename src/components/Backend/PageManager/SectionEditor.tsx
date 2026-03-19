@@ -39,7 +39,7 @@ import {
   API_UpdatePageSectionsAdmin,
 } from "@/app/api/admin_api";
 import { useDemoMode } from "@/hooks/useDemoMode";
-import { accentOrange } from "@/styles/theme";
+import { accentOrange, textMuted } from "@/styles/theme";
 
 interface Section {
   id: string;
@@ -430,8 +430,8 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
       showCancelButton: true,
       confirmButtonText: "確定刪除",
       cancelButtonText: "取消",
-      confirmButtonColor: accentOrange,
-      reverseButtons: true,
+      cancelButtonColor:accentOrange,
+      confirmButtonColor: textMuted,
     });
 
     if (!result.isConfirmed) return;
