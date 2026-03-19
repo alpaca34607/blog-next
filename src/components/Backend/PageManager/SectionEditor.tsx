@@ -10,6 +10,7 @@ import {
   FiPlus,
   FiLayout,
 } from "react-icons/fi";
+import Swal from "sweetalert2";
 import { MdDragHandle } from "react-icons/md";
 import {
   DndContext,
@@ -38,6 +39,7 @@ import {
   API_UpdatePageSectionsAdmin,
 } from "@/app/api/admin_api";
 import { useDemoMode } from "@/hooks/useDemoMode";
+import { accentOrange } from "@/styles/theme";
 
 interface Section {
   id: string;
@@ -421,14 +423,25 @@ const SectionEditor = ({ pageId }: SectionEditorProps) => {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("確定要刪除此區塊？")) {
-      try {
-        const updatedSections = sections.filter((section) => section.id !== id);
-        setSections(updatedSections);
-        await saveSections(updatedSections);
-      } catch (error) {
-        console.error("刪除失敗:", error);
-      }
+    const result = await Swal.fire({
+      icon: "warning",
+      title: "確定要刪除此區塊？",
+      text: "此操作無法復原",
+      showCancelButton: true,
+      confirmButtonText: "確定刪除",
+      cancelButtonText: "取消",
+      confirmButtonColor: accentOrange,
+      reverseButtons: true,
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const updatedSections = sections.filter((section) => section.id !== id);
+      setSections(updatedSections);
+      await saveSections(updatedSections);
+    } catch (error) {
+      console.error("刪除失敗:", error);
     }
   };
 
