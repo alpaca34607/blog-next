@@ -219,6 +219,8 @@ const Footer = () => {
             isFeatured: !!news.isFeatured,
           }));
           setNewsList(mapped);
+          const latestNews = mapped.filter((news) => news.isPublished).slice(0, 3);
+          setNewsList(latestNews);
         } else {
           console.error(
             "取得新聞列表失敗:",

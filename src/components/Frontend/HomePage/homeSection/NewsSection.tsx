@@ -72,10 +72,10 @@ const NewsSection = () => {
             isPublished: !!n.isPublished,
             isFeatured: !!n.isFeatured,
           }));
-          const publishedNews = allNews
+          const featuredNews = allNews
             .filter((news) => news.isPublished && news.isFeatured === true)
             .slice(0, 3);
-          setNewsList(publishedNews);
+          setNewsList(featuredNews);
         } else if (response) {
           console.error(
             "取得最新消息失敗:",

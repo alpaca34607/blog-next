@@ -176,11 +176,10 @@
       position: relative;
       top: 0;
       left: 0;
-      color: $accent-orange;
       transform: none;
 
       &::before {
-        display: none;
+        transform: skewX(-45deg);
       }
     }
   }
@@ -401,7 +400,7 @@
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 20px;
+  gap: 10px;
   text-align: left;
   padding: 20px;
 
