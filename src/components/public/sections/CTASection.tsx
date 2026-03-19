@@ -36,11 +36,12 @@ const CTASection = ({ section }: CTASectionProps) => {
   const ctaContent =
     (isEn ? section.settings?.ctaContentEn : section.settings?.ctaContent) ||
     section.settings?.ctaContent;
-  const buttonText =
+  const rawButtonText =
     (isEn ? section.settings?.buttonTextEn : section.settings?.buttonText) ||
     section.settings?.buttonText ||
-    "前往瞭解";
-  const buttonLink = section.settings?.buttonLink || "";
+    "";
+  const buttonText = rawButtonText.trim();
+  const buttonLink = (section.settings?.buttonLink || "").trim();
 
   // 使用共用的背景樣式工具函數
   const { style: sectionStyle, className: backgroundImageClass } =
@@ -61,12 +62,9 @@ const CTASection = ({ section }: CTASectionProps) => {
       ? styles.rightAligned
       : "";
 
-  // CTA 區塊應該總是顯示按鈕（只要有標題或副標題）
-  // 或者如果有 content 或 settings 中有按鈕設定，則顯示按鈕
-  const shouldShowButton =
-    (ctaContent && !isRichTextEmpty(ctaContent)) ||
-    buttonText ||
-    buttonLink;
+  // 僅在有明確按鈕設定時才顯示按鈕（避免強制顯示）
+  const hasButtonConfig = !!buttonText || !!buttonLink;
+  const shouldShowButton = hasButtonConfig;
 
   return (
     <section
