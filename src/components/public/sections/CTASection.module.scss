@@ -34,6 +34,14 @@
 
 .content {
   @include section-content;
+
+}
+
+.hasBgImage .content {
+  background: transparent !important;
+  @include rwd-lg {
+    padding: 0px;
+  }
 }
 
 .buttonContainer {
