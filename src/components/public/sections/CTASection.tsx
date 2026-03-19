@@ -23,6 +23,7 @@ interface CTASectionProps {
       buttonLink?: string;
       buttonColor?: string;
       buttonTextColor?: string;
+      templateVariant?: string;
     };
   };
 }
@@ -51,6 +52,14 @@ const CTASection = ({ section }: CTASectionProps) => {
 
   const buttonColor = section.settings?.buttonColor || "#faad3a";
   const buttonTextColor = section.settings?.buttonTextColor || "#ffffff";
+  const variant = section.settings?.templateVariant || "centered";
+
+  const alignmentClass =
+    variant === "left-aligned"
+      ? styles.leftAligned
+      : variant === "right-aligned"
+      ? styles.rightAligned
+      : "";
 
   // CTA 區塊應該總是顯示按鈕（只要有標題或副標題）
   // 或者如果有 content 或 settings 中有按鈕設定，則顯示按鈕
@@ -61,7 +70,7 @@ const CTASection = ({ section }: CTASectionProps) => {
 
   return (
     <section
-      className={`${styles.ctaSection} ${
+      className={`${styles.ctaSection} ${alignmentClass} ${
         backgroundImageClass ? styles.hasBgImage : ""
       }`}
       style={sectionStyle}

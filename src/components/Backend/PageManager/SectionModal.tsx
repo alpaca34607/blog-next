@@ -233,7 +233,7 @@ const SectionModal = ({
       gallery: ["carousel", "single", "double"],
       product_specs: ["default"],
       content_block: ["default"],
-      cta: ["centered"],
+      cta: ["centered", "left-aligned", "right-aligned"],
       downloads: ["default"],
       table: ["default"],
       timeline: ["default"],
