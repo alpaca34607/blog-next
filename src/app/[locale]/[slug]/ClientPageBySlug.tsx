@@ -16,6 +16,7 @@ import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
 import { API_GetPageBySlug } from "@/app/api/public_api";
 import { useTranslations } from "next-intl";
+import FaqSection from "@/components/public/sections/FaqSection";
 
 export interface BasePage {
   id: string;
@@ -86,7 +87,7 @@ const ClientPageBySlug = ({
   const t = useTranslations("common");
   const [page, setPage] = useState<BasePage | Product | undefined>(initialPage);
   const [sections, setSections] = useState<Section[]>(() =>
-    getVisibleSections(initialSections)
+    getVisibleSections(initialSections),
   );
 
   useEffect(() => {
@@ -174,6 +175,8 @@ const ClientPageBySlug = ({
         return <TableSection key={section.id} section={section} />;
       case "timeline":
         return <TimelineSection key={section.id} section={section} />;
+      case "faq_section":
+        return <FaqSection key={section.id} section={section} />;
       default:
         return null;
     }
@@ -203,12 +206,12 @@ const ClientPageBySlug = ({
 
             const hasPageHeroValues = Boolean(
               pageHeroTitle ||
-                pageHeroSubtitle ||
-                (heroImages && heroImages.length)
+              pageHeroSubtitle ||
+              (heroImages && heroImages.length),
             );
 
             const heroSectionFromApi = sections.find(
-              (s) => s.sectionType === "hero"
+              (s) => s.sectionType === "hero",
             );
             const shouldRenderHero =
               hasPageHeroValues || Boolean(heroSectionFromApi);
@@ -219,16 +222,27 @@ const ClientPageBySlug = ({
                   <HeroSection
                     carouselSlideClassName="pageHero"
                     section={{
-                      title: pageHeroTitle ?? heroSectionFromApi?.title ?? undefined,
-                      titleEn: page.heroTitleEn ?? heroSectionFromApi?.titleEn ?? undefined,
+                      title:
+                        pageHeroTitle ?? heroSectionFromApi?.title ?? undefined,
+                      titleEn:
+                        page.heroTitleEn ??
+                        heroSectionFromApi?.titleEn ??
+                        undefined,
                       subtitle:
-                        pageHeroSubtitle ?? heroSectionFromApi?.subtitle ?? undefined,
-                      subtitleEn: page.heroSubtitleEn ?? heroSectionFromApi?.subtitleEn ?? undefined,
+                        pageHeroSubtitle ??
+                        heroSectionFromApi?.subtitle ??
+                        undefined,
+                      subtitleEn:
+                        page.heroSubtitleEn ??
+                        heroSectionFromApi?.subtitleEn ??
+                        undefined,
                       content: heroSectionFromApi?.content ?? undefined,
                       settings: {
                         ...(heroSectionFromApi?.settings ?? {}),
                         heroImages:
-                          (heroImages && heroImages.length ? heroImages : undefined) ??
+                          (heroImages && heroImages.length
+                            ? heroImages
+                            : undefined) ??
                           heroSectionFromApi?.settings?.heroImages ??
                           undefined,
                       },
