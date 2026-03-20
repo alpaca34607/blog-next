@@ -65,6 +65,7 @@ interface SectionEditorProps {
 }
 
 const SECTION_TYPES = [
+  { value: "content_block", label: "內容區塊" },
   { value: "hero", label: "banner 橫幅" },
   { value: "icon_features", label: "Icon 圖文" },
   { value: "card_grid", label: "卡片區塊" },
@@ -74,8 +75,8 @@ const SECTION_TYPES = [
   { value: "table", label: "表格" },
   { value: "product_specs", label: "產品規格表" },
   { value: "timeline", label: "時間軸" },
-  { value: "content_block", label: "內容區塊" },
   { value: "cta", label: "行動呼籲" },
+  { value: "faq_section", label: "FAQ 區塊" },
   { value: "downloads", label: "下載專區" },
 ];
 

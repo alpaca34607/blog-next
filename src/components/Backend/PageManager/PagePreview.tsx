@@ -21,6 +21,7 @@ import VideoTextSection from "@/components/public/sections/VideoTextSection";
 import ProductSpecsSection from "@/components/public/sections/ProductSpecsSection";
 import TableSection from "@/components/public/sections/TableSection";
 import TimelineSection from "@/components/public/sections/TimelineSection";
+import FaqSection from "@/components/public/sections/FaqSection";
 import styles from "./PagePreview.module.scss";
 
 import {
@@ -29,6 +30,7 @@ import {
 } from "@/app/api/admin_api";
 import { useDemoMode } from "@/hooks/useDemoMode";
 import { getDemoId } from "@/utils/common";
+
 
 
 interface Page {
@@ -285,7 +287,10 @@ const PagePreview = () => {
         return <TableSection key={section.id} section={sectionForView} />;
       case "timeline":
         return <TimelineSection key={section.id} section={sectionForView} />;
-      default: // 其他類型的佔位符
+      case "faq_section":
+        return <FaqSection key={section.id} section={sectionForView} />;
+      
+        default: // 其他類型的佔位符
         return (
           <div key={section.id} className={styles.sectionPlaceholder}>
             <div className={styles.sectionHeader}>

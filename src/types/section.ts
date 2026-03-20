@@ -38,6 +38,12 @@ export interface SpecItem {
   value: string;
 }
 
+// Faq Item (用於 FaqSection)
+export interface FaqItem {
+  question: string;
+  answer: string;
+}
+
 // Section Settings 統一類型定義
 // 包含所有 section 組件需要的參數，所有欄位設為 nullable（可選）以支援不同 case 的 section
 export interface SectionSettings {
@@ -64,7 +70,8 @@ export interface SectionSettings {
 
   // Icon Features Section 相關欄位
   features?: FeatureItem[];
-
+  // Faq Section 相關欄位
+  faqs?: FaqItem[];
   // Image Text Section 相關欄位 (image 已在 Hero Section 中定義)
 
   // Video Text Section 相關欄位
