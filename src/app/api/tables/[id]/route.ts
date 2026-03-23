@@ -17,8 +17,9 @@ const updateTableSchema = z.object({
       z.object({
         key: z.string(),
         label: z.string(),
+        labelEn: z.string().optional(),
         type: z.string(),
-      })
+      }),
     )
     .min(1, "至少需要一個欄位")
     .optional(),
@@ -161,7 +162,7 @@ async function deleteTable(request: NextRequest, id: string) {
 
 export const GET = async (
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   return getTableById(request, resolvedParams.id);
@@ -169,7 +170,7 @@ export const GET = async (
 
 export const PUT = async (
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   return withAuth(request, (req) => updateTable(req, resolvedParams.id));
@@ -177,7 +178,7 @@ export const PUT = async (
 
 export const DELETE = async (
   request: NextRequest,
-  context: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> },
 ) => {
   const resolvedParams = await context.params.catch(() => ({ id: "" }));
   return withAuth(request, (req) => deleteTable(req, resolvedParams.id));

@@ -34,7 +34,12 @@ interface CustomTable {
   id: string;
   name: string;
   description: string;
-  columns: string[];
+  columns: Array<{
+    key: string;
+    label: string;
+    labelEn?: string;
+    type: string;
+  }>;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -123,9 +128,12 @@ const TableManager = () => {
       if (response?.success) {
         const tablesData = (response.data || []).map((table: any) => ({
           ...table,
-          columns: (table.columns || []).map((col: any) =>
-            typeof col === "string" ? col : col.label || col.key
-          ),
+          columns: (table.columns || []).map((col: any) => ({
+            key: col.key,
+            label: col.label,
+            labelEn: col.labelEn ?? "",
+            type: col.type ?? "text",
+          })),
         }));
         setTables(tablesData);
 
@@ -157,7 +165,7 @@ const TableManager = () => {
         const rowsData = response.data || [];
         // 按 sortOrder 排序
         const sortedRows = [...rowsData].sort(
-          (a: TableRow, b: TableRow) => a.sortOrder - b.sortOrder
+          (a: TableRow, b: TableRow) => a.sortOrder - b.sortOrder,
         );
         setRows(sortedRows);
       } else {
@@ -212,9 +220,9 @@ const TableManager = () => {
     try {
       setError(null);
 
-      const cleanedColumns = (formData.columns || [])
-        .map((c) => String(c || "").trim())
-        .filter(Boolean);
+      const cleanedColumns = (formData.columns || []).filter((col) =>
+        (col.key || col.label || "").trim(),
+      );
 
       if (cleanedColumns.length === 0) {
         Swal.fire({
@@ -226,17 +234,19 @@ const TableManager = () => {
         });
         return;
       }
+      const colsToSend = cleanedColumns.map((col) => ({
+        key: col.key || "",
+        label: col.label || "",
+        labelEn: col.labelEn || col.label || "",
+        type: col.type || "text",
+      }));
 
       if (editingTable) {
         // 更新表格
         const response = await API_UpdateTable(editingTable.id, {
           name: formData.name,
           description: formData.description,
-          columns: cleanedColumns.map((col) => ({
-            key: col,
-            label: col,
-            type: "text",
-          })),
+          columns: colsToSend,
         });
 
         if (response?.success) {
@@ -254,11 +264,7 @@ const TableManager = () => {
         const response = await API_CreateTable({
           name: formData.name || "",
           description: formData.description || "",
-          columns: cleanedColumns.map((col) => ({
-            key: col,
-            label: col,
-            type: "text",
-          })),
+          columns: colsToSend,
         });
 
         if (response?.success) {
@@ -288,9 +294,9 @@ const TableManager = () => {
       try {
         setError(null);
 
-        const cleanedColumns = (formData.columns || [])
-          .map((c) => String(c || "").trim())
-          .filter(Boolean);
+        const cleanedColumns = (formData.columns || []).filter(
+          (col) => (col.key || col.label || "").trim()
+        );
 
         if (cleanedColumns.length === 0) {
           Swal.fire({
@@ -303,12 +309,15 @@ const TableManager = () => {
           return;
         }
 
+        const colsToSend = cleanedColumns.map((col) => ({
+          key: (col.key || col.label || "").trim(),
+          label: (col.label || col.key || "").trim(),
+          labelEn: (col.labelEn || "").trim() || undefined,
+          type: col.type || "text",
+        }));
+
         const response = await API_UpdateTable(selectedTableId, {
-          columns: cleanedColumns.map((col) => ({
-            key: col,
-            label: col,
-            type: "text",
-          })),
+          columns: colsToSend,
         });
 
         if (response?.success) {
@@ -344,7 +353,7 @@ const TableManager = () => {
             data: formData.data,
             sortOrder: formData.sortOrder,
             isVisible: formData.isVisible,
-          }
+          },
         );
 
         if (response?.success) {
@@ -451,181 +460,183 @@ const TableManager = () => {
             aria-label="此頁面僅供檢視"
           />
         )}
-      <div className={styles.contentGrid}>
-        {/* Table List */}
-        <div className={styles.tableList}>
-          <h3 className={styles.listTitle}>表格列表</h3>
-          <div className={styles.tableItems}>
-            {isLoadingTables ? (
-              <div className={styles.loading}>
-                <FiLoader className={styles.spinner} size={24} />
-                <span>載入中...</span>
-              </div>
-            ) : tables.length === 0 ? (
-              <div className={styles.emptyState}>尚無表格</div>
-            ) : (
-              tables.map((table) => (
-                <div
-                  key={table.id}
-                  className={`${styles.tableItem} ${
-                    selectedTableId === table.id ? styles.tableItemActive : ""
-                  }`}
-                  onClick={() => setSelectedTableId(table.id)}
-                >
-                  <div className={styles.tableItemContent}>
-                    <h4 className={styles.tableItemName}> {table.name}</h4>
-                    {table.description && (
-                      <p className={styles.tableItemDesc}>
-                        {table.description}
-                      </p>
-                    )}
+        <div className={styles.contentGrid}>
+          {/* Table List */}
+          <div className={styles.tableList}>
+            <h3 className={styles.listTitle}>表格列表</h3>
+            <div className={styles.tableItems}>
+              {isLoadingTables ? (
+                <div className={styles.loading}>
+                  <FiLoader className={styles.spinner} size={24} />
+                  <span>載入中...</span>
+                </div>
+              ) : tables.length === 0 ? (
+                <div className={styles.emptyState}>尚無表格</div>
+              ) : (
+                tables.map((table) => (
+                  <div
+                    key={table.id}
+                    className={`${styles.tableItem} ${
+                      selectedTableId === table.id ? styles.tableItemActive : ""
+                    }`}
+                    onClick={() => setSelectedTableId(table.id)}
+                  >
+                    <div className={styles.tableItemContent}>
+                      <h4 className={styles.tableItemName}> {table.name}</h4>
+                      {table.description && (
+                        <p className={styles.tableItemDesc}>
+                          {table.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className={styles.tableItemActions}>
+                      <button
+                        className={styles.actionButton}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenTableModal(table);
+                        }}
+                        title="編輯"
+                      >
+                        <FiEdit size={14} />
+                      </button>
+                      <button
+                        className={`${styles.actionButton} ${styles.deleteButton}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteTable(table.id);
+                        }}
+                        title="刪除"
+                      >
+                        <FiTrash2 size={14} />
+                      </button>
+                    </div>
                   </div>
-                  <div className={styles.tableItemActions}>
+                ))
+              )}
+            </div>
+          </div>
+          {/* Table Content */}
+          <div className={styles.tableContent}>
+            {error && (
+              <div className={styles.errorMessage}>
+                <p>{error}</p>
+                <button
+                  onClick={() => {
+                    if (selectedTableId) {
+                      loadRows(selectedTableId);
+                    }
+                  }}
+                  className={styles.retryButton}
+                >
+                  重試
+                </button>
+              </div>
+            )}
+            {selectedTableId && selectedTable ? (
+              <>
+                <div className={styles.contentHeader}>
+                  <h3 className={styles.contentTitle}>{selectedTable.name}</h3>
+                  <div className={styles.contentActions}>
                     <button
-                      className={styles.actionButton}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleOpenTableModal(table);
-                      }}
-                      title="編輯"
+                      className={styles.settingsButton}
+                      onClick={handleOpenColumnsModal}
                     >
-                      <FiEdit size={14} />
+                      <FiSettings size={18} /> <span>設定欄位</span>
                     </button>
                     <button
-                      className={`${styles.actionButton} ${styles.deleteButton}`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDeleteTable(table.id);
-                      }}
-                      title="刪除"
+                      className={styles.addDataButton}
+                      onClick={() => handleOpenRowModal(null)}
                     >
-                      <FiTrash2 size={14} />
+                      <FiPlus size={18} /> <span>新增資料</span>
                     </button>
                   </div>
                 </div>
-              ))
+                {(selectedTable.columns || []).length > 0 ? (
+                  <div className={styles.tableWrapper}>
+                    <table className={styles.dataTable}>
+                      <thead>
+                        <tr>
+                          {(selectedTable.columns || []).map((col, idx) => (
+                            <th key={idx}>{col.label}</th>
+                          ))}
+                          <th>狀態</th>
+                          <th className={styles.actionColumn}>操作</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {rows.length === 0 ? (
+                          <tr>
+                            <td
+                              colSpan={(selectedTable.columns?.length || 0) + 2}
+                              className={styles.emptyCell}
+                            >
+                              此表格尚無資料，點擊上方按鈕新增
+                            </td>
+                          </tr>
+                        ) : (
+                          rows.map((row) => (
+                            <tr key={row.id}>
+                              {(selectedTable.columns || []).map((col, idx) => (
+                                <td key={idx}>
+                                  {row.data?.[col.key] ?? "-"}
+                                </td>
+                              ))}
+                              <td>
+                                {row.isVisible ? (
+                                  <span className={styles.statusVisible}>
+                                    顯示
+                                  </span>
+                                ) : (
+                                  <span className={styles.statusHidden}>
+                                    隱藏
+                                  </span>
+                                )}
+                              </td>
+                              <td className={styles.actionColumn}>
+                                <div className={styles.rowActions}>
+                                  <button
+                                    className={styles.actionButton}
+                                    onClick={() => handleOpenRowModal(row)}
+                                    title="編輯"
+                                  >
+                                    <FiEdit size={16} />
+                                  </button>
+                                  <button
+                                    className={`${styles.actionButton} ${styles.deleteButton}`}
+                                    onClick={() => handleDeleteRow(row.id)}
+                                    title="刪除"
+                                  >
+                                    <FiTrash2 size={16} />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : (
+                  <div className={styles.emptyState}>
+                    <p>此表格尚未設定欄位</p>
+                    <button
+                      className={styles.settingsButton}
+                      onClick={handleOpenColumnsModal}
+                    >
+                      立即設定欄位
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className={styles.emptyState}>
+                <FiFileText size={48} className={styles.emptyIcon} />
+                <p>請選擇左側的表格來管理資料</p>
+              </div>
             )}
           </div>
         </div>
-        {/* Table Content */}
-        <div className={styles.tableContent}>
-          {error && (
-            <div className={styles.errorMessage}>
-              <p>{error}</p>
-              <button
-                onClick={() => {
-                  if (selectedTableId) {
-                    loadRows(selectedTableId);
-                  }
-                }}
-                className={styles.retryButton}
-              >
-                重試
-              </button>
-            </div>
-          )}
-          {selectedTableId && selectedTable ? (
-            <>
-              <div className={styles.contentHeader}>
-                <h3 className={styles.contentTitle}>{selectedTable.name}</h3>
-                <div className={styles.contentActions}>
-                  <button
-                    className={styles.settingsButton}
-                    onClick={handleOpenColumnsModal}
-                  >
-                    <FiSettings size={18} /> <span>設定欄位</span>
-                  </button>
-                  <button
-                    className={styles.addDataButton}
-                    onClick={() => handleOpenRowModal(null)}
-                  >
-                    <FiPlus size={18} /> <span>新增資料</span>
-                  </button>
-                </div>
-              </div>
-              {(selectedTable.columns || []).length > 0 ? (
-                <div className={styles.tableWrapper}>
-                  <table className={styles.dataTable}>
-                    <thead>
-                      <tr>
-                        {(selectedTable.columns || []).map((col, idx) => (
-                          <th key={idx}>{col}</th>
-                        ))}
-                        <th>狀態</th>
-                        <th className={styles.actionColumn}>操作</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {rows.length === 0 ? (
-                        <tr>
-                          <td
-                            colSpan={(selectedTable.columns?.length || 0) + 2}
-                            className={styles.emptyCell}
-                          >
-                            此表格尚無資料，點擊上方按鈕新增
-                          </td>
-                        </tr>
-                      ) : (
-                        rows.map((row) => (
-                          <tr key={row.id}>
-                            {(selectedTable.columns || []).map((col, idx) => (
-                              <td key={idx}>{row.data?.[col] || "-"}</td>
-                            ))}
-                            <td>
-                              {row.isVisible ? (
-                                <span className={styles.statusVisible}>
-                                  顯示
-                                </span>
-                              ) : (
-                                <span className={styles.statusHidden}>
-                                  隱藏
-                                </span>
-                              )}
-                            </td>
-                            <td className={styles.actionColumn}>
-                              <div className={styles.rowActions}>
-                                <button
-                                  className={styles.actionButton}
-                                  onClick={() => handleOpenRowModal(row)}
-                                  title="編輯"
-                                >
-                                  <FiEdit size={16} />
-                                </button>
-                                <button
-                                  className={`${styles.actionButton} ${styles.deleteButton}`}
-                                  onClick={() => handleDeleteRow(row.id)}
-                                  title="刪除"
-                                >
-                                  <FiTrash2 size={16} />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              ) : (
-                <div className={styles.emptyState}>
-                  <p>此表格尚未設定欄位</p>
-                  <button
-                    className={styles.settingsButton}
-                    onClick={handleOpenColumnsModal}
-                  >
-                    立即設定欄位
-                  </button>
-                </div>
-              )}
-            </>
-          ) : (
-            <div className={styles.emptyState}>
-              <FiFileText size={48} className={styles.emptyIcon} />
-              <p>請選擇左側的表格來管理資料</p>
-            </div>
-          )}
-        </div>
-      </div>
       </div>
       {/* Table Modal */}
       <TableModal

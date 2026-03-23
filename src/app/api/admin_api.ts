@@ -291,7 +291,7 @@ export const API_GetTableById = async (id: string) => {
 export const API_CreateTable = async (data: {
   name: string;
   description?: string;
-  columns: Array<{ key: string; label: string; type: string }>;
+  columns: Array<{ key: string; label: string; labelEn?: string; type: string }>;
 }) => {
   const path = `/api/tables`;
   const requestOption: RequestOptions = { method: "POST", body: data };
@@ -303,7 +303,7 @@ export const API_UpdateTable = async (
   data: {
     name?: string;
     description?: string;
-    columns?: Array<{ key: string; label: string; type: string }>;
+    columns?: Array<{ key: string; label: string; labelEn?: string; type: string }>;
   }
 ) => {
   const path = `/api/tables/${id}`;

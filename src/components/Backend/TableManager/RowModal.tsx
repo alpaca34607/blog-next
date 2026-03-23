@@ -7,7 +7,7 @@ interface CustomTable {
   id: string;
   name: string;
   description: string;
-  columns: string[];
+  columns:  Array<{ key: string; label: string; labelEn?: string; type?: string }>;
 }
 
 interface TableRow {
@@ -51,7 +51,7 @@ const RowModal = ({
     } else {
       const emptyData: Record<string, string> = {};
       (table.columns || []).forEach((col) => {
-        emptyData[col] = "";
+        emptyData[col.key] = "";
       });
       setFormData({
         data: emptyData,
@@ -102,12 +102,12 @@ const RowModal = ({
           <div className={styles.formGroup}>
             {(table.columns || []).map((col, idx) => (
               <div key={idx} className={styles.formField}>
-                <label className={styles.label}>{col}</label>
+                <label className={styles.label}>{col.label}</label>
                 <textarea
                   className={styles.textarea}
-                  value={formData.data?.[col] || ""}
-                  onChange={(e) => handleDataChange(col, e.target.value)}
-                  placeholder={`輸入 ${col}`}
+                  value={formData.data?.[col.key] || ""}
+                  onChange={(e) => handleDataChange(col.key, e.target.value)}
+                  placeholder={`輸入 ${col.label}`}
                   rows={3}
                 />
               </div>

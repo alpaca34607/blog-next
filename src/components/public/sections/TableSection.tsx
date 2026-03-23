@@ -7,12 +7,13 @@ import {
   API_GetTableByIdPublic,
   API_GetTableRowsPublic,
 } from "@/app/api/public_api";
+import { useLocale } from "next-intl";
 
 interface CustomTable {
   id: string;
   name: string;
   description: string;
-  columns: Array<{ key: string; label: string }>;
+  columns: Array<{ key: string; label: string; labelEn?: string }>;
   showSearch?: boolean;
 }
 
@@ -27,7 +28,9 @@ interface TableRow {
 interface TableSectionProps {
   section: {
     title?: string;
+    titleEn?: string;
     subtitle?: string;
+    subtitleEn?: string;
     settings?: {
       backgroundColor?: string;
       backgroundImage?: string;
@@ -42,7 +45,20 @@ const TableSection = ({ section }: TableSectionProps) => {
   const [searchValues, setSearchValues] = useState<Record<string, string>>({});
   const [isClient, setIsClient] = useState(false);
 
-  // 使用共用的背景樣式工具函數
+  const locale = useLocale();
+  const isEn = locale === "en";
+  
+const title = isEn? (section.titleEn ||section.title):section.title;
+const subtitle = isEn? (section.subtitleEn ||section.subtitle):section.subtitle;
+
+  const displayLabel = (column: { key: string; label: string; labelEn?: string }) => {
+    if (isEn) {
+      return column.labelEn || column.label || column.key || "";
+    }
+    return column.label || column.key || "";
+  };
+
+  // 共用的背景樣式工具
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
       backgroundColor: section.settings?.backgroundColor,
@@ -68,6 +84,7 @@ const TableSection = ({ section }: TableSectionProps) => {
         const columns = colsRaw.map((c: any) => ({
           key: typeof c === "string" ? c : c.key || c.label || "",
           label: typeof c === "string" ? c : c.label || c.key || "",
+          labelEn: typeof c === "string" ? "" : (c.labelEn ?? ""),
         }));
 
         setTable({
@@ -106,7 +123,7 @@ const TableSection = ({ section }: TableSectionProps) => {
     });
   }, [section.settings?.tableId]);
 
-  // 後台更新時可透過自訂事件觸發重新抓取（避免依賴 localStorage）
+  // 後台更新時觸發重新抓取
   useEffect(() => {
     if (!isClient) return;
     const tableId = section.settings?.tableId;
@@ -125,6 +142,7 @@ const TableSection = ({ section }: TableSectionProps) => {
             const columns = colsRaw.map((c: any) => ({
               key: typeof c === "string" ? c : c.key || c.label || "",
               label: typeof c === "string" ? c : c.label || c.key || "",
+              labelEn: typeof c === "string" ? "" : (c.labelEn ?? ""),
             }));
             setTable({
               id: (tableRes.data as any).id,
@@ -210,9 +228,9 @@ const TableSection = ({ section }: TableSectionProps) => {
       <div className={styles.container}>
         {section.title && (
           <div className={styles.header}>
-            <h2 className={styles.title}>{section.title}</h2>
+            <h2 className={styles.title}>{title}</h2>
             {section.subtitle && (
-              <p className={styles.subtitle}>{section.subtitle}</p>
+              <p className={styles.subtitle}>{subtitle}</p>
             )}
           </div>
         )}
@@ -236,7 +254,7 @@ const TableSection = ({ section }: TableSectionProps) => {
                             [column.key]: e.target.value,
                           })
                         }
-                        placeholder={`搜尋${column.label}`}
+                        placeholder={`${isEn ? "Search by " : "搜尋"} ${displayLabel(column)}`}
                       />
                     </div>
                   </div>
@@ -260,7 +278,7 @@ const TableSection = ({ section }: TableSectionProps) => {
               <thead>
                 <tr>
                   {table.columns.map((col, idx) => (
-                    <th key={idx}>{col.label}</th>
+                    <th key={idx}>{displayLabel(col)}</th>
                   ))}
                 </tr>
               </thead>
