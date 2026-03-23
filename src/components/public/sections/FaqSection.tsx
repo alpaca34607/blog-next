@@ -4,7 +4,7 @@ import { useState } from "react";
 import styles from "./FaqSection.module.scss";
 import { useLocale } from "next-intl";
 import { getSectionStyle } from "@/utils/sectionStyles";
-
+import { IoIosArrowDown } from "react-icons/io";
 interface FaqSectionProps {
   section: {
     title?: string;
@@ -64,12 +64,17 @@ const FaqSection = ({ section }: FaqSectionProps) => {
               >
                 <div className={styles.questionLabel}>
                   {(isEn ? faq.questionEn : faq.question) || faq.question}
+                  <IoIosArrowDown
+                    className={`${styles.arrowIcon} ${openIndex === index ? styles.open : ""}`}
+                  />
                 </div>
-                {openIndex === index && (
-                  <div className={styles.answerLabel}>
+                <div
+                  className={`${styles.answerLabel} ${openIndex === index ? styles.open : ""}`}
+                >
+                  <div className={styles.answerInner}>
                     {(isEn ? faq.answerEn : faq.answer) || faq.answer}
                   </div>
-                )}
+                </div>
               </div>
             ))}
           </div>
