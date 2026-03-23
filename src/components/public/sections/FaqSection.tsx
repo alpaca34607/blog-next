@@ -63,7 +63,7 @@ const FaqSection = ({ section }: FaqSectionProps) => {
                 }
               >
                 <div className={styles.questionLabel}>
-                  {(isEn ? faq.questionEn : faq.question) || faq.question}
+                  <span>Q{index + 1}. {(isEn ? faq.questionEn : faq.question) || faq.question}</span>
                   <IoIosArrowDown
                     className={`${styles.arrowIcon} ${openIndex === index ? styles.open : ""}`}
                   />
@@ -72,7 +72,7 @@ const FaqSection = ({ section }: FaqSectionProps) => {
                   className={`${styles.answerLabel} ${openIndex === index ? styles.open : ""}`}
                 >
                   <div className={styles.answerInner}>
-                    {(isEn ? faq.answerEn : faq.answer) || faq.answer}
+                    <span>A{index + 1}. {(isEn ? faq.answerEn : faq.answer) || faq.answer}</span>
                   </div>
                 </div>
               </div>

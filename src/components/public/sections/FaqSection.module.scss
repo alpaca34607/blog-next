@@ -37,6 +37,10 @@
   background-color: white;
   cursor: pointer;
   transition: box-shadow 0.2s;
+  font-size: 18px;
+  @include rwd-md {
+    font-size: 16px;
+  }
 
   &:hover {
   }
@@ -47,7 +51,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 18px;
   font-weight: 600;
   color: $text-main;
   border-bottom: 2px solid $accent-orange;
@@ -69,7 +72,6 @@
 .answerInner {
   min-height: 0;
   overflow: hidden;
-  font-size: 16px;
   line-height: 1.6;
   color: $text-muted;
   padding: 0;
