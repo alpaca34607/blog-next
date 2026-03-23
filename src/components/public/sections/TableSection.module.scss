@@ -11,7 +11,7 @@
 }
 
 .container {
-  @include section-container(1400px);
+  @include section-container(1280px);
   margin: 0 auto;
 }
 
@@ -40,7 +40,7 @@
 // 搜尋區域
 .searchSection {
   margin-bottom: 32px;
-  padding: 24px;
+  padding: 24px 0;
   background-color: white;
   border-radius: 12px;
   @include rwd-md {
@@ -143,7 +143,7 @@
 // 表格區域
 .tableWrapper {
   background-color: white;
-  padding: 24px;
+  padding: 24px 0;
   overflow-x: auto;
 
   @include rwd-md {
