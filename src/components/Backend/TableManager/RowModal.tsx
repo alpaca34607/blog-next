@@ -7,7 +7,12 @@ interface CustomTable {
   id: string;
   name: string;
   description: string;
-  columns:  Array<{ key: string; label: string; labelEn?: string; type?: string }>;
+  columns: Array<{
+    key: string;
+    label: string;
+    labelEn?: string;
+    type?: string;
+  }>;
 }
 
 interface TableRow {
@@ -52,6 +57,7 @@ const RowModal = ({
       const emptyData: Record<string, string> = {};
       (table.columns || []).forEach((col) => {
         emptyData[col.key] = "";
+        emptyData[col.key + "En"] = "";
       });
       setFormData({
         data: emptyData,
@@ -77,11 +83,20 @@ const RowModal = ({
     onSubmit(formData);
   };
 
-  const handleDataChange = (column: string, value: string) => {
-    setFormData({
-      ...formData,
-      data: { ...formData.data, [column]: value },
-    });
+  // 儲存於 data：中文用 col.key，英文用 col.key + "En"
+  const handleZhChange = (columnKey: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      data: { ...prev.data, [columnKey]: value },
+    }));
+  };
+
+  const handleEnChange = (columnKey: string, value: string) => {
+    const enKey = columnKey + "En";
+    setFormData((prev) => ({
+      ...prev,
+      data: { ...prev.data, [enKey]: value },
+    }));
   };
 
   if (!open) return null;
@@ -101,15 +116,33 @@ const RowModal = ({
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
             {(table.columns || []).map((col, idx) => (
-              <div key={idx} className={styles.formField}>
-                <label className={styles.label}>{col.label}</label>
-                <textarea
-                  className={styles.textarea}
-                  value={formData.data?.[col.key] || ""}
-                  onChange={(e) => handleDataChange(col.key, e.target.value)}
-                  placeholder={`輸入 ${col.label}`}
-                  rows={3}
-                />
+              <div key={idx} className={styles.formGrid}>
+                <div className={styles.formField}>
+                  <label className={styles.label}>{col.label}</label>
+                  <textarea
+                    className={styles.textarea}
+                    value={formData.data?.[col.key] || ""}
+                    onChange={(e) => handleZhChange(col.key, e.target.value)}
+                    placeholder={`輸入 ${col.label}`}
+                    rows={3}
+                  />
+                </div>
+                <div className={styles.formField}>
+                  <label className={styles.label}>
+                    {col.labelEn?.trim()
+                      ? col.labelEn
+                      : `${col.label}（英文）`}
+                  </label>
+                  <textarea
+                    className={styles.textarea}
+                    value={formData.data?.[col.key + "En"] || ""}
+                    onChange={(e) => handleEnChange(col.key, e.target.value)}
+                    placeholder={`輸入 ${
+                      col.labelEn?.trim() ? col.labelEn : `${col.label}（英文）`
+                    }`}
+                    rows={3}
+                  />
+                </div>
               </div>
             ))}
           </div>

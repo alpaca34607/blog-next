@@ -91,6 +91,19 @@
   gap: 20px;
 }
 
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin: 16px 0;
+}
+
+@include rwd-md {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .formGroup {
   display: flex;
   flex-direction: column;

@@ -58,6 +58,18 @@ const subtitle = isEn? (section.subtitleEn ||section.subtitle):section.subtitle;
     return column.label || column.key || "";
   };
 
+  /** 列儲存：中文為 data[key]，英文為 data[key + "En"]；英文站無內容時退回中文 */
+  const cellText = (row: TableRow, colKey: string) => {
+    if (isEn) {
+      const valueEn = String(row.data?.[colKey + "En"] ?? "").trim();
+      if (valueEn) return valueEn;
+    }
+    const value = row.data?.[colKey];
+    return value !== undefined && value !== null && String(value).trim() !== ""
+      ? String(value)
+      : "";
+  };
+
   // 共用的背景樣式工具
   const { style: sectionStyle, className: backgroundImageClass } =
     getSectionStyle({
@@ -203,16 +215,14 @@ const subtitle = isEn? (section.subtitleEn ||section.subtitle):section.subtitle;
       const searchValue = searchValues[column.key]?.toLowerCase().trim();
       if (searchValue) {
         filtered = filtered.filter((row) => {
-          const cellValue = String(row.data?.[column.key] ?? "")
-            .toLowerCase()
-            .trim();
+          const cellValue = cellText(row, column.key).toLowerCase().trim();
           return cellValue.includes(searchValue);
         });
       }
     });
 
     return filtered;
-  }, [searchValues, rows, table, searchableColumns]);
+  }, [searchValues, rows, table, searchableColumns, isEn]);
 
   if (!isClient || !table) {
     return null;
@@ -285,9 +295,10 @@ const subtitle = isEn? (section.subtitleEn ||section.subtitle):section.subtitle;
               <tbody>
                 {filteredRows.map((row) => (
                   <tr key={row.id}>
-                    {table.columns.map((col, idx) => (
-                      <td key={idx}>{row.data?.[col.key] ?? "-"}</td>
-                    ))}
+                    {table.columns.map((col, idx) => {
+                      const text = cellText(row, col.key);
+                      return <td key={idx}>{text || "-"}</td>;
+                    })}
                   </tr>
                 ))}
               </tbody>
